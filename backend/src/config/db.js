@@ -1,18 +1,30 @@
-import mongoose from 'mongoose';
+import 'dotenv/config';
+import { Sequelize } from 'sequelize';
+
+const dbName = process.env.DB_NAME;
+const dbUser = process.env.DB_USER;
+const dbHost = process.env.DB_HOST;
+const dbPassword = process.env.DB_PASSWORD;
+
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+  host: dbHost,
+  dialect: 'mysql',
+  logging: false,
+});
 
 const connectDB = async () => {
   try {
-    // Tenta conectar ao banco usando a URI do arquivo .env
-    await mongoose.connect(process.env.MONGODB_URI);
     
-    // Se der certo, avisa no console
-    console.log('MongoDB Conectado com Sucesso!');
-  
+    await sequelize.authenticate();
+    
+    console.log('MySQL Conectado com Sucesso!');
+    await sequelize.sync({ alter: true }); // sincroniza com meu db mas tem que tirar quando for pra prod
+
   } catch (error) {
-    // Se der errado, mostra o erro e encerra o programa
-    console.error('Erro ao conectar no MongoDB:', error.message);
-    process.exit(1); // Encerra a aplicação com falha
+   
+    console.error('❌ Erro ao conectar no MySQL :', error.message);
+    process.exit(1); 
   }
 };
 
-export default connectDB;
+export { connectDB, sequelize };

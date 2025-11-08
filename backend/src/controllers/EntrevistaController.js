@@ -1,5 +1,6 @@
 import Funcionario from '../models/Funcionario.js';
 import EntrevistaOffboarding from '../models/EntrevistaOffboarding.js';
+import '../models/relations.js';
 
 export const criarEntrevista = async (req, res) => {
   try {
