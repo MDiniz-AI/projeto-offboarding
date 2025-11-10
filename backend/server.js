@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import {connectDB} from './src/config/db.js';
 import entrevistaRoutes from './src/routes/EntrevistaRoutes.js';
+import userRoutes from './src/routes/UserRoutes.js';
+
 
 dotenv.config();
 
@@ -14,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/entrevistas', entrevistaRoutes);
+app.use('/api/usuarios', userRoutes);
 
 const PORT = process.env.PORT || 5001;
 

@@ -8,6 +8,7 @@ const Entrevista = sequelize.define(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+      allowNull: false,
     },
     data_entrevista: {
       type: DataTypes.DATE,

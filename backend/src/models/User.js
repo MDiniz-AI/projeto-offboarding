@@ -32,7 +32,8 @@ const User = sequelize.define(
     },
     data_saida: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
+
     },
     motivo_saida: {
       type: DataTypes.STRING(50),

@@ -18,4 +18,4 @@ AnaliseSentimento.belongsTo(Resposta, { foreignKey: 'id_resposta' });
 Usuario.hasMany(Entrevista, { foreignKey: 'id_usuario' }); // um usuario pode fazer mais de uma entrevista pq ele pode ter sido readmitido e dps demitido dnv
 Entrevista.belongsTo(Usuario, { foreignKey: 'id_usuario' });
 
-export { sequelize, Entrevista, Pergunta, Resposta, AnaliseSentimento };
+export { sequelize, Entrevista, Pergunta, Resposta, AnaliseSentimento, Usuario };
