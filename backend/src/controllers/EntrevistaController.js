@@ -96,3 +96,37 @@ export const criarEntrevistaComRespostas = async (req, res) => {
         });
     }
 };
+
+// DELETE /entrevistas/:id
+export const excluirEntrevista = async (req, res) => {
+    const entrevistaId = req.params.id;
+
+    const t = await sequelize.transaction();
+
+    try {
+        const entrevista = await Entrevista.findByPk(entrevistaId, { transaction: t });
+
+        if (!entrevista) {
+            await t.rollback();
+            return res.status(404).json({ error: 'Entrevista não encontrada.' });
+        }
+
+        await Entrevista.destroy({
+            where: { id_entrevista: entrevistaId },
+            transaction: t
+        });
+
+        await t.commit();
+
+        return res.status(204).json(); 
+        
+    } catch (error) {
+  
+        await t.rollback(); 
+        
+        return res.status(500).json({ 
+            error: 'Erro ao excluir entrevista. Operação desfeita.', 
+            details: error.message 
+        });
+    }
+};
