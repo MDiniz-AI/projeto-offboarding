@@ -1,10 +1,10 @@
 import express from 'express';
 
-import { criarEntrevista } from '../controllers/EntrevistaController.js';
+// import { criarEntrevista } from '../controllers/EntrevistaController.js';
 
 const router = express.Router();
 
-router.post('/', criarEntrevista);
+// router.post('/', criarEntrevista);
 
 // Adicionar as outras rotas aqui
 
