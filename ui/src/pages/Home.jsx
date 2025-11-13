@@ -2,6 +2,7 @@ import BlocoPrincipal from "../components/BlocoPrincipal"
 import {ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon } from '@phosphor-icons/react';
 import { Squircle } from 'corner-smoothing'
 import BotaoGrande from "../components/BotaoGrande";
+import imagem from '../assets/fundo-pg1.jpg';
 
 export default () => {
 
@@ -31,12 +32,12 @@ export default () => {
                             </Squircle>
                         </div>
                     </div>
-                    <div className="mt-[12vh]">
+                    <div className="mt-[10vh]">
                         <BotaoGrande texto="Continuar" link="#"/>
                     </div>
                 </div>
 
     return (
-       <BlocoPrincipal codigo={html} idPag={0} />
+       <BlocoPrincipal codigo={html} idPag={0} imagemFundo={imagem} />
     )
 }
