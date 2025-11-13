@@ -12,7 +12,7 @@ export default () => {
         <div className='bg-[#1d1d1e] h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
         <form action="" className="mt-[3vh] flex flex-col gap-[32vh]">
             <div> 
-                <InputCurto label="Email" placeholder="Digite o seu email aqui" id="input1"/>
+                <InputCurto label="Email" placeholder="Digite o seu email aqui" id="input1" tipo="email"/>
                 <div className='flex gap-[1.5vw] mt-[2vh] justify-center'>
                     <button><img src={GoogleLogo} alt="Logo do google" className='w-[3.2vw] bg-secondary p-[1.8vh] rounded-xl'/></button>
                     <button><img src={MicrosoftLogo} alt="Logo da Microsoft" className='w-[3.2vw] bg-secondary p-[1.8vh] rounded-xl'/></button>

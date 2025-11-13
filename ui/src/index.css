@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #EBEA76 transparent;
+}
 
 @font-face {
       font-family: 'Clash Display';
