@@ -22,7 +22,7 @@ export default (props) => {
                         <div className={props.idPag == 8 ? ativo : inativo}><DotsThreeCircleIcon size="4vh" weight="thin" /></div>
                     </div>
                 </div>
-                <div className='bg-[#1d1d1e] w-1/1000 h-[90vh] '></div>
+                <div className='bg-[#1d1d1e] w-[.01vw] min-w-[.5px] h-[90vh] '></div>
                 {props.codigo}
             </div>
         </div>
