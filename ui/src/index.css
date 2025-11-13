@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
 
 @font-face {
       font-family: 'Clash Display';
@@ -22,6 +24,27 @@
 }
 
 @theme {
-  --font-title: "Clash Display", sans-serif; 
-  --font-corpo: "Geist Mono", sans-serif;
+      --font-title: "Clash Display", sans-serif; 
+      --font-corpo: "Geist Mono", sans-serif;
 }
+
+:root, [data-theme=light] {
+    /* Cores que você quer que o Daisy UI utilize (Formato RGB) */
+    --p: 29 29 30;       /* Mapeia 'primario' para 'primary' do Daisy UI */
+    --s: 222 219 24;     /* Mapeia 'secundario' para 'secondary' do Daisy UI */
+    --b1: 248 246 238;   /* Mapeia 'fundo' para 'base-100' do Daisy UI */
+    --bc: 17 24 39;      /* Mapeia 'texto' para 'base-content' do Daisy UI */
+    --er: 239 68 68;     /* Mapeia 'alerta' para 'error' do Daisy UI */
+    /* ... e assim por diante para todas as cores semânticas do Daisy UI */
+}
+
+:root, [data-theme=dark] {
+    /* Cores que você quer que o Daisy UI utilize (Formato RGB) */
+    --color-primary: #1d1d1e;       /* Mapeia 'primario' para 'primary' do Daisy UI */
+    --color-secondary: #DEDB1826;     /* Mapeia 'secundario' para 'secondary' do Daisy UI */
+    --color-accent: #EBEA76;   /* Mapeia 'fundo' para 'base-100' do Daisy UI */
+    --color-base-100: #F8F6EE;      /* Mapeia 'texto' para 'base-content' do Daisy UI */
+    --color-error: #e8083E;     /* Mapeia 'alerta' para 'error' do Daisy UI */
+    /* ... e assim por diante para todas as cores semânticas do Daisy UI */
+}
+
