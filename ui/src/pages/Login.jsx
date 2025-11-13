@@ -4,7 +4,6 @@ import InputCurto from '../components/InputCurto'
 import GoogleLogo from '../assets/Google__G__logo.svg'
 import MicrosoftLogo from '../assets/Microsoft_logo.svg'
 import BotaoGrande from '../components/BotaoGrande'
-import Seletor from '../components/Seletor'
 
 export default () => {
     const html = <div>
