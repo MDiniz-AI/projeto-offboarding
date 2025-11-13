@@ -27,7 +27,7 @@ export default () => {
                                 <p className="font-corpo text-[2vh] mx-auto text-primary">Promove melhorias</p>
                             </Squircle>
                              <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary w-[20vw] h-[20vh] flex flex-col justify-center gap-2">
-                                <ChartLineIcon size="7vh" weight="thin text-primary" className="mx-auto" />
+                                <ChartLineIcon size="7vh" weight="thin" className="mx-auto text-primary" />
                                 <p className="font-corpo text-[2vh] mx-auto text-primary">Identifica tendências</p>
                             </Squircle>
                         </div>

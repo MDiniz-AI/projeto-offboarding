@@ -12,6 +12,8 @@ dist
 dist-ssr
 aula-22
 *.local
+codigoprof.png
+*.old
 
 # Editor directories and files
 .vscode/*
