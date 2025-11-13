@@ -24,24 +24,20 @@ export default () => {
             id="input1"
           />
           <div className="flex gap-[1.5vw] mt-[2vh] justify-center">
-            <SignInButton mode="modal" strategy="oauth_google">
-              <button type="button">
-                <img
-                  src={GoogleLogo}
-                  alt="Logo do google"
-                  className="w-[3.2vw] bg-[#DEDB1826] p-[1.8vh] rounded-xl"
-                />
-              </button>
-            </SignInButton>
-            <SignInButton mode="modal" strategy="oauth_microsoft">
-              <button type="button">
-                <img
-                  src={MicrosoftLogo}
-                  alt="Logo da Microsoft"
-                  className="w-[3.2vw] bg-[#DEDB1826] p-[1.8vh] rounded-xl"
-                />
-              </button>
-            </SignInButton>
+            <button>
+              <img
+                src={GoogleLogo}
+                alt="Logo do google"
+                className="w-[3.2vw] bg-[#DEDB1826] p-[1.8vh] rounded-xl"
+              />
+            </button>
+            <button>
+              <img
+                src={MicrosoftLogo}
+                alt="Logo da Microsoft"
+                className="w-[3.2vw] bg-[#DEDB1826] p-[1.8vh] rounded-xl"
+              />
+            </button>
           </div>
         </div>
         <BotaoGrande texto="Continuar" />

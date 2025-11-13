@@ -1,7 +1,7 @@
 export default (props) => {
   return (
     <div className="flex flex-col gap-[1vh]">
-      <label htmlFor={props.id} className="font-corpo text-[1vw]">
+      <label for={props.id} className="font-corpo text-[1vw]">
         {props.label}
       </label>
       <input

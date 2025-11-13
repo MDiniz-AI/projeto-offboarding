@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import { ClerkProvider } from "@clerk/clerk-react";
+import Form from "./pages/Form.jsx";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -13,16 +14,12 @@ function App() {
   }
 
   return (
-    <StrictMode>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </BrowserRouter>
-      </ClerkProvider>
-    </StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 export default App;

@@ -1,0 +1,18 @@
+[[
+    {"question": "Qual é a sua opinião sobre o clima organizacional de sua equipe/time?", "type":3, "option":null}, 
+    {"question": "Você se sentia valorizado pelas suas contribuições e entregas?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Você se sentia ouvido e reconhecido?", "type":2, "option":["opc1","opc2"]}, 
+    {"question": "O que mais te motivou a aceitar a proposta inicial para trabalhar aqui?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Qual é a sua opinião sobre o pacote de salário e benefícios oferecido pela empresa (em comparação com o mercado)?", "type":3, "option":null},
+    {"question": "Ainda sobre pacote de salário e benefícios, o que poderia melhorar?", "type":0, "option":null},
+    {"question": "Como descreveria sua experiência geral na empresa?", "type":3, "option":null},
+    {"question": "Se tivesse que resumir em uma palavra o que é trabalhar aqui, qual seria?", "type":0, "option":null},
+    {"question": "Há alguma justificativa para a escolha dessa palavra?", "type":1, "option":null}
+],[
+    {"question": "O que mais te orgulhava na cultura da empresa?", "type":2, "option":["opc1","opc2"]}, 
+    {"question": "Que comportamentos ou práticas você acha que enfraquecem a cultura na prática?", "type":2, "option":["opc1","opc2"]}, 
+    {"question": "Como os valores da empresa são vividos de forma coerente pelas lideranças?", "type":3}, 
+    {"question": "Quais valores poderiam ser mais coerentes?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Se pudesse mudar um elemento da cultura, qual seria?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Poderia Justificar?", "type":1, "option":null}
+]]
