@@ -2,7 +2,7 @@ import BlocoPrincipal from "../components/BlocoPrincipal"
 import {ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon } from '@phosphor-icons/react';
 import { Squircle } from 'corner-smoothing'
 import BotaoGrande from "../components/BotaoGrande";
-import imagem from '../assets/fundo-pg1.jpg';
+import imagem from '../assets/fundo-pg1.webp';
 
 export default () => {
 
