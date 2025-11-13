@@ -41,7 +41,7 @@
 :root, [data-theme=dark] {
     /* Cores que você quer que o Daisy UI utilize (Formato RGB) */
     --color-primary: #1d1d1e;       /* Mapeia 'primario' para 'primary' do Daisy UI */
-    --color-secondary: #DEDB1826;     /* Mapeia 'secundario' para 'secondary' do Daisy UI */
+    --color-secondary: #dedb184f;     /* Mapeia 'secundario' para 'secondary' do Daisy UI */
     --color-accent: #EBEA76;   /* Mapeia 'fundo' para 'base-100' do Daisy UI */
     --color-base-100: #F8F6EE;      /* Mapeia 'texto' para 'base-content' do Daisy UI */
     --color-error: #e8083E;     /* Mapeia 'alerta' para 'error' do Daisy UI */

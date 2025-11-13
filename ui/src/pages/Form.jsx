@@ -1,5 +1,6 @@
 import imgFundo from '../assets/fundo-pg3.webp'
 import BlocoPrincipal from '../components/BlocoPrincipal'
+import Range from '../components/Range'
 
 export default () => {
     const html = <div>
@@ -7,7 +8,7 @@ export default () => {
         <p className="font-corpo w-[40vw] text-[1vw] text-justify text-primary">Perguntas gerais</p>
         <div className='bg-primary h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
         <form action="">
-           <input type="range" min={0} max="7" value="4" className="range" step="1" />  
+           
         </form>
     </div>
     
