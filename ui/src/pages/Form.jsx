@@ -7,9 +7,10 @@ import imgFundoLg from '../assets/form/fundo-lg.webp'
 import imgFundoLi from '../assets/form/fundo-li.webp'
 import imgFundoPd from '../assets/form/fundo-pd.webp'
 
+
 import BlocoPrincipal from '../components/BlocoPrincipal'
 import FormRenderer from '../components/FormRenderer'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import {CaretRightIcon, CheckIcon, PaperPlaneTiltIcon, HouseIcon} from '@phosphor-icons/react';
 import Perguntas from '../perguntas.json'
 import { useNavigate } from "react-router-dom";
@@ -48,7 +49,7 @@ function App(){
 
     const {perguntas, secao, avancaPasso, categorias, imgVet, enviaDados, isSubmitted, irParaHome} = useContext(Contexto)
     
-    const html =<div>
+    const htmlForm =<div>
             <h1 className="font-title text-[3.5vw] text-primary">Pesquisa de offboarding</h1>
             <p className="font-corpo w-[40vw] text-[1vw] text-justify text-primary">{categorias[secao-2]}</p>
             <div className='bg-primary h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
@@ -107,12 +108,11 @@ function App(){
             </dialog> 
         </div>
         
+    const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center mt-[-4vh]'>
+        <h1 className="font-title text-[3.5vw] text-primary mx-auto">Obrigado!</h1>
+        <p className="font-corpo w-[40vw] text-[1vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
+        <button onClick={irParaHome} className="btn btn-accent text-primary font-corpo text-[.9vw] w-[13vw] h-[6vh] mx-auto"><HouseIcon size="2.5vh" weight="thin" />Voltar ao Menu</button>
+    </div>
 
-        const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center mt-[-4vh]'>
-            <h1 className="font-title text-[3.5vw] text-primary mx-auto">Obrigado!</h1>
-            <p className="font-corpo w-[40vw] text-[1vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
-            <button onClick={irParaHome} className="btn btn-accent text-primary font-corpo text-[.9vw] w-[13vw] h-[6vh] mx-auto"><HouseIcon size="2.5vh" weight="thin" />Voltar ao Menu</button>
-        </div>
-
-    return <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : html} idPag={secao} imagemFundo={imgVet[secao-2]} />;
+    return <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : htmlForm} idPag={secao} imagemFundo={imgVet[secao-2]} />;
 }
