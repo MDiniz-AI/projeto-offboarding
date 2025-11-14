@@ -9,7 +9,7 @@ export default (props) => {
     return(
         <div className="flex flex-col gap-[1vh]">
             <label for={props.id} className="font-corpo text-[1vw] text-justify text-primary">{props.label}</label>
-            <input type="range" name={props.id} id={props.id} min={1} max="7" defaultValue="4" className="range w-[40vw] h-[3.5vh] range-secondary bg-linear-to-r from-[#FF00004d] via-[#FFEB004d] to-[#15FF004d]" step="1" />  
+            <input type="range" name={props.id} id={props.id} min={1} max="7" defaultValue="4" className="range w-[40vw] h-[3vh] range-secondary bg-linear-to-r from-[#FF00004d] via-[#FFEB004d] to-[#15FF004d]" step="1" />  
             <div className='flex flex-col gap-[.5vh]'>
                 <div className='flex gap-[4vw] ml-[1vw]'>
                     <img src={horrivel} alt="Carinha muito muito triste" className='w-[2vw]' />

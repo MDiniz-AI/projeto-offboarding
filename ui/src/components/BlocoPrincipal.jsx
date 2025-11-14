@@ -1,5 +1,5 @@
 import estrela from '../assets/Star 1.svg'
-import {HouseIcon, AtIcon, TargetIcon, UsersThreeIcon, StrategyIcon, TreeStructureIcon, MegaphoneIcon, ChatCircleIcon, DotsThreeCircleIcon} from '@phosphor-icons/react';
+import {HouseIcon, AtIcon, TargetIcon, UsersThreeIcon, StrategyIcon, TreeStructureIcon, MegaphoneIcon, CrownSimpleIcon, PowerIcon, DotsThreeCircleIcon} from '@phosphor-icons/react';
 
 
 export default (props) => {
@@ -9,7 +9,7 @@ export default (props) => {
         <div>
             <img src={props.imagemFundo} alt="Foto de uma equipe trabalhando" className="w-screen h-screen object-cover"/>
             <div className='absolute top-3 left-3 w-[53vw] h-[97vh] bg-base-100 flex gap-[2vw] pt-[4vh]'>
-                <div className='flex flex-col gap-[20vh]'>
+                <div className='flex flex-col gap-[12vh]'>
                     <img src={estrela} alt="simbolo estrela" className='ml-[2vw] w-[6vh] h-[6vh]'/>
                     <div className='flex flex-col gap-[1vh] ml-[2vw]'>
                         <div className={props.idPag == 0 ? ativo : inativo}><HouseIcon size="4vh" weight="thin" className='text-primary' /></div>
@@ -19,8 +19,9 @@ export default (props) => {
                         <div className={props.idPag == 4 ? ativo : inativo}><StrategyIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div className={props.idPag == 5 ? ativo : inativo}><TreeStructureIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div className={props.idPag == 6 ? ativo : inativo}><MegaphoneIcon size="4vh" weight="thin" className='text-primary' /></div>
-                        <div className={props.idPag == 7 ? ativo : inativo}><ChatCircleIcon size="4vh" weight="thin" className='text-primary' /></div>
-                        <div className={props.idPag == 8 ? ativo : inativo}><DotsThreeCircleIcon size="4vh" weight="thin" className='text-primary' /></div>
+                        <div className={props.idPag == 7 ? ativo : inativo}><PowerIcon size="4vh" weight="thin" className='text-primary' /></div>
+                        <div className={props.idPag == 8 ? ativo : inativo}><CrownSimpleIcon size="4vh" weight="thin" className='text-primary' /></div>
+                        <div className={props.idPag == 9 ? ativo : inativo}><DotsThreeCircleIcon size="4vh" weight="thin" className='text-primary' /></div>
                     </div>
                 </div>
                 <div className='bg-[#1d1d1e] w-[.01vw] min-w-[.5px] h-[90vh] '></div>
