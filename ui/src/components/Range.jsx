@@ -1,7 +1,7 @@
-import muitoRuim from '../assets/smiley-sad-thin-1.svg'
-import horrivel from '../assets/smiley-sad-thin.svg'
-import muitoBom from '../assets/smiley-wink-thin.svg'
-import incrivel from '../assets/smiley-thin.svg'
+import MuitoRuim from '../assets/smiley-sad-thin-1.svg?react'
+import Horrivel from '../assets/smiley-sad-thin.svg?react'
+import MuitoBom from '../assets/smiley-wink-thin.svg?react'
+import Incrivel from '../assets/smiley-thin.svg?react'
 import {SmileyMehIcon, SmileySadIcon, SmileyIcon} from '@phosphor-icons/react';
 
 export default (props) => {
@@ -12,13 +12,13 @@ export default (props) => {
             <input type="range" name={props.id} id={props.id} min={1} max="7" defaultValue="4" className="range w-[40vw] h-[3vh] range-secondary bg-linear-to-r from-[#FF00004d] via-[#FFEB004d] to-[#15FF004d]" step="1" />  
             <div className='flex flex-col gap-[.5vh]'>
                 <div className='flex gap-[4vw] ml-[1vw]'>
-                    <img src={horrivel} alt="Carinha muito muito triste" className='w-[2vw]' />
-                    <img src={muitoRuim} alt="Carinha muito triste" className='w-[2vw]' />
+                    <Horrivel className='w-[2vw] h-[2vw] text-primary' />
+                    <MuitoRuim className='w-[2vw] h-[2vw] text-primary'/>
                     <SmileySadIcon size="2vw" weight="thin" className='text-primary'/>
                     <SmileyMehIcon size="2vw" weight="thin" className='text-primary'/>
                     <SmileyIcon size="2vw" weight="thin" className='text-primary'/>
-                    <img src={muitoBom} alt="Carinha muito feliz" className='w-[2vw]' />
-                    <img src={incrivel} alt="Carinha muito muito feliz" className='w-[2vw]' /> 
+                    <MuitoBom className='w-[2vw] h-[2vw] text-primary' />
+                    <Incrivel className='w-[2vw] h-[2vw] text-primary' /> 
                 </div>
                 <div className='flex gap-[3vw]'>
                     <p className='text-primary font-corpo text-[.9vw] text-center w-[3vw]'>Horrível</p>

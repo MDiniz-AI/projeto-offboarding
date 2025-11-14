@@ -24,7 +24,7 @@ export default (props) => {
                         <div className={props.idPag == 9 ? ativo : inativo}><DotsThreeCircleIcon size="4vh" weight="thin" className='text-primary' /></div>
                     </div>
                 </div>
-                <div className='bg-[#1d1d1e] w-[.01vw] min-w-[.5px] h-[90vh] '></div>
+                <div className='bg-primary w-[.01vw] min-w-[.5px] h-[90vh] '></div>
                 {props.codigo}
             </div>
         </div>

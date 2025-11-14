@@ -14,6 +14,7 @@ aula-22
 *.local
 codigoprof.png
 *.old
+src/assets/fullsize
 
 # Editor directories and files
 .vscode/*
