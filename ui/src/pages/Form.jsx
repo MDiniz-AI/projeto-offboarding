@@ -10,24 +10,35 @@ import imgFundoPd from '../assets/form/fundo-pd.webp'
 
 import BlocoPrincipal from '../components/BlocoPrincipal'
 import FormRenderer from '../components/FormRenderer'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import {CaretRightIcon, CheckIcon, PaperPlaneTiltIcon, HouseIcon} from '@phosphor-icons/react';
 import Perguntas from '../perguntas.json'
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 
 export const Contexto = createContext();
 
 export default () => {
+    
+    const [searchParams, setSearchParams] = useSearchParams();
+    let secaoQuery = Number(searchParams.get("secao") == null ? null : searchParams.get("secao"));
+
+    if (secaoQuery == null || isNaN(secaoQuery) || secaoQuery > 9 || secaoQuery < 2) secaoQuery = 2 
+    
     const [perguntas, setPerguntas] = useState(Perguntas);
-    const [secao, setSecao] = useState(2);
+    const [secao, setSecao] = useState(secaoQuery);
     const categorias = ["Perguntas gerais","Cultura e ambiente", "Liderança e gestão", "Estrutura, incentivos e oportunidades", "Comunicação e decisões estratégicas", "Perguntas específicas: Pedido de desligamento", "Perguntas específicas: Liderança", "Finalização"]
     const imgVet = [ imgFundoPg, imgFundoCa, imgFundoLg, imgFundoEio, imgFundoCde, imgFundoPd, imgFundoLi, imgFundoFim ]
     const [ isSubmitted, setIsSubmitted ] = useState(false);
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        let novaSecao = Number(searchParams.get("secao"));
+        if (novaSecao == null || isNaN(secaoQuery) || secaoQuery > 9 || secaoQuery < 2) secaoQuery = 2
+        setSecao(novaSecao ?? 0);
+    }, [searchParams]);
 
     function avancaPasso () {
         setSecao(secao+1);
-        recuperaPerguntas();
     }
 
     function enviaDados(){

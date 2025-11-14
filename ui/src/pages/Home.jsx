@@ -1,22 +1,34 @@
 import BlocoPrincipal from "../components/BlocoPrincipal"
 import {ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { Squircle } from 'corner-smoothing';
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import InputCurto from "../components/InputCurto";
 import GoogleLogo from '../assets/Google__G__logo.svg'
 import MicrosoftLogo from '../assets/Microsoft_logo.svg'
 import imgFundoHm from '../assets/fundo-pg1.webp';
 import imgFundoLog from '../assets/fundo-pg2.webp'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 
 
 export const Contexto = createContext();
 
 export default () => {
 
-    const [pagAtual, setPagAtual] = useState(0)
+    const [searchParams, setSearchParams] = useSearchParams();
+    let secaoQuery = Number(searchParams.get("secao") == null ? null : searchParams.get("secao"));
+    if (secaoQuery == null || isNaN(secaoQuery) || secaoQuery < 1 || secaoQuery > 0) secaoQuery = 0
+
+    const [pagAtual, setPagAtual] = useState(secaoQuery)
     const imgFundo = [imgFundoHm, imgFundoLog]
     const navigate = useNavigate();
+
+    useEffect(() => {
+        let novaSecao = Number(searchParams.get("secao"));
+        if (novaSecao == null || isNaN(secaoQuery) || secaoQuery > 9 || secaoQuery < 2) secaoQuery = 2
+        setPagAtual(novaSecao ?? 0);
+    }, [searchParams]);
+
 
     function avancaPagina(){
         setPagAtual(pagAtual + 1)
@@ -36,9 +48,9 @@ export default () => {
 
         const { pagAtual } = useContext(Contexto);
 
-        const htmlInicio = <div className="mt-[4vh]">
-                        <h1 className="font-title text-[3.5vw] text-primary">Pesquisa de offboarding</h1>
-                        <p className="font-corpo w-[40vw] text-[1vw] text-justify text-primary">Sua opinião é muito importante para nós. 💙 <br/> Esta pesquisa nos ajuda a entender melhor sua experiência e a aprimorar continuamente nosso ambiente de trabalho. ✍️</p>
+        const htmlInicio = <div className="mt-[4vh] flex flex-col">
+                        <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">Pesquisa de offboarding</h1>
+                        <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[4vw] md:text-justify text-center text-primary mx-auto">Sua opinião é muito importante para nós. 💙 <br/> Esta pesquisa nos ajuda a entender melhor sua experiência e a aprimorar continuamente nosso ambiente de trabalho. ✍️</p>
                         <div className="mt-[2vh] flex flex-col gap-[2.5vh]">
                             <div className="flex gap-[2.5vh]">
                                 <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary w-[20vw] h-[20vh] flex flex-col justify-center gap-2">
@@ -63,9 +75,9 @@ export default () => {
                             </div>
                         </div>
                         <div className="mt-[10vh]">
-                            <button onClick={avancaPagina} className='flex gap-[32vw] bg-accent p-[1vw] rounded-xl'>
-                                <p className='font-corpo text-[1vw] my-auto text-primary'> Continuar </p>
-                                <CaretRightIcon size="4vh" weight="thin" className='my-auto text-primary'/>
+                            <button onClick={avancaPagina} className='flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl md:w-auto w-[97vw] mx-auto mb-[1vh] md:mb-0'>
+                                <p className='font-corpo md:text-[1vw] text-[2vh] my-auto text-primary'> Continuar </p>
+                                <CaretRightIcon size="3.5vh" weight="thin" className='my-auto text-primary'/>
                             </button>
                         </div>
                     </div>
