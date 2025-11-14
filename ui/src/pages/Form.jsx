@@ -54,7 +54,7 @@ function App(){
             <p className="font-corpo w-[40vw] text-[1vw] text-justify text-primary">{categorias[secao-2]}</p>
             <div className='bg-primary h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
             <form action="">
-                <div className='mt-[5vh] h-[52vh] overflow-y-scroll w-[42vw] '>
+                <div className='mt-[5vh] h-[52vh] overflow-y-auto w-[42vw] '>
                     <FormRenderer perguntas={perguntas[secao-2]} />
                 </div>
                 <div>
