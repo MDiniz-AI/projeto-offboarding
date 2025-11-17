@@ -87,13 +87,25 @@ function App(){
                         </div>
                     }
                 </div>
-            </form>
-            <dialog id="modalTermos" className="modal">
+            </form> 
+        </div>
+        
+    const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[22vh] md:my-0'>
+        <h1 className="font-title md:text-[3.5vw] text-[12vw] text-primary mx-auto">Obrigado!</h1>
+        <p className="font-corpo md:w-[40vw] w-[97vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
+        <button onClick={irParaHome} className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[13vw] w-[40vw] h-[6vh] mx-auto"><HouseIcon size="2.5vh" weight="thin" />Voltar ao Menu</button>
+    </div>
+
+    return <>
+        <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : htmlForm} idPag={secao} imagemFundo={imgVet[secao-2]} />;
+        <dialog id="modalTermos" className="modal">
             <div className="modal-box max-h-[92vh]">
-                <form method="dialog">
-                    <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
-                </form>
-                <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">Termos de privacidade</h3>
+                <div className='flex gap-[5vw]'>
+                    <form method="dialog">
+                        <button classname="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
+                    </form>
+                    <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">Termos de privacidade</h3>
+                </div>
                 <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">Ao preencher este formulário, o(a) colaborador(a) desligado(a) concorda com os seguintes termos de uso e privacidade de suas respostas: <br /><br />
                                                 1. Objetivo da Pesquisa <br />
                                                 O objetivo desta pesquisa é coletar feedback honesto e construtivo sobre a experiência do colaborador na empresa (cultura, liderança, processos, remuneração e ambiente de trabalho) para fins de melhoria contínua e retenção de talentos. As informações fornecidas são cruciais para o desenvolvimento organizacional.<br /><br />
@@ -119,14 +131,6 @@ function App(){
                 </form>
                 </div>
             </div>
-            </dialog> 
-        </div>
-        
-    const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[22vh] md:my-0'>
-        <h1 className="font-title md:text-[3.5vw] text-[12vw] text-primary mx-auto">Obrigado!</h1>
-        <p className="font-corpo md:w-[40vw] w-[97vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
-        <button onClick={irParaHome} className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[13vw] w-[40vw] h-[6vh] mx-auto"><HouseIcon size="2.5vh" weight="thin" />Voltar ao Menu</button>
-    </div>
-
-    return <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : htmlForm} idPag={secao} imagemFundo={imgVet[secao-2]} />;
+            </dialog>
+    </>
 }
