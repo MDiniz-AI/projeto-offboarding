@@ -15,12 +15,12 @@ export default (props) => {
     return (
         <div>
             <img src={props.imagemFundo} alt="Foto de uma equipe trabalhando" className="hidden md:block w-screen h-screen object-cover"/>
-            <div className='md:top-3 md:left-3 md:w-[53vw] md:h-[97vh] absolute top-0 left-0 w-screen h-screen bg-base-100 flex md:flex-row flex-col gap-[2vw] pt-[4vh] justify-end'>
+            <div className='md:top-3 md:left-3 md:w-[53vw] md:h-[97vh] absolute top-0 left-0 w-screen h-screen bg-base-100 flex md:flex-row flex-col gap-[2vw] md:gap-[1vw] pt-[4vh] justify-end'>
                 <div className='md:hidden w-screen h-screen'>
                     {props.codigo}
                 </div>
                 <div className='md:w-[.01vw] md:h-[90vh] h-[.1vh] w-screen bg-primary min-w-[.5px] md:hidden'></div>
-                <div className='flex md:flex-col md:gap-[12vh] gap-[5vw] overflow-x-scroll overflow-y-hidden md:overflow-hidden mb-[2vh] md:mb-0 h-[10vh] md:h-full'>
+                <div className='flex md:flex-col md:w-[7vw] md:gap-[12vh] gap-[5vw] overflow-x-scroll overflow-y-hidden md:overflow-hidden mb-[2vh] md:mb-0 h-[15vh] md:h-full'>
                     <img src={estrela} alt="simbolo estrela" className='ml-[2vw] w-[6vh] h-[6vh]'/>
                     <div className='flex md:flex-col gap-[1vh] ml-[2vw]'>
                         <div onClick={() => redirectPagina(0)}className={props.idPag == 0 ? ativo : inativo}><HouseIcon size="4vh" weight="thin" className='text-primary' /></div>
@@ -36,7 +36,7 @@ export default (props) => {
                     </div>
                 </div>
                 <div className='md:w-[.01vw] md:h-[90vh] h-[.1vh] w-screen bg-primary min-w-[.5px] hidden md:block'></div>
-                <div className='hidden md:block'>
+                <div className='hidden md:block md:w-full ml-[1vw]'>
                     {props.codigo}
                 </div>
             </div>

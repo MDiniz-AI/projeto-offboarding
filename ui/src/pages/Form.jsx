@@ -20,21 +20,24 @@ export const Contexto = createContext();
 export default () => {
     
     const [searchParams, setSearchParams] = useSearchParams();
-    let secaoQuery = Number(searchParams.get("secao") == null ? null : searchParams.get("secao"));
 
-    if (secaoQuery == null || isNaN(secaoQuery) || secaoQuery > 9 || secaoQuery < 2) secaoQuery = 2 
-    
     const [perguntas, setPerguntas] = useState(Perguntas);
-    const [secao, setSecao] = useState(secaoQuery);
+    const [secao, setSecao] = useState(2);
     const categorias = ["Perguntas gerais","Cultura e ambiente", "Liderança e gestão", "Estrutura, incentivos e oportunidades", "Comunicação e decisões estratégicas", "Perguntas específicas: Pedido de desligamento", "Perguntas específicas: Liderança", "Finalização"]
     const imgVet = [ imgFundoPg, imgFundoCa, imgFundoLg, imgFundoEio, imgFundoCde, imgFundoPd, imgFundoLi, imgFundoFim ]
     const [ isSubmitted, setIsSubmitted ] = useState(false);
     const navigate = useNavigate();
     
     useEffect(() => {
-        let novaSecao = Number(searchParams.get("secao"));
-        if (novaSecao == null || isNaN(secaoQuery) || secaoQuery > 9 || secaoQuery < 2) secaoQuery = 2
-        setSecao(novaSecao ?? 0);
+        const param = searchParams.get("secao");
+
+        if (param === null) {
+            setSecao(2);
+        } else {
+            const novaSecao = Number(param);
+            if (novaSecao == null || isNaN(novaSecao) || novaSecao > 9 || novaSecao < 2) secaoQuery = 2
+            else setSecao(novaSecao);
+        }
     }, [searchParams]);
 
     function avancaPasso () {
@@ -61,24 +64,24 @@ function App(){
     const {perguntas, secao, avancaPasso, categorias, imgVet, enviaDados, isSubmitted, irParaHome} = useContext(Contexto)
     
     const htmlForm =<div>
-            <h1 className="font-title text-[3.5vw] text-primary">Pesquisa de offboarding</h1>
-            <p className="font-corpo w-[40vw] text-[1vw] text-justify text-primary">{categorias[secao-2]}</p>
-            <div className='bg-primary h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
+            <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">Pesquisa de offboarding</h1>
+            <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[3vw] md:text-justify text-center text-primary mx-auto md:mx-0">{categorias[secao-2]}</p>
+            <div className='bg-primary h-[.01vh] min-h-[.5px] md:w-[40vw] md:mx-0 mx-auto w-[97vw] mt-[3vh] '/>
             <form action="">
-                <div className='mt-[5vh] h-[52vh] overflow-y-auto w-[42vw] '>
+                <div className='mt-[5vh] md:h-[52vh] h-[60vh] overflow-y-auto md:w-[42vw] w-[97vw] md:mx-0 mx-auto'>
                     <FormRenderer perguntas={perguntas[secao-2]} />
                 </div>
                 <div>
                     {secao < 9 ?
-                        <button type="button" onClick={avancaPasso} className="flex gap-[32vw] bg-accent p-[1vw] rounded-xl mt-[3vh]" >
-                            <p className="font-corpo text-[1vw] my-auto text-primary">Continuar</p>
+                        <button type="button" onClick={avancaPasso} className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 mt-[2vh]" >
+                            <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">Continuar</p>
                             <CaretRightIcon size="4vh" weight="thin" className="my-auto text-primary" />
                         </button>
                         :
-                        <div>
-                            <p className='text-primary w-[42vw] text-[.7vw] font-corpo'>Caso queira visualizar e/ou corrigir suas respostas, você pode navegar pelos blocos interagindo com os ícones do menu lateral. Ao enviar suas respostas, você concorda com os <a href="#" onClick={() => document.getElementById('modalTermos').showModal()}><u>Termos de Privacidade</u></a>.</p>
-                            <button type="button" onClick={() => document.getElementById('modalConfirmar').showModal()} className="flex gap-[32vw] bg-accent p-[1vw] rounded-xl" >
-                                <p className="font-corpo text-[1vw] my-auto text-primary">Finalizar</p>
+                        <div className='mt-[-10vw] md:mt-0'>
+                            <p className='text-primary md:w-[42vw] w-[97vw] md:text-[.7vw] text-[2.5vw] font-corpo md:text-justify text-center md:mx-0 mx-auto'>Caso queira visualizar e/ou corrigir suas respostas, você pode navegar pelos blocos interagindo com os ícones do menu lateral. Ao enviar suas respostas, você concorda com os <a href="#" onClick={() => document.getElementById('modalTermos').showModal()}><u>Termos de Privacidade</u></a>.</p>
+                            <button type="button" onClick={() => document.getElementById('modalConfirmar').showModal()} className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 md:mt-0" >
+                                <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">Finalizar</p>
                                 <CheckIcon size="4vh" weight="thin" className="my-auto text-primary" />
                             </button>
                         </div>
@@ -86,12 +89,12 @@ function App(){
                 </div>
             </form>
             <dialog id="modalTermos" className="modal">
-            <div className="modal-box">
+            <div className="modal-box max-h-[92vh]">
                 <form method="dialog">
                     <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
                 </form>
-                <h3 className="font-title text-[2vw] text-primary">Termos de privacidade</h3>
-                <p className="py-4 text-[1vw] font-corpo text-primary">Ao preencher este formulário, o(a) colaborador(a) desligado(a) concorda com os seguintes termos de uso e privacidade de suas respostas: <br /><br />
+                <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">Termos de privacidade</h3>
+                <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">Ao preencher este formulário, o(a) colaborador(a) desligado(a) concorda com os seguintes termos de uso e privacidade de suas respostas: <br /><br />
                                                 1. Objetivo da Pesquisa <br />
                                                 O objetivo desta pesquisa é coletar feedback honesto e construtivo sobre a experiência do colaborador na empresa (cultura, liderança, processos, remuneração e ambiente de trabalho) para fins de melhoria contínua e retenção de talentos. As informações fornecidas são cruciais para o desenvolvimento organizacional.<br /><br />
                                                 2. Confidencialidade das Respostas<br />
@@ -107,22 +110,22 @@ function App(){
                 <form method="dialog">
                     <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
                 </form>
-                <h3 className="font-title text-[2vw] text-primary">Confirmação</h3>
-                <p className="py-4 text-[1vw] font-corpo text-primary">Você confirma o envio do formulário? Ao enviar o formulário, suas respostas não poderão ser mais editadas </p>
+                <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">Confirmação</h3>
+                <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">Você confirma o envio do formulário? Ao enviar o formulário, suas respostas não poderão ser mais editadas </p>
                 <div className="modal-action">
                 <form method="dialog" className='flex gap-[1vw]'>
-                    <button onClick={enviaDados}className="btn btn-accent text-primary font-corpo text-[.9vw] w-[8vw] h-[6vh]"><PaperPlaneTiltIcon size="2.5vh" weight="thin" />Enviar</button>
-                    <button className="btn btn-outline text-red-400  font-corpo text-[.9vw] w-[8vw] h-[6vh] btn-error">✕ Cancelar</button>
+                    <button onClick={enviaDados}className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[30vw] h-[6vh]"><PaperPlaneTiltIcon size="2.5vh" weight="thin" />Enviar</button>
+                    <button className="btn btn-outline text-red-400  font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[32vw] h-[6vh] btn-error">✕ Cancelar</button>
                 </form>
                 </div>
             </div>
             </dialog> 
         </div>
         
-    const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center mt-[-4vh]'>
-        <h1 className="font-title text-[3.5vw] text-primary mx-auto">Obrigado!</h1>
-        <p className="font-corpo w-[40vw] text-[1vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
-        <button onClick={irParaHome} className="btn btn-accent text-primary font-corpo text-[.9vw] w-[13vw] h-[6vh] mx-auto"><HouseIcon size="2.5vh" weight="thin" />Voltar ao Menu</button>
+    const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[28vh] md:my-0'>
+        <h1 className="font-title md:text-[3.5vw] text-[12vw] text-primary mx-auto">Obrigado!</h1>
+        <p className="font-corpo md:w-[40vw] w-[97vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
+        <button onClick={irParaHome} className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[13vw] w-[40vw] h-[6vh] mx-auto"><HouseIcon size="2.5vh" weight="thin" />Voltar ao Menu</button>
     </div>
 
     return <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : htmlForm} idPag={secao} imagemFundo={imgVet[secao-2]} />;
