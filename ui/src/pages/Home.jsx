@@ -74,7 +74,7 @@ export default () => {
                                 </Squircle>
                             </div>
                         </div>
-                        <div className="mt-[8vh]">
+                        <div className="md:mt-[8vh] mt-[2vh]">
                             <button onClick={avancaPagina} className='flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0'>
                                 <p className='font-corpo md:text-[1vw] text-[2vh] my-auto text-primary'> Continuar </p>
                                 <CaretRightIcon size="3.5vh" weight="thin" className='my-auto text-primary'/>
@@ -87,7 +87,7 @@ export default () => {
                     <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">Pesquisa de offboarding</h1>
                     <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[4vw] md:text-justify text-center text-primary mx-auto md:mx-0">Perfeito! Vamos começar digitando o seu endereço de email preferido ✉️. <br/> Se preferir, você pode logar com contas da Microsoft e Google.</p>
                     <div className='bg-[#1d1d1e] h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
-                    <form action="" className="mt-[3vh] flex flex-col md:gap-[32vh] gap-[36vh]">
+                    <form action="" className="mt-[3vh] flex flex-col md:gap-[32vh] gap-[29vh]">
                         <div> 
                             <InputCurto label="Email" placeholder="Digite o seu email aqui" id="input1" tipo="email"/>
                             <div className='flex gap-[1.5vw] mt-[2vh] justify-center'>

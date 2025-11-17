@@ -68,7 +68,7 @@ function App(){
             <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[3vw] md:text-justify text-center text-primary mx-auto md:mx-0">{categorias[secao-2]}</p>
             <div className='bg-primary h-[.01vh] min-h-[.5px] md:w-[40vw] md:mx-0 mx-auto w-[97vw] mt-[3vh] '/>
             <form action="">
-                <div className='mt-[5vh] md:h-[52vh] h-[60vh] overflow-y-auto md:w-[42vw] w-[97vw] md:mx-0 mx-auto'>
+                <div className='mt-[5vh] md:h-[52vh] h-[57vh] overflow-y-auto md:w-[42vw] w-[97vw] md:mx-0 mx-auto'>
                     <FormRenderer perguntas={perguntas[secao-2]} />
                 </div>
                 <div>
@@ -80,7 +80,7 @@ function App(){
                         :
                         <div className='mt-[-10vw] md:mt-0'>
                             <p className='text-primary md:w-[42vw] w-[97vw] md:text-[.7vw] text-[2.5vw] font-corpo md:text-justify text-center md:mx-0 mx-auto'>Caso queira visualizar e/ou corrigir suas respostas, você pode navegar pelos blocos interagindo com os ícones do menu lateral. Ao enviar suas respostas, você concorda com os <a href="#" onClick={() => document.getElementById('modalTermos').showModal()}><u>Termos de Privacidade</u></a>.</p>
-                            <button type="button" onClick={() => document.getElementById('modalConfirmar').showModal()} className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 md:mt-0" >
+                            <button type="button" onClick={() => document.getElementById('modalConfirmar').showModal()} className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 md:mb-0 md:mt-0" >
                                 <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">Finalizar</p>
                                 <CheckIcon size="4vh" weight="thin" className="my-auto text-primary" />
                             </button>
@@ -122,7 +122,7 @@ function App(){
             </dialog> 
         </div>
         
-    const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[28vh] md:my-0'>
+    const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[22vh] md:my-0'>
         <h1 className="font-title md:text-[3.5vw] text-[12vw] text-primary mx-auto">Obrigado!</h1>
         <p className="font-corpo md:w-[40vw] w-[97vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
         <button onClick={irParaHome} className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[13vw] w-[40vw] h-[6vh] mx-auto"><HouseIcon size="2.5vh" weight="thin" />Voltar ao Menu</button>
