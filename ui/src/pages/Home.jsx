@@ -51,7 +51,7 @@ export default () => {
         const htmlInicio = <div className="mt-[4vh] flex flex-col">
                         <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">Pesquisa de offboarding</h1>
                         <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[4vw] md:text-justify text-center text-primary mx-auto md:mx-0">Sua opinião é muito importante para nós. 💙 <br/> Esta pesquisa nos ajuda a entender melhor sua experiência e a aprimorar continuamente nosso ambiente de trabalho. ✍️</p>
-                        <div className="mt-[2vh] flex flex-col gap-[2.5vh] mx-auto">
+                        <div className="mt-[2vh] flex flex-col gap-[2.5vh] mx-auto md:mx-0">
                             <div className="flex gap-[2.5vh]">
                                 <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
                                     <ClockCountdownIcon size="7vh" weight="thin" className="mx-auto text-primary" />
