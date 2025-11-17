@@ -3,7 +3,7 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #EBEA76 transparent;
+  scrollbar-color: #1968F0 transparent;
 }
 
 @font-face {
@@ -34,21 +34,21 @@
 
 @media (prefers-color-scheme: light) {
       :root{
-            --color-primary: #1d1d1e;       
-            --color-secondary: #dedb184f;   
-            --color-accent: #EBEA76;   
-            --color-base-100: #F8F6EE;      
-            --color-error: #e8083E;  
+            --color-primary: #000000;       
+            --color-secondary: #8ea7d34f;   
+            --color-accent: #1968F0;   
+            --color-base-100: #f0f1f5;      
+            --color-error: #E60F0F;  
       }
 }
 
 @media (prefers-color-scheme: dark) {
       :root {
-            --color-primary: #fdfdfe;       
-            --color-secondary: #d8d7ad4f;   
-            --color-accent: #918f4a;   
-            --color-base-100: #1d1d1e;      
-            --color-error: #ad1135;     
+            --color-primary: #f5f5f5;       
+            --color-secondary: #aabfe24f;   
+            --color-accent: #1968F0;   
+            --color-base-100: #171b24;      
+            --color-error: #AD0B0B;     
       }
 }
 

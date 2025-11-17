@@ -1,4 +1,4 @@
-import estrela from '../assets/Star 1.svg'
+import estrela from '../assets/blip.svg'
 import { useNavigate } from "react-router-dom";
 import {HouseIcon, AtIcon, TargetIcon, UsersThreeIcon, StrategyIcon, TreeStructureIcon, MegaphoneIcon, CrownSimpleIcon, PowerIcon, DotsThreeCircleIcon} from '@phosphor-icons/react';
 
@@ -30,9 +30,7 @@ export default (props) => {
                         <div onClick={() => redirectPagina(4)}className={props.idPag == 4 ? ativo : inativo}><StrategyIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div onClick={() => redirectPagina(5)}className={props.idPag == 5 ? ativo : inativo}><TreeStructureIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div onClick={() => redirectPagina(6)}className={props.idPag == 6 ? ativo : inativo}><MegaphoneIcon size="4vh" weight="thin" className='text-primary' /></div>
-                        <div onClick={() => redirectPagina(7)}className={props.idPag == 7 ? ativo : inativo}><PowerIcon size="4vh" weight="thin" className='text-primary' /></div>
-                        <div onClick={() => redirectPagina(8)}className={props.idPag == 8 ? ativo : inativo}><CrownSimpleIcon size="4vh" weight="thin" className='text-primary' /></div>
-                        <div onClick={() => redirectPagina(9)}className={props.idPag == 9 ? ativo : inativo}><DotsThreeCircleIcon size="4vh" weight="thin" className='text-primary' /></div>
+                        <div onClick={() => redirectPagina(7)}className={props.idPag == 7 ? ativo : inativo}><DotsThreeCircleIcon size="4vh" weight="thin" className='text-primary' /></div>
                     </div>
                 </div>
                 <div className='md:w-[.01vw] md:h-[90vh] h-[.1vh] w-screen bg-primary min-w-[.5px] hidden md:block'></div>

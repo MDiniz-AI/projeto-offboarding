@@ -72,7 +72,7 @@ function App(){
                     <FormRenderer perguntas={perguntas[secao-2]} />
                 </div>
                 <div>
-                    {secao < 9 ?
+                    {secao < 7 ?
                         <button type="button" onClick={avancaPasso} className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 mt-[2vh]" >
                             <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">Continuar</p>
                             <CaretRightIcon size="4vh" weight="thin" className="my-auto text-primary" />
@@ -97,7 +97,7 @@ function App(){
     </div>
 
     return <>
-        <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : htmlForm} idPag={secao} imagemFundo={imgVet[secao-2]} />;
+        <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : htmlForm} idPag={secao} imagemFundo={imgVet[secao-2]} />
         <dialog id="modalTermos" className="modal">
             <div className="modal-box max-h-[92vh]">
                 <div className='flex gap-[5vw]'>
