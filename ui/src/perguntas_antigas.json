@@ -1,0 +1,52 @@
+[[
+    {"question": "Qual é a sua opinião sobre o clima organizacional de sua equipe/time?", "type":3, "option":null}, 
+    {"question": "Você se sentia valorizado pelas suas contribuições e entregas?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Você se sentia ouvido e reconhecido?", "type":2, "option":["opc1","opc2"]}, 
+    {"question": "O que mais te motivou a aceitar a proposta inicial para trabalhar aqui?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Qual é a sua opinião sobre o pacote de salário e benefícios oferecido pela empresa (em comparação com o mercado)?", "type":3, "option":null},
+    {"question": "Ainda sobre pacote de salário e benefícios, o que poderia melhorar?", "type":0, "option":null},
+    {"question": "Como descreveria sua experiência geral na empresa?", "type":3, "option":null},
+    {"question": "Se tivesse que resumir em uma palavra o que é trabalhar aqui, qual seria?", "type":0, "option":null},
+    {"question": "Há alguma justificativa para a escolha dessa palavra?", "type":1, "option":null}
+],[
+    {"question": "O que mais te orgulhava na cultura da empresa?", "type":2, "option":["opc1","opc2"]}, 
+    {"question": "Que comportamentos ou práticas você acha que enfraquecem a cultura na prática?", "type":2, "option":["opc1","opc2"]}, 
+    {"question": "Como os valores da empresa são vividos de forma coerente pelas lideranças?", "type":3}, 
+    {"question": "Quais valores poderiam ser mais coerentes?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Se pudesse mudar um elemento da cultura, qual seria?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Poderia Justificar?", "type":1, "option":null}
+],[
+    {"question": "Como você avaliaria a qualidade da liderança direta?", "type":3},
+    {"question": "Há algo que poderia melhorar?", "type":0, "option":null},
+    {"question": "Como você avaliaria a qualidade do seu Officer (CTO, CFO, CHRO...)?", "type":3},
+    {"question": "Há algo que poderia melhorar?", "type":0, "option":null},
+    {"question": "Há algo que a empresa deveria desenvolver nos líderes para evitar perdas futuras de talentos?", "type":0, "option":null}
+],[
+    {"question": "Como você avaliaria a clareza nos caminhos de crescimento?", "type":3},
+    {"question": "Há algo que poderia melhorar?", "type":0, "option":null},
+    {"question": "Como você avaliaria a qualidade de seus treinamentos e suporte?", "type":3},
+    {"question": "O que pode ser trabalhado para uma futura melhoria?", "type":0, "option":null},
+    {"question": "Como você avaliaria o alinhamento das atividades diárias com seus objetivos de carreira?", "type":3},
+    {"question": "Há algo que poderia melhorar?", "type":0, "option":null},
+    {"question": "De que maneira a estrutura organizacional favorecia sua autonomia e performance?", "type":3},
+    {"question": "Como a estrutura poderia ser otimizada?", "type":0, "option":null}
+],[
+    {"question": "Como você avaliaria a transparência nas decisões importantes", "type":3},
+    {"question": "Como você sugere melhorar essa percepção?", "type":0, "option":null},
+    {"question": "Há algo na forma como as decisões são tomadas que prejudicam a eficiência ou o moral da equipe?", "type":0, "option":null}
+],[
+    {"question": "Em que momento você começou a pensar em sair?", "type":0, "option":null},
+    {"question": "Sua decisão de sair está ligada a uma nova proposta de trabalho?", "type":2, "option":["Sim", "Não"]},
+    {"question": "O que o(a) novo(a) empregador(a) ofereceu que nós não oferecemos?", "type":2, "option":["opc1","opc2"]},
+    {"question": "O que mais pesou na decisão de aceitar a nova proposta?", "type":2, "option":["opc1","opc2"]},
+    {"question": "O que precisaria mudar para que você considerasse seriamente um retorno em 2 a 3 anos?", "type":0, "option":null}
+],[
+    {"question": "Qual é o maior ponto cego ou risco estratégico que a empresa/área não está endereçando adequadamente hoje?", "type":2, "option":["Sim", "Não"]},
+    {"question": "O que, na cultura interna de liderança, dificultava sua capacidade de reter ou desenvolver talentos na sua equipe?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Qual foi o maior obstáculo interno (estrutura, processo ou cultura) que impediu você ou sua área de ter um desempenho excepcional?", "type":2, "option":["opc1","opc2"]},
+    {"question": "Se você pudesse mudar uma decisão estratégica que tomamos nos últimos 12 meses, qual seria e por quê?", "type":0, "option":null}
+
+],[
+    {"question": "Se pudesse dar um conselho direto ao CEO e à alta liderança, qual seria?", "type":0, "option":null},
+    {"question": "Gostaria de dizer/adicionar algo que ainda não foi perguntado?", "type":1, "option":null}
+]]
