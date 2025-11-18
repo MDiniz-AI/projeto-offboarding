@@ -15,13 +15,17 @@ const Pergunta = sequelize.define(
       allowNull: false,
     },
     categoria: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(100), 
       allowNull: false,
     },
     tipo_resposta: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.INTEGER, 
       allowNull: false,
     },
+    opcoes: {
+      type: DataTypes.JSON, 
+      allowNull: true,      
+    }
   },
   {
     tableName: "pergunta",

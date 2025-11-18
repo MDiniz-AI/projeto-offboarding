@@ -9,10 +9,21 @@ import {
 
 const router = express.Router();
 
-router.post("/pergunta", criarPergunta);
-router.get("/perguntas", listarPerguntas);
-router.get("/perguntas/:id", buscarPergunta);
-router.put("/pergunta/:id", atualizarPergunta);
-router.delete("/perguntas/:id", deletarPergunta);
+// ---- Rotas Padrão REST ----
+
+// GET /api/perguntas
+router.get("/", listarPerguntas); 
+
+// POST /api/perguntas
+router.post("/", criarPergunta);
+
+// GET /api/perguntas/:id
+router.get("/:id", buscarPergunta);
+
+// PUT /api/perguntas/:id
+router.put("/:id", atualizarPergunta);
+
+// DELETE /api/perguntas/:id
+router.delete("/:id", deletarPergunta);
 
 export default router;
