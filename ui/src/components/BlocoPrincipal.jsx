@@ -5,7 +5,7 @@ import {HouseIcon, AtIcon, TargetIcon, UsersThreeIcon, StrategyIcon, TreeStructu
 
 export default (props) => {
     const ativo = "bg-accent px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
-    const inativo = "bg-secondary px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
+    const inativo = "bg-secondary/30 px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
     const navigate = useNavigate();
 
     function redirectPagina(numPag){

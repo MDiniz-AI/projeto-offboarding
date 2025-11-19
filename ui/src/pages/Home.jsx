@@ -53,22 +53,22 @@ export default () => {
                         <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[4vw] md:text-justify text-center text-primary mx-auto md:mx-0">Sua opinião é muito importante para nós. 💙 <br/> Esta pesquisa nos ajuda a entender melhor sua experiência e a aprimorar continuamente nosso ambiente de trabalho. ✍️</p>
                         <div className="mt-[2vh] flex flex-col gap-[2.5vh] mx-auto md:mx-0">
                             <div className="flex gap-[2.5vh]">
-                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
                                     <ClockCountdownIcon size="7vh" weight="thin" className="mx-auto text-primary" />
                                     <p className="font-corpo text-[2vh] mx-auto text-primary">Leva 10 Minutos</p>
                                 </Squircle>
-                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
                                     <LockSimpleIcon size="7vh" weight="thin" className="mx-auto text-primary" />
                                     <p className="font-corpo text-[2vh] mx-auto text-primary text-center">Anonimização de respostas</p>
                                 </Squircle>
                             </div>
                             
                             <div className="flex gap-[2.5vh]">
-                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
                                     <LegoSmileyIcon size="7vh" weight="thin" className="mx-auto text-primary" />
                                     <p className="font-corpo text-[2vh] mx-auto text-primary">Promove melhorias</p>
                                 </Squircle>
-                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
                                     <ChartLineIcon size="7vh" weight="thin" className="mx-auto text-primary" />
                                     <p className="font-corpo text-[2vh] mx-auto text-primary text-center">Identifica tendências</p>
                                 </Squircle>
@@ -91,8 +91,8 @@ export default () => {
                         <div> 
                             <InputCurto label="Email" placeholder="Digite o seu email aqui" id="input1" tipo="email"/>
                             <div className='flex gap-[1.5vw] mt-[2vh] justify-center'>
-                                <button><img src={GoogleLogo} alt="Logo do google" className='md:w-[3.2vw] w-[13vw] bg-secondary p-[1.8vh] rounded-xl'/></button>
-                                <button><img src={MicrosoftLogo} alt="Logo da Microsoft" className='md:w-[3.2vw] w-[13vw] bg-secondary p-[1.8vh] rounded-xl'/></button>
+                                <button><img src={GoogleLogo} alt="Logo do google" className='md:w-[3.2vw] w-[13vw] bg-secondary/30 p-[1.8vh] rounded-xl'/></button>
+                                <button><img src={MicrosoftLogo} alt="Logo da Microsoft" className='md:w-[3.2vw] w-[13vw] bg-secondary/30 p-[1.8vh] rounded-xl'/></button>
                             </div>
                         </div>
                         <button onClick={irParaForm} className='flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 md:mt-0 mt-[1vh]'>
