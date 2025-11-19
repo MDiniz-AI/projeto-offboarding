@@ -52,5 +52,10 @@
       }
 }
 
+@layer components {
+  .select-option {
+    @apply text-black;
+  }
+}
 
 
