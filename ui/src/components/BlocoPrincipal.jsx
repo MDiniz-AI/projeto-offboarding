@@ -5,7 +5,7 @@ import {HouseIcon, AtIcon, TargetIcon, UsersThreeIcon, StrategyIcon, TreeStructu
 
 export default (props) => {
     const ativo = "bg-accent px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
-    const inativo = "bg-secondary px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
+    const inativo = "bg-secondary/30 px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
     const navigate = useNavigate();
 
     function redirectPagina(numPag){
@@ -20,9 +20,9 @@ export default (props) => {
                     {props.codigo}
                 </div>
                 <div className='md:w-[.01vw] md:h-[90vh] h-[.1vh] w-screen bg-primary min-w-[.5px] md:hidden'></div>
-                <div className='flex md:flex-col md:w-[7vw] md:gap-[12vh] gap-[5vw] overflow-x-scroll overflow-y-hidden md:overflow-hidden mb-[2vh] md:mb-0 h-[15vh] md:h-full'>
+                <div className='flex md:flex-col md:w-[7vw] overflow-x-scroll overflow-y-hidden md:overflow-hidden mb-[2vh] md:mb-0 h-[15vh] md:h-full'>
                     <img src={estrela} alt="simbolo estrela" className='ml-[2vw] w-[6vh] h-[6vh]'/>
-                    <div className='flex md:flex-col gap-[1vh] ml-[2vw]'>
+                    <div className='flex md:flex-col gap-[1vh] ml-[2vw] fixed bottom-[7vh]'>
                         <div onClick={() => redirectPagina(0)}className={props.idPag == 0 ? ativo : inativo}><HouseIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div onClick={() => redirectPagina(1)}className={props.idPag == 1 ? ativo : inativo}><AtIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div onClick={() => redirectPagina(2)}className={props.idPag == 2 ? ativo : inativo}><TargetIcon size="4vh" weight="thin" className='text-primary' /></div>
