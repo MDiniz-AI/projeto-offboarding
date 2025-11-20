@@ -10,13 +10,34 @@ const Resposta = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
-    resposta_texto: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
+
     resposta_valor: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING, 
+      allowNull: true,
+    },
+    
+    texto_resposta: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    // FK da pergunta
+    id_pergunta: {
+      type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: "pergunta",
+        key: "id_pergunta",
+      },
+    },
+
+    // FK da entrevista
+    id_entrevista: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "entrevista",
+        key: "id_entrevista",
+      },
     },
   },
   {

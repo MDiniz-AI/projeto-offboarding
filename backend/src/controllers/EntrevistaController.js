@@ -8,27 +8,29 @@ import {
 
   // GET /entrevistas
   export const listarEntrevistas = async (req, res) => {
-    try {
-      const entrevistas = await Entrevista.findAll({
-        include: [
-          {
-            model: Usuario,
-            attributes: ["nome_completo", "cargo", "departamento"], 
-          },
-          {
-            model: Resposta,
-            attributes: ["id_pergunta", "resposta_texto", "resposta_valor"],
-          },
-        ],
-        order: [["data_entrevista", "DESC"]],
-      });
-      return res.status(200).json(entrevistas);
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ error: "Erro ao listar entrevistas.", details: error.message });
-    }
-  };
+  try {
+    const entrevistas = await Entrevista.findAll({
+      include: [
+        {
+          model: Usuario,
+          attributes: ["nome_completo", "cargo", "departamento"], 
+        },
+        {
+          model: Resposta,
+          attributes: ["id_pergunta", "texto_resposta", "resposta_valor"],
+        },
+      ],
+      order: [["data_entrevista", "DESC"]],
+    });
+
+    return res.status(200).json(entrevistas);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Erro ao listar entrevistas.",
+      details: error.message,
+    });
+  }
+};
 
 
 // GET /entrevistas/:id
@@ -77,6 +79,8 @@ export const criarEntrevistaComRespostas = async (req, res) => {
             resposta_texto: resp.resposta_texto,
             resposta_valor: resp.resposta_valor,
         }));
+
+        console.log(respostas)
 
         await Resposta.bulkCreate(respostasParaCriar, { transaction: t });
 

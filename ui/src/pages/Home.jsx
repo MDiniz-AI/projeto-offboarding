@@ -1,6 +1,7 @@
 import BlocoPrincipal from "../components/BlocoPrincipal"
 import {ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { Squircle } from 'corner-smoothing';
+import api from '../lib/api'
 import { createContext, useContext, useState, useEffect } from "react";
 import InputCurto from "../components/InputCurto";
 import GoogleLogo from '../assets/Google__G__logo.svg'
@@ -10,10 +11,10 @@ import imgFundoLog from '../assets/fundo-pg2.webp'
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 
-
-export const Contexto = createContext();
+import { Contexto } from "../pages/Form.jsx";
 
 export default () => {
+
 
     const [searchParams, setSearchParams] = useSearchParams();
     let secaoQuery = Number(searchParams.get("secao") == null ? null : searchParams.get("secao"));
@@ -29,6 +30,14 @@ export default () => {
         setPagAtual(novaSecao ?? 0);
     }, [searchParams]);
 
+    const [respostas, setRespostas] = useState({});
+
+    function atualizarResposta(id, texto, valor) {
+        setRespostas(prev => ({
+            ...prev,
+            [id]: { resposta_texto: texto, resposta_valor: valor }
+        }));
+    }
 
     function avancaPagina(){
         setPagAtual(pagAtual + 1)
@@ -39,7 +48,7 @@ export default () => {
     }
 
     return(
-        <Contexto.Provider value={{ pagAtual }}>
+        <Contexto.Provider value={{ pagAtual, atualizarResposta, respostas }}>
                     <App />
         </Contexto.Provider>
     )

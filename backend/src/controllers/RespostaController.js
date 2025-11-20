@@ -29,11 +29,15 @@ export const salvarRespostas = async (req, res) => {
     }
 
     // 3. Cria a "Entrevista" (a sessão de respostas)
-    const novaEntrevista = await Entrevista.create(
-      { id_usuario: id_usuario },
+      const novaEntrevista = await Entrevista.create(
+      { 
+        id_usuario: id_usuario,
+        status_entrevista: 'concluído'
+      },
       { transaction: t }
     );
 
+   // console.log(novaEntrevista)
     // 4. Pega o ID da entrevista recém-criada
     const id_entrevista_criada = novaEntrevista.id_entrevista;
 

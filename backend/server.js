@@ -18,12 +18,13 @@ connectDB().then(() => {
   console.log('Banco de dados conectado, verificando seed...');
   seedPerguntas(); // <== 2. CHAMAR A FUNÇÃO AQUI
 });
-// --- FIM DA MUDANÇA ---
+
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 
 // Rotas (sem mudança)
 app.use('/api/entrevistas', entrevistaRoutes);
