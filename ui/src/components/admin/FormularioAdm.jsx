@@ -6,6 +6,12 @@ import PerguntasEdit from './PerguntasEdit';
 
 export default () => {
 
+    const [perg, setPerg] = useState([""]);
+
+    function adicionarPerg() {
+            setPerg((prev) => [...prev, ""]); // adiciona mais um vazio
+    }
+
     const objFormulario = {
         nomeCategoria: "Salário e Benefícios",
         valorScore: 0.5,
@@ -104,13 +110,15 @@ export default () => {
                 <div className="mt-[2vh]">
                     <div className="flex flex-row gap-[68vw]">
                         <h2 className="font-title md:text-[1.7vw] text-[6vw] text-primary mt-5">Perguntas</h2>
-                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[1vh]">
+                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[1vh]" onClick={adicionarPerg}>
                             <PlusIcon size="4vh" weight="thin" className="my-auto" />
                             <p className="text-primary font-corpo my-auto">Adicionar</p>
                         </Squircle>
                     </div>
                     <div>
-                        <PerguntasEdit />
+                        {perg.map((valor, index) => (
+                            <PerguntasEdit />
+                        ))}
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import InputCurto from "../InputCurto.jsx"
 import InputLongo from "../InputLongo.jsx"
 import Seletor from "../Seletor.jsx"
-import { CaretDownIcon, FloppyDiskIcon, PlusIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, FloppyDiskIcon, PlusIcon, TrashIcon } from "@phosphor-icons/react";
 import { createContext, useContext, useState, useEffect } from 'react'
 import { Squircle } from "corner-smoothing"; 
 
@@ -57,10 +57,17 @@ export default (props) => {
                         </div>
                     )}
                 </div>
-                <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[2vh] mx-auto">
-                    <FloppyDiskIcon size="4vh" weight="thin" className="my-auto" />
-                    <p className="text-primary font-corpo my-auto">Salvar</p>
-                </Squircle>
+                <div className="flex gap-[1vw] mx-auto justify-center">
+                    <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[2vh]">
+                        <FloppyDiskIcon size="4vh" weight="thin" className="my-auto" />
+                        <p className="text-primary font-corpo my-auto">Salvar</p>
+                    </Squircle>
+                    <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[2vh]">
+                        <TrashIcon size="4vh" weight="thin" className="my-auto" />
+                        <p className="text-primary font-corpo my-auto">Apagar</p>
+                    </Squircle>
+                </div>
+                
 
             </Squircle>}
         </div>
