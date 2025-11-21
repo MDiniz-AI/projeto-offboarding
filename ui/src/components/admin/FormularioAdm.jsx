@@ -6,47 +6,18 @@ import { CaretDownIcon, DotsThreeIcon, PlusIcon } from "@phosphor-icons/react";
 import PerguntasEdit from "./PerguntasEdit";
 
 export default () => {
-  const objFormulario = {
-    nomeCategoria: "Salário e Benefícios",
-    valorScore: 0.5,
-    valorInten: 0.75,
-  };
 
-     const perguntas = JSON_DO_FRONT; 
+    const [perg, setPerg] = useState([""]);
 
-    const [perguntasDaCategoria, setPerguntasDaCategoria] = useState([]);
-
-    function abrirModal() {
-        const lista = perguntas.filter(p => p.categoria === objFormulario.nomeCategoria);
-        setPerguntasDaCategoria(lista);
-        document.getElementById('modalEdicao').showModal();
+    function adicionarPerg() {
+            setPerg((prev) => [...prev, ""]); // adiciona mais um vazio
     }
 
-  async function enviarPerguntas() {
-    const respostasMapeadas = perguntas.flat(Infinity).map((p) => ({
-      id_pergunta: p.id,
-      texto_resposta: p.resposta_texto ?? "",
-      resposta_valor: p.resposta_valor ?? null,
-    }));
-
-    const payload = {
-      id_usuario: 1,
-      respostas: respostasMapeadas,
-    };
-
-    console.log("Payload final enviado:", payload);
-
-    try {
-      const response = await api.post("/respostas/", payload);
-
-      console.log("Enviado com sucesso:", response.data);
-
-      enviaDados();
-    } catch (err) {
-      console.error("Erro ao enviar:", err);
-      alert("Erro ao enviar respostas.");
+    const objFormulario = {
+        nomeCategoria: "Salário e Benefícios",
+        valorScore: 0.5,
+        valorInten: 0.75,
     }
-  }
 
   const getBgClass = (valor) => {
     if (valor > 0.9) return "#277CDD";
@@ -58,34 +29,21 @@ export default () => {
     return "#1E1E1E";
   };
 
-  return (
-    <div>
-      <div>
-        <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">
-          Formulário
-        </h1>
-        <div className="flex flex-row flex-wrap gap-[1vw]">
-          <Squircle
-            className="bg-secondary/30 w-[30vw] h-[35vh] px-[1.2vw] py-[1vh] flex-col"
-            cornerRadius={20}
-            cornerSmoothing={1}
-          >
-            <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">
-              Salário e Benefícios
-            </h2>
-            <div className="flex flex-row gap-[2vw]">
-              <div>
-                <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl">
-                  <div
-                    className="h-full rounded-xl"
-                    style={{
-                      width: `calc(${objFormulario.valorScore} * 12.5vw)`,
-                      backgroundColor: `${getBgClass(
-                        objFormulario.valorScore
-                      )}`,
-                    }}
-                  />
-                  {/* 0.10 ou menos -> pessimo
+
+    return (<div>
+        <div>
+            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Formulário</h1>
+            <div className="flex flex-row flex-wrap gap-[1vw]">    
+                <Squircle className="bg-secondary/30 w-[30vw] h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
+                    <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">{objFormulario.nomeCategoria}</h2>
+                    <div className="flex flex-row gap-[2vw]">
+                        <div>
+                            <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl"> 
+                                <div className="h-full rounded-xl" style={{ 
+                                    width: `calc(${objFormulario.valorScore} * 12.5vw)`, 
+                                    backgroundColor: `${getBgClass(objFormulario.valorScore)}` 
+                                    }} />
+                                    {/* 0.10 ou menos -> pessimo
                                     0.10 a 0.25 -> muito ruim
                                     0.25 a 0.4 -> ruim
                                     0.4 a 0.6 -> regular
@@ -163,63 +121,36 @@ export default () => {
                                     0.6 a 0.75 -> bom
                                     0.75 a 0.9 -> muito bom
                                     acima de 0.9 -> perfeito */}
-                <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">
-                  {objFormulario.valorScore}
-                </p>
-              </div>
-              <p className="text-primary text-center font-corpo text-[1vw]">
-                Score Médio
-              </p>
+                                <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{objFormulario.valorScore}</p>
+                            </div>
+                            <p className="text-primary text-center font-corpo text-[1vw]">Score Médio</p>
+                        </div>
+                        <div>
+                            <div className="w-[42vw] h-[7vh] bg-secondary/60 rounded-xl"> 
+                                <div className="h-full rounded-xl" style={{ 
+                                    width: `calc(${objFormulario.valorInten} * 42vw)`, 
+                                    backgroundColor: `${getBgClass(objFormulario.valorInten)}`
+                                }} />
+                                <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{objFormulario.valorInten}</p>
+                            </div>
+                            <p className="text-primary text-center font-corpo text-[1vw]">Intensidade Média</p>
+                        </div>
+                    </div>
+                <div className="mt-[2vh]">
+                    <div className="flex flex-row gap-[68vw]">
+                        <h2 className="font-title md:text-[1.7vw] text-[6vw] text-primary mt-5">Perguntas</h2>
+                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[1vh]" onClick={adicionarPerg}>
+                            <PlusIcon size="4vh" weight="thin" className="my-auto" />
+                            <p className="text-primary font-corpo my-auto">Adicionar</p>
+                        </Squircle>
+                    </div>
+                    <div>
+                        {perg.map((valor, index) => (
+                            <PerguntasEdit />
+                        ))}
+                    </div>
+                </div>
             </div>
-            <div>
-              <div className="w-[42vw] h-[7vh] bg-secondary/60 rounded-xl">
-                <div
-                  className="h-full rounded-xl"
-                  style={{
-                    width: `calc(${objFormulario.valorInten} * 42vw)`,
-                    backgroundColor: `${getBgClass(objFormulario.valorInten)}`,
-                  }}
-                />
-                <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">
-                  {objFormulario.valorInten}
-                </p>
-              </div>
-              <p className="text-primary text-center font-corpo text-[1vw]">
-                Intensidade Média
-              </p>
-            </div>
-          </div>
-          <div className="mt-[2vh]">
-            <div className="flex flex-row gap-[68vw]">
-              <h2 className="font-title md:text-[1.7vw] text-[6vw] text-primary mt-5">
-                Perguntas
-              </h2>
-              <Squircle
-                cornerRadius={10}
-                cornerSmoothing={1}
-                className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[1vh]"
-              >
-                <PlusIcon size="4vh" weight="thin" className="my-auto" />
-                <p className="text-primary font-corpo my-auto">Adicionar</p>
-              </Squircle>
-            </div>
-            <div>
-              {/* <PerguntasEdit /> */}
-              <div>
-                {perguntasDaCategoria.map((p, index) => (
-                  <PerguntasEdit
-                    key={p.id_pergunta}
-                    pergunta={p}
-                    onSalvar={(perguntaEditada) =>
-                      atualizarPergunta(perguntaEditada)
-                    }
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </dialog>
-    </div>
-  );
-};
+        </dialog>
+    </div>)
+}
