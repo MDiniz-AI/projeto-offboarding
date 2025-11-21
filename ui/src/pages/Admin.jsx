@@ -2,6 +2,7 @@ import BlocoPrincipalAdm from "../components/admin/BlocoPrincipalAdm.jsx"
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom";
 import FormularioAdm from "../components/admin/FormularioAdm.jsx";
+import Colaboradores from "../components/admin/Colaboradores.jsx";
 
 
 export const Contexto = createContext();
@@ -31,8 +32,10 @@ export default() => {
         const { pagAtual } = useContext(Contexto);
 
         const htmlForm = <div>
-                <FormularioAdm />
-                <BlocoPrincipalAdm pagina={4}/>
+            <div className="ml-[7vw]">
+                { pagAtual == 2 ? <Colaboradores /> : pagAtual == 4 ? <FormularioAdm /> : null}
+            </div>
+                <BlocoPrincipalAdm pagina={pagAtual}/>
         </div>
         
 

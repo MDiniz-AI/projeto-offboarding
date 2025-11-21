@@ -24,7 +24,7 @@ export default () => {
 
 
     return (<div>
-        <div className="ml-[7vw]">
+        <div>
             <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Formulário</h1>
             <div className="flex flex-row flex-wrap gap-[1vw]">    
                 <Squircle className="bg-secondary/30 w-[30vw] h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
