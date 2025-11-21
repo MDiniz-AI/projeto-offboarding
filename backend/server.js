@@ -9,8 +9,11 @@ import entrevistaRoutes from './src/routes/EntrevistaRoutes.js';
 import userRoutes from './src/routes/UserRoutes.js';
 import perguntaRoutes from './src/routes/PerguntaRoutes.js';
 import respostaRoutes from './src/routes/RespostaRoutes.js';
+import authRoutes from './src/routes/AuthRoutes.js';
 
 dotenv.config();
+console.log("DEBUG FRONT_URL =", process.env.FRONT_URL);
+
 
 // Garante que o seed só rode DEPOIS que o banco conectar
 connectDB().then(() => {
@@ -31,6 +34,7 @@ app.use('/api/entrevistas', entrevistaRoutes);
 app.use('/api/usuarios', userRoutes);
 app.use('/api/perguntas', perguntaRoutes);
 app.use('/api/respostas', respostaRoutes);
+app.use('/api/auth', authRoutes);
 // Adicionar a rota de Análise de Sentimento quando ela estiver pronta
 
 const PORT = process.env.PORT || 5001;
