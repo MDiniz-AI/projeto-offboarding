@@ -28,20 +28,14 @@ export default(props) => {
                         <UserListIcon size="4vh" weight="thin" className='text-primary w-[2vw] h-[3vh] my-auto mx-[.5vw]' />
                     </Squircle>
                     <Squircle onClick={() => {redirectPagina(3)}}className={props.pagina == 3 ? ativo : inativo} cornerRadius={15} cornerSmoothing={1}>
-                        <ChartLineIcon size="4vh" weight="thin" className='text-primary w-[2vw] h-[3vh] my-auto mx-[.5vw]' />
-                    </Squircle>
-                    <Squircle onClick={() => {redirectPagina(4)}}className={props.pagina == 4 ? ativo : inativo} cornerRadius={15} cornerSmoothing={1}>
                         <FileTextIcon size="4vh" weight="thin" className='text-primary w-[2vw] h-[3vh] my-auto mx-[.5vw]' />
                     </Squircle>
-                    <Squircle onClick={() => {redirectPagina(5)}}className={props.pagina == 5 ? ativo : inativo} cornerRadius={15} cornerSmoothing={1}>
+                    <Squircle onClick={() => {redirectPagina(4)}}className={props.pagina == 4 ? ativo : inativo} cornerRadius={15} cornerSmoothing={1}>
                         <GearIcon size="4vh" weight="thin" className='text-primary w-[2vw] h-[3vh] my-auto mx-[.5vw]' />
                     </Squircle>
                 </div>
                 <div className="flex flex-col gap-[1.5vh] mt-auto">
-                    <Squircle onClick={() => {redirectPagina(6)}}className={props.pagina == 6 ? ativo : inativo} cornerRadius={15} cornerSmoothing={1}>
-                        <UserCircleIcon size="4vh" weight="thin" className='text-primary w-[2vw] h-[3vh] my-auto mx-[.5vw]' />
-                    </Squircle>
-                    <Squircle onClick={() => {redirectPagina(7)}}className={props.pagina == 7 ? ativo : inativo} cornerRadius={15} cornerSmoothing={1}>
+                    <Squircle onClick={() => {redirectPagina(5)}}className={props.pagina == 5 ? ativo : inativo} cornerRadius={15} cornerSmoothing={1}>
                         <SignOutIcon size="4vh" weight="thin" className='text-primary w-[2vw] h-[3vh] my-auto mx-[.5vw]' />
                     </Squircle>
                 </div>
