@@ -1,20 +1,22 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET 
+const JWT_SECRET = process.env.JWT_SECRET;
 
-export const authenticate = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+export const verifyTempToken = (req, res, next) => {
+    const token = req.params.token;
 
-    if (!authHeader)
+    if (!token) {
         return res.status(401).json({ error: "Token não fornecido." });
-
-    const [, token] = authHeader.split(" ");
+    }
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        req.userId = decoded.id; 
+
+       
+        req.user = decoded;
+
         next();
     } catch (error) {
-        return res.status(401).json({ error: "Token inválido." });
+        return res.status(401).json({ error: "Token inválido ou expirado." });
     }
 };
