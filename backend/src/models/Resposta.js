@@ -12,10 +12,10 @@ const Resposta = sequelize.define(
     },
 
     resposta_valor: {
-      type: DataTypes.STRING, 
+      type: DataTypes.INTEGER, 
       allowNull: true,
     },
-    
+
     texto_resposta: {
       type: DataTypes.TEXT,
       allowNull: true,

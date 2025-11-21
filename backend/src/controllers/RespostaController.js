@@ -16,56 +16,50 @@ import { sequelize, Entrevista, Pergunta, Resposta } from '../models/Relations.j
  * }
  */
 export const salvarRespostas = async (req, res) => {
-  // 1. Inicia a transação
   const t = await sequelize.transaction();
 
   try {
-    // 2. Pega os dados do frontend
     const { id_usuario, respostas } = req.body;
+
+    console.log("Respostas recebidas:", respostas);
 
     if (!id_usuario || !respostas || !Array.isArray(respostas) || respostas.length === 0) {
       await t.rollback();
-      return res.status(400).json({ msg: "Dados inválidos. id_usuario e array de respostas são obrigatórios." });
+      return res.status(400).json({ msg: "Dados inválidos. id_usuario e respostas obrigatórios." });
     }
 
-    // 3. Cria a "Entrevista" (a sessão de respostas)
-      const novaEntrevista = await Entrevista.create(
-      { 
-        id_usuario: id_usuario,
-        status_entrevista: 'concluído'
-      },
+    const novaEntrevista = await Entrevista.create(
+      { id_usuario, status_entrevista: "concluído" },
       { transaction: t }
     );
 
-   // console.log(novaEntrevista)
-    // 4. Pega o ID da entrevista recém-criada
     const id_entrevista_criada = novaEntrevista.id_entrevista;
 
-    // 5. Prepara o array de Respostas para o bulkCreate
-    const respostasParaSalvar = respostas.map(r => ({
-      texto_resposta: r.texto_resposta,
+    const respostasParaSalvar = respostas.map((r) => ({
       id_pergunta: r.id_pergunta,
-      id_entrevista: id_entrevista_criada
+      id_entrevista: id_entrevista_criada,
+      texto_resposta: r.texto_resposta || null,
+      resposta_valor: r.resposta_valor ?? null,
     }));
 
-    // 6. Salva TODAS as respostas de uma vez
+    console.log("Respostas que serão salvas:", respostasParaSalvar);
+
     await Resposta.bulkCreate(respostasParaSalvar, { transaction: t });
 
-    // 7. Se tudo deu certo, confirma a transação
     await t.commit();
 
-    res.status(201).json({ 
-      msg: "Entrevista salva com sucesso!", 
-      entrevistaId: id_entrevista_criada 
+    return res.status(201).json({
+      msg: "Entrevista salva com sucesso!",
+      entrevistaId: id_entrevista_criada,
     });
 
   } catch (error) {
-    // 8. Se algo deu errado, desfaz tudo (Rollback)
     await t.rollback();
-    console.error('Erro ao salvar entrevista:', error.message);
-    res.status(500).json({ msg: 'Erro no servidor ao salvar respostas.' });
+    console.error("Erro ao salvar entrevista:", error);
+    res.status(500).json({ msg: "Erro no servidor ao salvar respostas." });
   }
 };
+
 
 
 // ---- SEU CÓDIGO (CRUD DE LEITURA E DELEÇÃO) ----

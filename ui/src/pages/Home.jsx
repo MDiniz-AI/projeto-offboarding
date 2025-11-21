@@ -1,7 +1,6 @@
 import BlocoPrincipal from "../components/BlocoPrincipal"
 import {ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { Squircle } from 'corner-smoothing';
-import api from '../lib/api'
 import { createContext, useContext, useState, useEffect } from "react";
 import InputCurto from "../components/InputCurto";
 import GoogleLogo from '../assets/Google__G__logo.svg'
@@ -30,14 +29,6 @@ export default () => {
         setPagAtual(novaSecao ?? 0);
     }, [searchParams]);
 
-    const [respostas, setRespostas] = useState({});
-
-    function atualizarResposta(id, texto, valor) {
-        setRespostas(prev => ({
-            ...prev,
-            [id]: { resposta_texto: texto, resposta_valor: valor }
-        }));
-    }
 
     function avancaPagina(){
         setPagAtual(pagAtual + 1)
@@ -48,7 +39,7 @@ export default () => {
     }
 
     return(
-        <Contexto.Provider value={{ pagAtual, atualizarResposta, respostas }}>
+        <Contexto.Provider value={{ pagAtual }}>
                     <App />
         </Contexto.Provider>
     )

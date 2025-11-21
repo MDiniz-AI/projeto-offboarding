@@ -16,6 +16,8 @@ export default (props) => {
     }
 
 
+
+
     return <div>
             <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-auto h-[10vh] mt-[1vh] px-[2vw]">
                 <p className="text-primary font-corpo my-auto w-[82vw]">Pergunta 1 gdfhjkldfkg hhjklçdfglhkdfghkldfghklhkdfghkldfghlkhkldfghkldfghksgkldjkglkdfhklhglfkdhjgkldf hgjlj dfsgçolçdfghldf hkglç j?????</p>
