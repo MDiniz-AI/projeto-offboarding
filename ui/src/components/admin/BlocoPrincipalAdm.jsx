@@ -1,5 +1,5 @@
 import { Squircle } from "corner-smoothing";
-import Logo from '../assets/blip.svg?react'
+import Logo from '../../assets/blip.svg?react'
 import { SignOutIcon, HouseIcon, UsersThreeIcon, UserListIcon, ChartLineIcon, FileTextIcon, GearIcon, UserCircleIcon } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 
