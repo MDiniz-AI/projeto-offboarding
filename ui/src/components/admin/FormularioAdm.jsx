@@ -34,7 +34,7 @@ export default () => {
             <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Formulário</h1>
             <div className="flex flex-row flex-wrap gap-[1vw]">    
                 <Squircle className="bg-secondary/30 w-[30vw] h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
-                    <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">Salário e Benefícios</h2>
+                    <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">{objFormulario.nomeCategoria}</h2>
                     <div className="flex flex-row gap-[2vw]">
                         <div>
                             <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl"> 

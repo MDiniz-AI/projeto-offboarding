@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom";
 import FormularioAdm from "../components/admin/FormularioAdm.jsx";
 import Colaboradores from "../components/admin/Colaboradores.jsx";
+import Times from "../components/admin/Times.jsx";
 
 
 export const Contexto = createContext();
@@ -33,7 +34,7 @@ export default() => {
 
         const htmlForm = <div>
             <div className="ml-[7vw]">
-                { pagAtual == 2 ? <Colaboradores /> : pagAtual == 4 ? <FormularioAdm /> : null}
+                {pagAtual == 1 ? <Times /> : pagAtual == 2 ? <Colaboradores /> : pagAtual == 3 ? <FormularioAdm /> : null}
             </div>
                 <BlocoPrincipalAdm pagina={pagAtual}/>
         </div>
