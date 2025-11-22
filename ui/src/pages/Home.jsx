@@ -1,6 +1,7 @@
 import BlocoPrincipal from "../components/BlocoPrincipal"
 import {ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { Squircle } from 'corner-smoothing';
+
 import { createContext, useContext, useState, useEffect } from "react";
 import InputCurto from "../components/InputCurto";
 import GoogleLogo from '../assets/Google__G__logo.svg'
@@ -17,7 +18,8 @@ export default () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
     let secaoQuery = Number(searchParams.get("secao") == null ? null : searchParams.get("secao"));
-    if (secaoQuery == null || isNaN(secaoQuery) || secaoQuery < 1 || secaoQuery > 0) secaoQuery = 0
+    if (secaoQuery == null || isNaN(secaoQuery) || secaoQuery < 0 || secaoQuery > 1)
+    secaoQuery = 0
 
     const [pagAtual, setPagAtual] = useState(secaoQuery)
     const imgFundo = [imgFundoHm, imgFundoLog]
@@ -104,7 +106,11 @@ export default () => {
 
             //  
         return (
-        <BlocoPrincipal codigo={pagAtual == 0 ? htmlInicio : htmlLogin} idPag={pagAtual} imagemFundo={imgFundo[pagAtual]} />
+      
+        <BlocoPrincipal idPag={pagAtual} imagemFundo={imgFundo[pagAtual]}>
+            {pagAtual === 0 ? htmlInicio : htmlLogin}
+        </BlocoPrincipal>
+
         )
     }
 }

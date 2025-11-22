@@ -61,12 +61,24 @@ export const buscarEntrevista = async (req, res) => {
 // POST /entrevistas
 export const criarEntrevistaComRespostas = async (req, res) => {
 
-    const { id_usuario, data_entrevista, status_entrevista, respostas } = req.body;
-
+    const { data_entrevista, status_entrevista, respostas } = req.body;
+    const { email } = req.user;
 
     const t = await sequelize.transaction();
     try {
-    
+
+        //  BUSCAR O ID DO USUÁRIO USANDO O EMAIL DO TOKEN
+        const usuario = await Usuario.findOne({ where: { email } });
+        console.log(usuario)
+
+
+        if (!usuario) {
+            await t.rollback();
+            return res.status(404).json({ error: 'Usuário não encontrado com o email do token.' });
+        }
+
+        const id_usuario = usuario.id_usuario;
+        
         const novaEntrevista = await Entrevista.create({
             id_usuario,
             data_entrevista,

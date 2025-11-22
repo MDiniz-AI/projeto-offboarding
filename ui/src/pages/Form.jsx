@@ -18,7 +18,7 @@ import {
   PaperPlaneTiltIcon,
   HouseIcon,
 } from "@phosphor-icons/react";
-import Perguntas from "../perguntas.json";
+//import Perguntas from "../perguntas.json";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const Contexto = createContext();
@@ -26,7 +26,9 @@ export const Contexto = createContext();
 export default () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [perguntas, setPerguntas] = useState(Perguntas);
+  //  const [perguntas, setPerguntas] = useState(Perguntas);
+  const [perguntas, setPerguntas] = useState([[], [], [], [], [], [], []]);
+  const [isLoading, setIsLoading] = useState(true);
   const [secao, setSecao] = useState(2);
   const categorias = [
     "Perguntas gerais",
@@ -50,6 +52,39 @@ export default () => {
   ];
   const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+  async function buscarPerguntas() {
+    setIsLoading(true);
+    try {
+      const response = await api.get("/perguntas/");
+
+      console.log("Dados brutos da API:", response.data);
+
+      const perguntasNormalizadas = response.data.map(secao =>
+        secao.map(p => ({
+          id: p.id_pergunta,
+          texto: p.texto_pergunta,
+          categoria: p.categoria,
+          tipo: p.tipo_resposta,
+          opcoes: p.opcoes,
+          resposta_texto: "",
+          resposta_valor: null,
+        }))
+      );
+
+      setPerguntas(perguntasNormalizadas);
+
+    } catch (err) {
+      console.error("Erro ao buscar perguntas da API:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  buscarPerguntas();
+}, []);
+
 
   useEffect(() => {
     const param = searchParams.get("secao");
@@ -133,6 +168,7 @@ export default () => {
         imgVet,
         enviaDados,
         isSubmitted,
+        isLoading,
         irParaHome,
         enviarEntrevista,
         atualizarResposta,
@@ -153,184 +189,156 @@ function App() {
     enviaDados,
     isSubmitted,
     irParaHome,
+    isLoading,
+    atualizarResposta,
     enviarEntrevista,
   } = useContext(Contexto);
 
-  const htmlForm = (
-    <div>
-      <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">
-        Pesquisa de offboarding
-      </h1>
-      <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[3vw] md:text-justify text-center text-primary mx-auto md:mx-0">
-        {categorias[secao - 2]}
-      </p>
-      <div className="bg-primary h-[.01vh] min-h-[.5px] md:w-[40vw] md:mx-0 mx-auto w-[97vw] mt-[3vh] " />
-      <form action="">
-        <div className="mt-[5vh] md:h-[52vh] h-[57vh] overflow-y-auto md:w-[42vw] w-[97vw] md:mx-0 mx-auto">
-          <FormRenderer perguntas={perguntas[secao - 2]} />
+
+    const htmlForm =<div>
+            <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">Pesquisa de offboarding</h1>
+            <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[3vw] md:text-justify text-center text-primary mx-auto md:mx-0">{categorias[secao-2]}</p>
+            <div className='bg-primary h-[.01vh] min-h-[.5px] md:w-[40vw] md:mx-0 mx-auto w-[97vw] mt-[3vh] '/>
+            <form action="">
+                <div className='mt-[5vh] md:h-[52vh] h-[57vh] overflow-y-auto md:w-[42vw] w-[97vw] md:mx-0 mx-auto'>
+                    <FormRenderer perguntas={perguntas[secao-2]} />
+                </div>
+                <div>
+                    {secao < 7 ?
+                        <button type="button" onClick={avancaPasso} className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 mt-[2vh]" >
+                            <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">Continuar</p>
+                            <CaretRightIcon size="4vh" weight="thin" className="my-auto text-primary" />
+                        </button>
+                        :
+                        <div className='mt-[-10vw] md:mt-0'>
+                            <p className='text-primary md:w-[42vw] w-[97vw] md:text-[.7vw] text-[2.5vw] font-corpo md:text-justify text-center md:mx-0 mx-auto'>Caso queira visualizar e/ou corrigir suas respostas, você pode navegar pelos blocos interagindo com os ícones do menu lateral. Ao enviar suas respostas, você concorda com os <a href="#" onClick={() => document.getElementById('modalTermos').showModal()}><u>Termos de Privacidade</u></a>.</p>
+                            <button type="button" onClick={() => document.getElementById('modalConfirmar').showModal()} className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 md:mb-0 md:mt-0" >
+                                <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">Finalizar</p>
+                                <CheckIcon size="4vh" weight="thin" className="my-auto text-primary" />
+                            </button>
+                        </div>
+                    }
+                </div>
+            </form> 
         </div>
-        <div>
-          {secao < 7 ? (
-            <button
-              type="button"
-              onClick={avancaPasso}
-              className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 mt-[2vh]"
-            >
-              <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
-                Continuar
-              </p>
-              <CaretRightIcon
-                size="4vh"
-                weight="thin"
-                className="my-auto text-primary"
-              />
-            </button>
-          ) : (
-            <div className="mt-[-10vw] md:mt-0">
-              <p className="text-primary md:w-[42vw] w-[97vw] md:text-[.7vw] text-[2.5vw] font-corpo md:text-justify text-center md:mx-0 mx-auto">
-                Caso queira visualizar e/ou corrigir suas respostas, você pode
-                navegar pelos blocos interagindo com os ícones do menu lateral.
-                Ao enviar suas respostas, você concorda com os{" "}
-                <a
-                  href="#"
+
+
+const htmlSubmitted = (
+  <div className="flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[22vh] md:my-0">
+    <h1 className="font-title md:text-[3.5vw] text-[12vw] text-primary mx-auto">
+      Obrigado!
+    </h1>
+    <p className="font-corpo md:w-[40vw] w-[97vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto mt-[-4vh]">
+      Agradecemos por dedicar alguns minutos para compartilhar seu feedback e
+      contribuir com a melhoria e a evolução do ambiente de trabalho.
+      Desejamos muita sorte e sucesso no seu futuro.😊
+    </p>
+    <button
+      onClick={irParaHome}
+      className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[13vw] w-[40vw] h-[6vh] mx-auto"
+    >
+      <HouseIcon size="2.5vh" weight="thin" />
+      Voltar ao Menu
+    </button>
+  </div>
+);
+
+
+const secaoAtual = secao - 2;
+
+const perguntasDaSecao =
+  perguntas && Array.isArray(perguntas[secaoAtual])
+    ? perguntas[secaoAtual]
+    : [];
+
+let htmlContent;
+
+if (isLoading) {
+  htmlContent = (
+    <div className="flex items-center justify-center h-full text-primary font-title md:text-[2vw] text-[6vw]">
+      Carregando Formulário...
+    </div>
+  );
+} else if (isSubmitted) {
+  htmlContent = htmlSubmitted;
+} else if (!perguntasDaSecao || perguntasDaSecao.length === 0) {
+  htmlContent = (
+    <div className="p-8 text-center text-red-500 font-corpo">
+      Erro ao carregar o formulário. Por favor, tente novamente mais tarde.
+    </div>
+  );
+} else {
+
+  if (secao === 1) {
+    htmlContent = htmlForm;
+    
+  } else if (secao === 9) {
+    htmlContent = (
+      <div className="p-8 text-center">
+        <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">
+          Pronto para enviar?
+        </h3>
+      </div>
+    );
+  } else {
+    htmlContent = (
+      <div>
+        <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">
+          Pesquisa de offboarding
+        </h1>
+
+        <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[3vw] md:text-justify text-center text-primary mx-auto md:mx-0">
+          {categorias[secaoAtual]}
+        </p>
+
+        <div className="bg-primary h-[.01vh] min-h-[.5px] md:w-[40vw] md:mx-0 mx-auto w-[97vw] mt-[3vh]" />
+
+        <form>
+          <div className="mt-[5vh] md:h-[52vh] h-[57vh] overflow-y-auto md:w-[42vw] w-[97vw] md:mx-0 mx-auto">
+           
+            <FormRenderer
+              perguntas={perguntasDaSecao}
+              atualizarResposta={atualizarResposta}
+            />
+          </div>
+
+          <div>
+            {secao < 7 ? (
+              <button type="button"  className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 mt-[2vh]"  onClick={avancaPasso}>
+                <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
+                  Continuar
+                </p>
+              </button>
+            ) : (
+              <div className="mt-[-10vw] md:mt-0">
+                <button
+                  type="button"
                   onClick={() =>
-                    document.getElementById("modalTermos").showModal()
+                    document.getElementById("modalConfirmar").showModal()
                   }
                 >
-                  <u>Termos de Privacidade</u>
-                </a>
-                .
-              </p>
-              <button
-                type="button"
-                onClick={() =>
-                  document.getElementById("modalConfirmar").showModal()
-                }
-                className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 md:mb-0 md:mt-0"
-              >
-                <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
-                  Finalizar
-                </p>
-                <CheckIcon
-                  size="4vh"
-                  weight="thin"
-                  className="my-auto text-primary"
-                />
-              </button>
-            </div>
-          )}
-        </div>
-      </form>
-    </div>
-  );
-
-  const htmlSubmitted = (
-    <div className="flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[22vh] md:my-0">
-      <h1 className="font-title md:text-[3.5vw] text-[12vw] text-primary mx-auto">
-        Obrigado!
-      </h1>
-      <p className="font-corpo md:w-[40vw] w-[97vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto mt-[-4vh]">
-        Agradecemos por dedicar alguns minutos para compartilhar seu feedback e
-        contribuir com a melhoria e a evolução do ambiente de trabalho.
-        Desejamos muita sorte e sucesso no seu futuro.😊
-      </p>
-      <button
-        onClick={irParaHome}
-        className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[13vw] w-[40vw] h-[6vh] mx-auto"
-      >
-        <HouseIcon size="2.5vh" weight="thin" />
-        Voltar ao Menu
-      </button>
-    </div>
-  );
-
-  return (
-    <>
-      <BlocoPrincipal
-        codigo={isSubmitted ? htmlSubmitted : htmlForm}
-        idPag={secao}
-        imagemFundo={imgVet[secao - 2]}
-      />
-      <dialog id="modalTermos" className="modal">
-        <div className="modal-box max-h-[92vh]">
-          <div className="flex gap-[5vw]">
-            <form method="dialog">
-              <button classname="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">
-                ✕
-              </button>
-            </form>
-            <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">
-              Termos de privacidade
-            </h3>
+                  <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
+                    Finalizar
+                  </p>
+                </button>
+              </div>
+            )}
           </div>
-          <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">
-            Ao preencher este formulário, o(a) colaborador(a) desligado(a)
-            concorda com os seguintes termos de uso e privacidade de suas
-            respostas: <br />
-            <br />
-            1. Objetivo da Pesquisa <br />
-            O objetivo desta pesquisa é coletar feedback honesto e construtivo
-            sobre a experiência do colaborador na empresa (cultura, liderança,
-            processos, remuneração e ambiente de trabalho) para fins de melhoria
-            contínua e retenção de talentos. As informações fornecidas são
-            cruciais para o desenvolvimento organizacional.
-            <br />
-            <br />
-            2. Confidencialidade das Respostas
-            <br />
-            Uso Agregado: As respostas individuais serão tratadas com a máxima
-            confidencialidade e serão prioritariamente analisadas de forma
-            agregada (em conjunto com outras saídas) para identificar tendências
-            e áreas de atenção.
-            <br />
-            Acesso Limitado: O acesso aos dados brutos e às respostas
-            individuais será estritamente limitado aos profissionais de Recursos
-            Humanos (RH) e, quando estritamente necessário para ações
-            estratégicas (ex: mudanças estruturais), à Liderança Sênior
-            (C-Level/Diretoria) relevante, mas sempre priorizando o anonimato do
-            respondente.
-            <br />
-            <br />
-            3. Anonimato
-            <br />
-            Líderes e Cargos Únicos: Embora reconheçamos que em posições de
-            liderança ou cargos muito específicos o anonimato completo possa ser
-            desafiador, garantimos que o feedback individual não será usado para
-            retaliação ou julgamento pessoal e será usado{" "}
-          </p>
-        </div>
-      </dialog>
+        </form>
+      </div>
+    );
+  }
+}
 
-      <dialog id="modalConfirmar" className="modal">
-        <div className="modal-box">
-          <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">
-              ✕
-            </button>
-          </form>
-          <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">
-            Confirmação
-          </h3>
-          <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">
-            Você confirma o envio do formulário? Ao enviar o formulário, suas
-            respostas não poderão ser mais editadas{" "}
-          </p>
-          <div className="modal-action">
-            <form method="dialog" className="flex gap-[1vw]">
-              <button
-                onClick={enviarEntrevista}
-                className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[30vw] h-[6vh]"
-              >
-                <PaperPlaneTiltIcon size="2.5vh" weight="thin" />
-                Enviar
-              </button>
-              <button className="btn btn-outline text-red-400  font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[32vw] h-[6vh] btn-error">
-                ✕ Cancelar
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    </>
-  );
+return (
+  <>
+    <BlocoPrincipal imagemFundo={imgVet[secaoAtual]} idPag={secao}>
+      {htmlContent}
+    </BlocoPrincipal>
+
+    <dialog id="modalTermos" className="modal"></dialog>
+    <dialog id="modalConfirmar" className="modal"></dialog>
+  </>
+);
+
 }
