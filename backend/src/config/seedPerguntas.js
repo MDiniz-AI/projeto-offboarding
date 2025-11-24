@@ -20,7 +20,7 @@ export const seedPerguntas = async () => {
       // Adicione mais se o front tiver mais grupos
     ];
 
-    // 3. O JSON exato que o Front te passou
+    // 3. O JSON front
     const dadosDoFront = [
       // GRUPO 0: Perguntas gerais
       [
