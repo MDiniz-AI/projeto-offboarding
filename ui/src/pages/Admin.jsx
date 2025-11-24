@@ -5,6 +5,8 @@ import FormularioAdm from "../components/admin/FormularioAdm.jsx";
 import Colaboradores from "../components/admin/Colaboradores.jsx";
 import Times from "../components/admin/Times.jsx";
 import Config from "../components/admin/Config.jsx";
+import HomeAdm from "../components/admin/HomeAdm.jsx";
+import LoginAdm from "../components/admin/LoginAdm.jsx";
 
 
 export const Contexto = createContext();
@@ -35,9 +37,11 @@ export default() => {
 
         const htmlForm = <div>
             <div className="ml-[7vw]">
-                {pagAtual == 1 ? <Times /> : pagAtual == 2 ? <Colaboradores /> : pagAtual == 3 ? <FormularioAdm /> : pagAtual == 4 ? <Config /> : null}
+                {pagAtual == 0 ? <HomeAdm /> : pagAtual == 1 ? <Times /> : pagAtual == 2 ? <Colaboradores /> : pagAtual == 3 ? <FormularioAdm /> : pagAtual == 4 ? <Config /> : null}
             </div>
-                <BlocoPrincipalAdm pagina={pagAtual}/>
+            {
+              pagAtual < 5 ? <BlocoPrincipalAdm pagina={pagAtual}/> : <LoginAdm />
+            }
         </div>
         
 

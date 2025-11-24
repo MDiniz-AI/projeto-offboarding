@@ -4,11 +4,15 @@ import { useState } from "react"
 
 export default () => {
 
-    const [usrs, setUsrs] = useState(["email@email.com"]);
+    const [users, setUsers] = useState(["email@email.com"]);
     const [email, setEmail] = useState("");
 
     function adicionarUsuario() {
-        setUsrs((prev) => [...prev, email])
+        setUsers((prev) => [...prev, email])
+    }
+
+    function removerUsuario(emailRem){
+        setUsers((prev => prev.filter(u => u !== emailRem)))
     }
 
     return(
@@ -33,10 +37,10 @@ export default () => {
                     </div>
                     <h2 className="text-primary font-title text-[1.5vw] mt-[3vh]">Usuários com acesso</h2>
                     <div className="flex flex-row flex-wrap gap-[1vw] mt-[2vh]">
-                        {usrs.map ((email, index) =>
+                        {users.map ((email, index) =>
                         <div key={index} className="relative group inline-block">
                             <span key={index} className="badge badge-ghost badge-lg pr-6"> {email} </span>
-                            <button key={index} className="absolute right-1 top-1 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {}}><XIcon size="1vw" weight="thin" className="my-[.5vh]"/></button>
+                            <button key={index} className="absolute right-1 top-1 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {removerUsuario(email)}}><XIcon size="1vw" weight="thin" className="my-[.5vh]"/></button>
                         </div> )}
                     </div>
                 </div>

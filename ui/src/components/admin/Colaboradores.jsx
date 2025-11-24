@@ -69,7 +69,7 @@ export default () => {
                                     </div>
                                     <div>
                                     <div class="font-bold">João da Silva</div>
-                                    <div class="text-sm opacity-50">Função</div>
+                                    <div class="text-sm opacity-50">email@email.com</div>
                                     </div>
                                     <div className="w-[12.5vw] h-[6vh] bg-secondary/60 rounded-xl"> 
                                         <div className="h-full rounded-xl" style={{ 
