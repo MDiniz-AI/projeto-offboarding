@@ -10,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.post('/users', verifyTempToken,  criarUsuario);
-router.get('/users', verifyTempToken , listarUsuarios);
-router.get('/users/:id', verifyTempToken ,buscarUsuario);
-router.put('/users/:id', verifyTempToken, atualizarUsuario);
+router.post('/users',   criarUsuario);
+router.get('/users',  listarUsuarios);
+router.get('/users/:id' ,buscarUsuario);
+router.put('/users/:id',  atualizarUsuario);
 router.get("/email/:email", buscarUsuarioPorEmail);
 
 export default router;
