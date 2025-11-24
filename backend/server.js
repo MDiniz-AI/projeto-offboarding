@@ -5,6 +5,7 @@ import { connectDB } from './src/config/db.js';
 import { seedPerguntas } from './src/config/seedPerguntas.js'; 
 
 // Seus imports de rotas
+import analiseSentimentoRoutes from './src/routes/AnaliseSentimentoRoutes.js';
 import entrevistaRoutes from './src/routes/EntrevistaRoutes.js';
 import userRoutes from './src/routes/UserRoutes.js';
 import perguntaRoutes from './src/routes/PerguntaRoutes.js';
@@ -30,12 +31,13 @@ app.use(express.json());
 
 
 // Rotas (sem mudança)
+
 app.use('/api/entrevistas', entrevistaRoutes);
 app.use('/api/usuarios', userRoutes);
 app.use('/api/perguntas', perguntaRoutes);
 app.use('/api/respostas', respostaRoutes);
+app.use('/api/analise', analiseSentimentoRoutes);
 app.use('/api/auth', authRoutes);
-// Adicionar a rota de Análise de Sentimento quando ela estiver pronta
 
 const PORT = process.env.PORT || 5001;
 
