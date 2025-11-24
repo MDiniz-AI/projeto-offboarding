@@ -62,82 +62,56 @@ export const buscarEntrevista = async (req, res) => {
 // POST /entrevistas (CRIAR COM RESPOSTAS)
 export const criarEntrevistaComRespostas = async (req, res) => {
 
-    const { id_usuario, data_entrevista, status_entrevista, respostas } = req.body;
+    const { data_entrevista, status_entrevista, respostas } = req.body;
+    const { email } = req.user;
+
+    const t = await sequelize.transaction();
+    try {
+
+        //  BUSCAR O ID DO USUÁRIO USANDO O EMAIL DO TOKEN
+        const usuario = await Usuario.findOne({ where: { email } });
+        console.log(usuario)
 
 
-    const t = await sequelize.transaction();
-    try {
-    
-        // 1. Cria a Entrevista
-        const novaEntrevista = await Entrevista.create({
-            id_usuario,
-            data_entrevista,
-            status_entrevista
-        }, { transaction: t });
+        if (!usuario) {
+            await t.rollback();
+            return res.status(404).json({ error: 'Usuário não encontrado com o email do token.' });
+        }
 
-        const id_entrevista_criada = novaEntrevista.id_entrevista;
+        const id_usuario = usuario.id_usuario;
+        
+        const novaEntrevista = await Entrevista.create({
+            id_usuario,
+            data_entrevista,
+            status_entrevista
+        }, { transaction: t });
 
-        // 2. COLETA DADOS PARA A ANÁLISE LLM (SIMPLIFICADO E AGNOSTICO)
-        // Removemos a busca e o mapeamento da 'categoria' da pergunta
-        const respostasParaAnalise = respostas.map(r => {
-            return {
-                questionId: r.id_pergunta,
-                answerText: r.resposta_texto,
-            };
-        });
+        const respostasParaCriar = respostas.map(resp => ({
+            id_entrevista: novaEntrevista.id_entrevista, 
+            id_pergunta: resp.id_pergunta,
+            resposta_texto: resp.resposta_texto,
+            resposta_valor: resp.resposta_valor,
+        }));
 
-        // 3. CHAMA O SERVIÇO LLM (GEMINI) - Roda a análise de sentimentos
-        // O LLM agora retorna 'allThemes' (Array) em vez de 'theme' (String)
-        const resultadosAnalise = await analyzeBatch(respostasParaAnalise, { language: 'pt' });
+        console.log(respostas)
 
+        await Resposta.bulkCreate(respostasParaCriar, { transaction: t });
 
-        // 4. Prepara o array final de Respostas para o bulkCreate (combinando dados)
-        const respostasParaCriar = resultadosAnalise.map(analise => {
-            const respostaOriginal = respostas.find(r => r.id_pergunta === analise.questionId);
+        await t.commit();
 
-            return {
-                id_entrevista: id_entrevista_criada, 
-                id_pergunta: analise.questionId,
-                resposta_texto: respostaOriginal.resposta_texto,
-                resposta_valor: respostaOriginal.resposta_valor || analise.label,
-                
-                // NOVOS CAMPOS DO LLM:
-                score: analise.score,
-                magnitude: analise.magnitude,
-                label: analise.label,
-                
-                // CORREÇÃO CRÍTICA: Pega o PRIMEIRO tema de 'allThemes' para caber no DB (String)
-                theme: (analise.allThemes && analise.allThemes.length > 0) 
-                    ? analise.allThemes[0] 
-                    : 'Não Classificado',
-                    
-                riskLevel: analise.riskLevel,
-                analysisSource: analise.source,
-                // O array 'allThemes' (com todos os temas) está em 'resultadosAnalise', 
-                // mas não pode ser salvo na coluna 'theme' do DB.
-            };
-        });
+        return res.status(201).json({
+            message: 'Entrevista e respostas criadas com sucesso!',
+            entrevista: novaEntrevista
+        });
 
-
-        await Resposta.bulkCreate(respostasParaCriar, { transaction: t });
-
-        await t.commit();
-
-        return res.status(201).json({
-            message: 'Entrevista e análise de sentimentos criadas com sucesso!',
-            entrevista: novaEntrevista,
-            // Retornamos 'resultadosAnalise' para que o Frontend veja o array 'allThemes'
-            insights: resultadosAnalise 
-        });
-
-    } catch (error) {
-        await t.rollback(); 
-        
-        return res.status(500).json({ 
-            error: 'Falha ao criar entrevista e rodar análise de IA. Operação desfeita.', 
-            details: error.message 
-        });
-    }
+    } catch (error) {
+        await t.rollback(); 
+        
+        return res.status(500).json({ 
+            error: 'Falha ao criar entrevista e respostas. Operação desfeita.', 
+            details: error.message 
+        });
+    }
 };
 
 // DELETE /entrevistas/:id

@@ -18,20 +18,21 @@ const Resposta = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    
     // ======== NOVOS CAMPOS DE ANÁLISE DE SENTIMENTO ========
     score: {
       type: DataTypes.FLOAT,
       allowNull: true, 
       comment: 'Score de sentimento (-1.0 a 1.0)',
     },
-    magnitude: {
-      type: DataTypes.FLOAT,
+
+    resposta_valor: {
+      type: DataTypes.INTEGER, 
       allowNull: true,
       comment: 'Intensidade da emoção',
     },
-    label: {
-      type: DataTypes.STRING(20),
+
+    texto_resposta: {
+      type: DataTypes.TEXT,
       allowNull: true,
       comment: 'Classificação (positive, negative, neutral)',
     },

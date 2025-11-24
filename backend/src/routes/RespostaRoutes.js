@@ -1,4 +1,5 @@
 import express from 'express';
+import { verifyTempToken } from "../middlewares/auth.js";
 import {
   salvarRespostas,     // A nova função de criar
   listarRespostas,    // As que você já tinha
@@ -12,18 +13,18 @@ const router = express.Router();
 // ---- Padrão REST para Respostas ----
 
 // POST /api/respostas  (Criar a entrevista e as respostas)
-router.post('/', salvarRespostas);
+router.post('/', verifyTempToken, salvarRespostas);
 
 // GET /api/respostas   (Listar todas)
-router.get('/', listarRespostas);
+router.get('/', verifyTempToken, listarRespostas);
 
 // GET /api/respostas/:id  (Buscar uma específica)
-router.get('/:id', buscarResposta);
+router.get('/:id', verifyTempToken, buscarResposta);
 
 // PUT /api/respostas/:id  (Atualizar)
-router.put('/:id', atualizarResposta);
+router.put('/:id', verifyTempToken, atualizarResposta);
 
 // DELETE /api/respostas/:id (Deletar)
-router.delete('/:id', deletarResposta);
+router.delete('/:id', verifyTempToken, deletarResposta);
 
 export default router;
