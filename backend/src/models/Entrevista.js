@@ -13,6 +13,7 @@ const Entrevista = sequelize.define(
     data_entrevista: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     status_entrevista: {
       type: DataTypes.STRING(50),

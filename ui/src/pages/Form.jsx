@@ -7,6 +7,7 @@ import imgFundoLg from '../assets/form/fundo-lg.webp'
 import imgFundoLi from '../assets/form/fundo-li.webp'
 import imgFundoPd from '../assets/form/fundo-pd.webp'
 
+import api from '../lib/api'
 
 import BlocoPrincipal from '../components/BlocoPrincipal'
 import FormRenderer from '../components/FormRenderer'
@@ -44,6 +45,58 @@ export default () => {
         setSecao(secao+1);
     }
 
+    function atualizarResposta(idPergunta, resposta_texto, resposta_valor) {
+        setPerguntas((prev) =>
+            prev.map((secao) =>
+                secao.map((p) =>
+                    p.id === idPergunta
+                        ? {
+                            ...p,
+                            resposta_texto: resposta_texto ?? p.resposta_texto,
+                            resposta_valor: resposta_valor ?? p.resposta_valor
+                        }
+                        : p
+                )
+            )
+        );
+    }
+
+
+
+    async function enviarEntrevista() {
+    
+    const respostasMapeadas = perguntas
+    .flat(Infinity)
+    .map(p => ({
+        id_pergunta: p.id,
+        texto_resposta: p.resposta_texto ?? "",
+        resposta_valor: p.resposta_valor ?? null
+    }));
+
+
+    // Monta o payload exatamente como seu backend espera
+    const payload = {
+        id_usuario: 1,   // troque pelo id real do usuário logado
+        respostas: respostasMapeadas
+    };
+
+    console.log("Payload final enviado:", payload);
+
+    try {
+        // 🔥 ROTA CORRETA
+        const response = await api.post("/respostas/", payload);
+
+        console.log("Enviado com sucesso:", response.data);
+
+        enviaDados();
+
+    } catch (err) {
+        console.error("Erro ao enviar:", err);
+        alert("Erro ao enviar respostas.");
+    }
+}
+
+
     function enviaDados(){
         setIsSubmitted(true)
     }
@@ -53,7 +106,7 @@ export default () => {
     }
 
     return(
-        <Contexto.Provider value={{ perguntas, secao, avancaPasso, categorias, imgVet, enviaDados, isSubmitted, irParaHome}}>
+        <Contexto.Provider value={{ perguntas, secao, avancaPasso, categorias, imgVet, enviaDados, isSubmitted, irParaHome ,  enviarEntrevista , atualizarResposta}}>
             <App />
         </Contexto.Provider>
     )
@@ -61,7 +114,7 @@ export default () => {
 
 function App(){
 
-    const {perguntas, secao, avancaPasso, categorias, imgVet, enviaDados, isSubmitted, irParaHome} = useContext(Contexto)
+    const {perguntas, secao, avancaPasso, categorias, imgVet, enviaDados, isSubmitted, irParaHome, enviarEntrevista} = useContext(Contexto)
     
     const htmlForm =<div>
             <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">Pesquisa de offboarding</h1>
@@ -126,7 +179,7 @@ function App(){
                 <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">Você confirma o envio do formulário? Ao enviar o formulário, suas respostas não poderão ser mais editadas </p>
                 <div className="modal-action">
                 <form method="dialog" className='flex gap-[1vw]'>
-                    <button onClick={enviaDados}className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[30vw] h-[6vh]"><PaperPlaneTiltIcon size="2.5vh" weight="thin" />Enviar</button>
+                    <button onClick={enviarEntrevista} className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[30vw] h-[6vh]"><PaperPlaneTiltIcon size="2.5vh" weight="thin" />Enviar</button>
                     <button className="btn btn-outline text-red-400  font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[32vw] h-[6vh] btn-error">✕ Cancelar</button>
                 </form>
                 </div>

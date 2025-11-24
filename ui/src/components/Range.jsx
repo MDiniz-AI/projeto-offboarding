@@ -5,14 +5,16 @@ import Bom from '../assets/smiley-thin2.svg?react'
 import Regular from '../assets/smiley-meh-thin.svg?react'
 import Ruim from '../assets/smiley-sad-thin2.svg?react'
 import Incrivel from '../assets/smiley-thin.svg?react'
+import { Contexto } from "../pages/Form.jsx";
+import { useContext } from "react";
 import {SmileyMehIcon, SmileySadIcon, SmileyIcon} from '@phosphor-icons/react';
 
 export default (props) => {
-    
+    const { atualizarResposta } = useContext(Contexto);
     return(
         <div className="flex flex-col gap-[1vh]">
             <label for={props.id} className="font-corpo md:text-[1vw] text-[4vw] text-justify text-primary">{props.label}</label>
-            <input type="range" name={props.id} id={props.id} min={1} max="7" defaultValue="4" className="range w-full h-[3vh] range-secondary bg-linear-to-r from-[#FF00004d] via-[#FFEB004d] to-[#15FF004d]" step="1" />  
+            <input type="range" name={props.id} id={props.id} min={1} max="7"  onChange={(e) => atualizarResposta(props.id, null, Number(e.target.value))} defaultValue="4" className="range w-full h-[3vh] range-secondary bg-linear-to-r from-[#FF00004d] via-[#FFEB004d] to-[#15FF004d]" step="1" />  
             <div className='flex flex-col gap-[.5vh]'>
                 <div className='flex md:gap-[4vw] gap-[7vw] ml-[1vw]'>
                     <Horrivel className='w-[10vw] h-auto text-primary' />

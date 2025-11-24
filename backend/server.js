@@ -10,8 +10,11 @@ import entrevistaRoutes from './src/routes/EntrevistaRoutes.js';
 import userRoutes from './src/routes/UserRoutes.js';
 import perguntaRoutes from './src/routes/PerguntaRoutes.js';
 import respostaRoutes from './src/routes/RespostaRoutes.js';
+import authRoutes from './src/routes/AuthRoutes.js';
 
 dotenv.config();
+console.log("DEBUG FRONT_URL =", process.env.FRONT_URL);
+
 
 // Garante que o seed só rode DEPOIS que o banco conectar
 connectDB().then(() => {
@@ -19,12 +22,13 @@ connectDB().then(() => {
   console.log('Banco de dados conectado, verificando seed...');
   seedPerguntas(); // <== 2. CHAMAR A FUNÇÃO AQUI
 });
-// --- FIM DA MUDANÇA ---
+
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 
 // Rotas (sem mudança)
 
@@ -33,6 +37,7 @@ app.use('/api/usuarios', userRoutes);
 app.use('/api/perguntas', perguntaRoutes);
 app.use('/api/respostas', respostaRoutes);
 app.use('/api/analise', analiseSentimentoRoutes);
+app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 5001;
 

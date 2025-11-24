@@ -1,4 +1,8 @@
+// import Pergunta from '../models/Pergunta.js';
+
 import Pergunta from '../models/Pergunta.js';
+
+
 
 export const seedPerguntas = async () => {
   try {
