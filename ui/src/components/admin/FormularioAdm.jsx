@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Squircle } from "corner-smoothing"; 
-import { CaretDownIcon, DotsThreeIcon, PlusIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, DotsThreeIcon, PlusIcon, TrashIcon } from "@phosphor-icons/react";
 import PerguntasEdit from './PerguntasEdit';
 
 export default () => {
@@ -64,10 +64,16 @@ export default () => {
                             <p className="text-primary text-center font-corpo text-[1vw]">Intensidade Média</p>
                         </div>
                     </div>
-                    <Squircle onClick={() => {document.getElementById('modalEdicao').showModal()}} cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[4vh] ml-[17vw]">
-                        <DotsThreeIcon size="4vh" weight="thin" className="my-auto" />
-                        <p className="text-primary font-corpo my-auto">Detalhes</p>
-                    </Squircle>
+                    <div className='flex gap-[1vw] mx-[3vw]'>
+                        <Squircle onClick={{}} cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[4vh]">
+                            <TrashIcon size="4vh" weight="thin" className="my-auto" />
+                            <p className="text-primary font-corpo my-auto">Excluir</p>
+                        </Squircle>
+                        <Squircle onClick={() => {document.getElementById('modalEdicao').showModal()}} cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[4vh]">
+                            <DotsThreeIcon size="4vh" weight="thin" className="my-auto" />
+                            <p className="text-primary font-corpo my-auto">Detalhes</p>
+                        </Squircle>
+                    </div>
                 </Squircle>
             </div>
         </div>
