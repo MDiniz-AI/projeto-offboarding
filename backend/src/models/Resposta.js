@@ -2,27 +2,60 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 
 const Resposta = sequelize.define(
-  "resposta",
-  {
-    id_resposta: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
+  "resposta",
+  {
+    id_resposta: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+      allowNull: false,
+    },
+    resposta_texto: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    resposta_valor: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    
+    // ======== NOVOS CAMPOS DE ANÁLISE DE SENTIMENTO ========
+    score: {
+      type: DataTypes.FLOAT,
+      allowNull: true, 
+      comment: 'Score de sentimento (-1.0 a 1.0)',
     },
-    resposta_texto: {
-      type: DataTypes.TEXT,
-      allowNull: false,
+    magnitude: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      comment: 'Intensidade da emoção',
     },
-    resposta_valor: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
+    label: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: 'Classificação (positive, negative, neutral)',
     },
-  },
-  {
-    tableName: "resposta",
-    timestamps: false,
-  }
+    theme: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      comment: 'Tema principal identificado pelo LLM',
+    },
+    riskLevel: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+      comment: 'Nível de risco para o RH (High, Medium, Low)',
+    },
+    analysisSource: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+      comment: 'Fonte da análise (gemini ou mock)',
+    }
+    // =======================================================
+  },
+  {
+    tableName: "resposta",
+    timestamps: false,
+  }
 );
 
 export default Resposta;
