@@ -8,6 +8,7 @@ import imgFundoLi from "../assets/form/fundo-li.webp";
 import imgFundoPd from "../assets/form/fundo-pd.webp";
 
 import api from "../lib/api";
+import { jwtDecode } from "jwt-decode";
 
 import BlocoPrincipal from "../components/BlocoPrincipal";
 import FormRenderer from "../components/FormRenderer";
@@ -18,8 +19,10 @@ import {
   PaperPlaneTiltIcon,
   HouseIcon,
 } from "@phosphor-icons/react";
-//import Perguntas from "../perguntas.json";
+
 import { useNavigate, useSearchParams } from "react-router-dom";
+
+
 
 export const Contexto = createContext();
 
@@ -124,31 +127,59 @@ export default () => {
     );
   }
 
+
+// enviar a entrevista via link esta funcionando
   async function enviarEntrevista() {
-    const respostasMapeadas = perguntas.flat(Infinity).map((p) => ({
-      id_pergunta: p.id,
-      texto_resposta: p.resposta_texto ?? "",
-      resposta_valor: p.resposta_valor ?? null,
-    }));
+  try {
 
-    const payload = {
-      id_usuario: 1,
-      respostas: respostasMapeadas,
-    };
-
-    console.log("Payload final enviado:", payload);
-
-    try {
-      const response = await api.post("/respostas/", payload);
-
-      console.log("Enviado com sucesso:", response.data);
-
-      enviaDados();
-    } catch (err) {
-      console.error("Erro ao enviar:", err);
-      alert("Erro ao enviar respostas.");
+    const token = new URLSearchParams(window.location.search).get("t");
+    if (!token) {
+      alert("Token não encontrado!");
+      return;
     }
+
+    const decoded = jwtDecode(token);
+    console.log(token)
+    const email = decoded.email;
+
+    // busca o usuario pelo email
+    const userResponse = await api.get(`/usuarios/email/${email}`);
+    console.log(userResponse)
+    const id_usuario = userResponse.data.usuario_id;
+
+    if (!email) {
+      alert("Token inválido: e-mail ausente.");
+      return;
+    }
+
+    const respostas = perguntas
+      .flat()
+      .map((p) => ({
+        id_pergunta: p.id,
+        texto_resposta: p.resposta_texto ?? "",
+        resposta_valor: p.resposta_valor ?? null,
+      }));
+
+    const payload = { id_usuario, respostas };
+
+    console.log("📤 Enviando payload:", payload);
+
+
+    const response = await api.post("/respostas/", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
+    console.log("✔️ Enviado com sucesso:", response.data);
+
+    enviaDados(); 
+  } catch (err) {
+    console.error("❌ Erro ao enviar:", err.response?.data || err);
+    alert("Erro ao enviar respostas.");
   }
+}
+
 
   function enviaDados() {
     setIsSubmitted(true);
@@ -313,6 +344,7 @@ if (isLoading) {
               <div className="mt-[-10vw] md:mt-0">
                 <button
                   type="button"
+                  className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 md:mb-0 md:mt-0" 
                   onClick={() =>
                     document.getElementById("modalConfirmar").showModal()
                   }
@@ -336,8 +368,39 @@ return (
       {htmlContent}
     </BlocoPrincipal>
 
-    <dialog id="modalTermos" className="modal"></dialog>
-    <dialog id="modalConfirmar" className="modal"></dialog>
+    <dialog id="modalTermos" className="modal">
+      <div className="modal-box max-h-[92vh]">
+                <div className='flex gap-[5vw]'>
+                    <form method="dialog">
+                        <button classname="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
+                    </form>
+                    <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">Termos de privacidade</h3>
+                </div>
+                <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">Ao preencher este formulário, o(a) colaborador(a) desligado(a) concorda com os seguintes termos de uso e privacidade de suas respostas: <br /><br />
+                                                1. Objetivo da Pesquisa <br />
+                                                O objetivo desta pesquisa é coletar feedback honesto e construtivo sobre a experiência do colaborador na empresa (cultura, liderança, processos, remuneração e ambiente de trabalho) para fins de melhoria contínua e retenção de talentos. As informações fornecidas são cruciais para o desenvolvimento organizacional.<br /><br />
+                                                2. Confidencialidade das Respostas<br />
+                                                Uso Agregado: As respostas individuais serão tratadas com a máxima confidencialidade e serão prioritariamente analisadas de forma agregada (em conjunto com outras saídas) para identificar tendências e áreas de atenção.<br />
+                                                Acesso Limitado: O acesso aos dados brutos e às respostas individuais será estritamente limitado aos profissionais de Recursos Humanos (RH) e, quando estritamente necessário para ações estratégicas (ex: mudanças estruturais), à Liderança Sênior (C-Level/Diretoria) relevante, mas sempre priorizando o anonimato do respondente.<br /><br />
+                                                3. Anonimato<br />
+                                                Líderes e Cargos Únicos: Embora reconheçamos que em posições de liderança ou cargos muito específicos o anonimato completo possa ser desafiador, garantimos que o feedback individual não será usado para retaliação ou julgamento pessoal e será usado </p>
+            </div>
+    </dialog>
+    <dialog id="modalConfirmar" className="modal">
+       <div className="modal-box">
+                <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
+                </form>
+                <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">Confirmação</h3>
+                <p className="py-4 md:text-[1vw] text-[4vw] font-corpo text-primary">Você confirma o envio do formulário? Ao enviar o formulário, suas respostas não poderão ser mais editadas </p>
+                <div className="modal-action">
+                <form method="dialog" className='flex gap-[1vw]'>
+                    <button onClick={enviarEntrevista} className="btn btn-accent text-primary font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[30vw] h-[6vh]"><PaperPlaneTiltIcon size="2.5vh" weight="thin" />Enviar</button>
+                    <button className="btn btn-outline text-red-400  font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[32vw] h-[6vh] btn-error">✕ Cancelar</button>
+                </form>
+                </div>
+            </div>
+    </dialog>
   </>
 );
 

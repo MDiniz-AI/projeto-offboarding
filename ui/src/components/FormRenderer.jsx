@@ -4,7 +4,7 @@ import Seletor from "./Seletor.jsx";
 import Range from "./Range.jsx";
 
 export default function FormRenderer({ perguntas, atualizarResposta }) {
-    console.log("RECEBENDO PERGUNTAS NO FormRenderer:", perguntas);
+   // console.log("RECEBENDO PERGUNTAS NO FormRenderer:", perguntas);
 
     return (
         <div className="flex flex-col gap-[7vh] mr-[1vw]">

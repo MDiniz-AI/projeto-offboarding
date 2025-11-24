@@ -58,6 +58,35 @@ export const buscarUsuario = async (req, res) => {
     }
 };
 
+
+export const buscarUsuarioPorEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({ error: "Email não informado." });
+    }
+
+    const usuario = await Usuario.findOne({
+      where: { email },
+      attributes: { exclude: ['password'] }
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    return res.status(200).json(usuario);
+
+  } catch (error) {
+    return res.status(500).json({
+      error: "Erro ao buscar usuário por email.",
+      details: error.message
+    });
+  }
+};
+
+
 // GET /users/:id/entrevistas  entrevista de um usuario
 export const buscarEntrevistasDoUsuario = async (req, res) => {
     try {
