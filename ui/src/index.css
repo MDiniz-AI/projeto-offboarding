@@ -58,4 +58,22 @@
   }
 }
 
+.apexcharts-legend-text {
+  font-family: var(--font-corpo) !important;
+  font-size: 14px; /* ajuste */
+  fill: rgb(var(--color-primary)); /* se você tiver --color-primary em formato "R G B" */
+  /* ou use: color: #4f46e5;  -- alguns browsers usam fill para SVG text */
+}
+
+/* outras áreas possivelmente necessárias */
+.apexcharts-tooltip, .apexcharts-tooltip * {
+  font-family: var(--font-corpo) !important;
+}
+.apexcharts-datalabels text {
+  font-family: var(--font-corpo) !important;
+}
+
+.apexcharts-datalabels{
+  font-family: var(--font-corpo) !important;
+}
 
