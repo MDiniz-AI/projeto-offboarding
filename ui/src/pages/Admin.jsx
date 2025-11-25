@@ -40,7 +40,7 @@ export default() => {
                 {pagAtual == 0 ? <HomeAdm /> : pagAtual == 1 ? <Times /> : pagAtual == 2 ? <Colaboradores /> : pagAtual == 3 ? <FormularioAdm /> : pagAtual == 4 ? <Config /> : null}
             </div>
             {
-              pagAtual < 5 ? <BlocoPrincipalAdm pagina={pagAtual}/> : <LoginAdm />
+              pagAtual < 5 ? <div className="fixed"><BlocoPrincipalAdm pagina={pagAtual}/></div> : <LoginAdm />
             }
         </div>
         

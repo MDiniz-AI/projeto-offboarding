@@ -20,30 +20,30 @@ export default () => {
     }
 
     return (
-        <div>
-            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Departamento</h1>
-            <div className="flex flex-row flex-wrap gap-[1vw]">    
-                <Squircle className="bg-secondary/30 w-[30vw] h-[43vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
-                    <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">{objTime.nomeTime}</h2>
-                    <div className="flex flex-col gap-[1.5vh]">
+        <div className="md:pr-2 pr-7">
+            <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Departamento</h1>
+            <div className="flex md:flex-row flex-col flex-wrap gap-3">    
+                <Squircle className="bg-secondary/30 md:w-[30vw] w-full h-70 px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
+                    <h2 className="font-title text-primary text-2xl text-center mt-[1vw]">{objTime.nomeTime}</h2>
+                    <div className="flex flex-col gap-2">
                         <div>
-                            <div className="w-full h-[7vh] bg-secondary/60 rounded-xl"> 
+                            <div className="w-full h-10 bg-secondary/60 rounded-xl"> 
                                 <div className="h-full rounded-xl" style={{ 
                                     width: `calc(${objTime.valorScore} * 100%)`, 
                                     backgroundColor: `${getBgClass(objTime.valorScore)}` 
                                     }} />
-                                <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{objTime.valorScore}</p>
+                                <p className="text-primary text-center font-corpo text-xs mt-[-1.8rem]">{objTime.valorScore}</p>
                             </div>
-                            <p className="text-primary text-center font-corpo text-[1vw]">Score Médio</p>
+                            <p className="text-primary text-center font-corpo text-sm">Score Médio</p>
                         </div>
-                        <Squircle className="bg-secondary/30 w-full h-[10vh] px-[1vw] py-[1vh] flex gap-[.5vw]" cornerRadius={20} cornerSmoothing={1}>
-                            <LightbulbIcon size="3vw" weight="thin" className="my-auto text-primary" />
-                            <p className="font-corpo text-[.8vw] my-auto">Dica: Considere conversar com a liderança do time e entender o que pode ser melhorado</p>
+                        <Squircle className="bg-secondary/30 w-full h-15 px-[1vw] py-[1vh] flex gap-[.5vw]" cornerRadius={20} cornerSmoothing={1}>
+                            <LightbulbIcon size="full" weight="thin" className="my-auto text-primary w-7" />
+                            <p className="font-corpo text-xs my-auto">Dica: Considere conversar com a liderança do time e entender o que pode ser melhorado</p>
                         </Squircle>
                     </div>
-                    <Squircle onClick={() => {document.getElementById('modalTimes').showModal()}} cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[2vh] ml-[17vw]">
+                    <Squircle onClick={() => {document.getElementById('modalTimes').showModal()}} cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-50 h-[7vh] justify-center mt-[2vh] mx-auto">
                         <DotsThreeIcon size="4vh" weight="thin" className="my-auto" />
-                        <p className="text-primary font-corpo my-auto">Detalhes</p>
+                        <p className="text-primary text-md font-corpo my-auto">Detalhes</p>
                     </Squircle>
                 </Squircle>
             </div>
@@ -55,7 +55,7 @@ export default () => {
                         </form>
                         <div className="flex mt-[1vh]">
                             <div className="flex gap-[1vw] w-full">
-                                <h1 className="font-title md:text-[2vw] text-[6vw] text-primary">Time 1</h1>
+                                <h1 className="font-title text-xl text-primary">Time 1</h1>
                             </div>
                             <div className="h-[6vh] bg-secondary/60 rounded-xl my-auto w-full"> 
                                 <div className="h-full rounded-xl" style={{ 

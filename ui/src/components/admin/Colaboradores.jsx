@@ -85,7 +85,7 @@ function filtrarUsuarios(texto) {
 
     return(
         <div>
-            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Colaboradores</h1>
+            <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Colaboradores</h1>
             <div className="flex gap-[1vw] mr-[1vw]">
                 <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full h-[30vh] stat">
                     <p className="font-corpo text-primary text-[2vw] text-center">xx% respondido</p>

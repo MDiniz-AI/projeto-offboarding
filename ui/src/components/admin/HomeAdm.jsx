@@ -158,43 +158,43 @@ export default () => {
 
 
     return(
-        <div className='flex flex-col gap-[2vh]'>
-            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Página inicial</h1>
+        <div className='flex flex-col gap-[2vh] md:pr-0 pr-[4vw]'>
+            <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Página inicial</h1>
             
-            <div className="flex gap-[1vw] mr-[1vw]">
+            <div className="flex gap-[1vw] mr-[1vw] md:flex-nowrap flex-wrap">
                 <Squircle cornerRadius={20} cornerSmoothing={1} className="w-full bg-secondary/12 flex px-[1vw] py-[3vh] gap-[1vw]">
-                        <UsersIcon size="4vw" weight="thin" className="my-auto"/>
+                        <UsersIcon size="full" weight="thin" className="my-auto w-12"/>
                     <div>
-                        <p className="text-primary/75 font-corpo text-[1vw]">{statsData[0].title}</p>
-                        <h1 className="text-[2vw] font-corpo font-bold">{statsData[0].value}</h1>
-                        <p className={statsData[0].description.includes("↗︎") ? "text-green-500 font-corpo text-[1vw]" : statsData[0].description.includes("↙") ? "text-red-500 font-corpo text-[1vw]" : "text-primary/75 font-corpo text-[1vw]" }>{statsData[0].description}</p>
+                        <p className="text-primary/75 font-corpo text-md">{statsData[0].title}</p>
+                        <h1 className="text-xl font-corpo font-bold">{statsData[0].value}</h1>
+                        <p className={statsData[0].description.includes("↗︎") ? "text-green-500 font-corpo text-md" : statsData[0].description.includes("↙") ? "text-red-500 font-corpo text-md" : "text-primary/75 font-corpo text-md" }>{statsData[0].description}</p>
                     </div>
                 </Squircle>
                 <Squircle cornerRadius={20} cornerSmoothing={1} className="w-full bg-secondary/12 px-[1vw] py-[3vh] flex gap-[1vw]">
-                    <UserIcon size="4vw" weight="thin" className="my-auto"/>
+                    <UserIcon size="full" weight="thin" className="my-auto w-12"/>
                     <div>
-                        <p className="text-primary/75 font-corpo text-[1vw]">{statsData[1].title}</p>
-                        <h1 className="text-[2vw] font-corpo font-bold">{statsData[1].value}</h1>
-                        <p className={statsData[1].description.includes("↗︎") ? "text-green-500 font-corpo text-[1vw]" : statsData[1].description.includes("↙") ? "text-red-500 font-corpo text-[1vw]" : "text-primary/75 font-corpo text-[1vw]" }>{statsData[1].description}</p>
+                        <p className="text-primary/75 font-corpo text-md">{statsData[1].title}</p>
+                        <h1 className="text-xl font-corpo font-bold">{statsData[1].value}</h1>
+                        <p className={statsData[1].description.includes("↗︎") ? "text-green-500 font-corpo text-md" : statsData[1].description.includes("↙") ? "text-red-500 font-corpo text-md" : "text-primary/75 font-corpo text-md" }>{statsData[1].description}</p>
                     </div>
                 </Squircle>
             </div>
             
-            <div className="flex flex-row gap-[1vw] mr-[1vw]">
+            <div className="flex flex-row gap-[1vw] mr-[1vw] md:flex-nowrap flex-wrap">
                 <Squircle cornerRadius={20} cornerSmoothing={1} className="w-full px-[1vw] py-[3vh] bg-secondary/12">
-                    <h2 className='text-center font-corpo font-bold text-[2vw]'>Respostas por depto</h2>
+                    <h2 className='text-center font-corpo font-bold text-xl'>Respostas por depto</h2>
                     <div className="divider mt-[1vh]"></div>
                     <ReactApexChart options={dstate.options} series={dstate.series} type="donut" className="text-primary" /> 
                 </Squircle>
                 <Squircle cornerRadius={20} cornerSmoothing={1} className="w-full px-[1vw] py-[3vh] bg-secondary/12">
-                    <h2 className='text-center font-corpo font-bold text-[2vw]'>Impressões positivas (2025)</h2>
+                    <h2 className='text-center font-corpo font-bold text-xl'>Impressões positivas (2025)</h2>
                     <div className="divider mt-[1vh]"></div>
                     <ReactApexChart options={colState.options} series={colState.series} type="bar" height={500} />
                 </Squircle>
             </div>
 
             <Squircle cornerRadius={20} cornerSmoothing={1} className="w-full px-[1vw] py-[3vh] bg-secondary/12">
-                    <h2 className='text-center font-corpo font-bold text-[2vw]'>Nível médio de impressões</h2>
+                    <h2 className='text-center font-corpo font-bold text-xl'>Nível médio de impressões</h2>
                     <div className="divider mt-[1vh]"></div>
                     <ReactApexChart options={lnState.options} series={lnState.series} type="line" height={350} />
             </Squircle>

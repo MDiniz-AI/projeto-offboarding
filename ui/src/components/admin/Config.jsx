@@ -17,7 +17,7 @@ export default () => {
 
     return(
         <div className="pr-[1vw]">
-            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Configurações</h1>
+            <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Configurações</h1>
             <div class="tabs tabs-lift">
                 <label className="tab flex gap-[.5vw] border-secondary/50 border-b-0">
                     <input type="radio" name="my_tabs_3" class="tab" aria-label="Usuários do Sistema" />
