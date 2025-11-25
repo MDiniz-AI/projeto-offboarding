@@ -26,6 +26,7 @@ export const realizarAnalise = async (req, res) => {
 };
 
 // ---- 2. GET /api/analise (LISTAR TODAS AS ANÁLISES) ----
+// ---- 2. GET /api/analise (LISTAR TODAS AS ANÁLISES) ----
 export const listarAnalises = async (req, res) => {
   try {
     const analises = await Resposta.findAll({

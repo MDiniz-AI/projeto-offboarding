@@ -1,8 +1,9 @@
 import {
-  sequelize,
-  Entrevista,
-  Resposta,
-  Usuario,
+  sequelize,
+  Entrevista,
+  Resposta,
+  Usuario,
+  Pergunta, 
 } from "../models/Relations.js";
 
 import analyzeBatch from '../services/analise_sentimento/analyze.js'; 
@@ -52,16 +53,16 @@ export const buscarEntrevista = async (req, res) => {
             ]
         });
 
-        if (!entrevista) {
-            return res.status(404).json({ error: 'Entrevista não encontrada.' });
-        }
-        return res.status(200).json(entrevista);
-    } catch (error) {
-        return res.status(500).json({ error: 'Erro ao buscar entrevista.', details: error.message });
-    }
+        if (!entrevista) {
+            return res.status(404).json({ error: 'Entrevista não encontrada.' });
+        }
+        return res.status(200).json(entrevista);
+    } catch (error) {
+        return res.status(500).json({ error: 'Erro ao buscar entrevista.', details: error.message });
+    }
 };
 
-// POST /entrevistas
+// POST /entrevistas (CRIAR COM RESPOSTAS)
 export const criarEntrevistaComRespostas = async (req, res) => {
 
     const { data_entrevista, status_entrevista, respostas } = req.body;
@@ -137,34 +138,34 @@ export const criarEntrevistaComRespostas = async (req, res) => {
 
 // DELETE /entrevistas/:id
 export const excluirEntrevista = async (req, res) => {
-    const entrevistaId = req.params.id;
+    const entrevistaId = req.params.id;
 
-    const t = await sequelize.transaction();
+    const t = await sequelize.transaction();
 
-    try {
-        const entrevista = await Entrevista.findByPk(entrevistaId, { transaction: t });
+    try {
+        const entrevista = await Entrevista.findByPk(entrevistaId, { transaction: t });
 
-        if (!entrevista) {
-            await t.rollback();
-            return res.status(404).json({ error: 'Entrevista não encontrada.' });
-        }
+        if (!entrevista) {
+            await t.rollback();
+            return res.status(404).json({ error: 'Entrevista não encontrada.' });
+        }
 
-        await Entrevista.destroy({
-            where: { id_entrevista: entrevistaId },
-            transaction: t
-        });
+        await Entrevista.destroy({
+            where: { id_entrevista: entrevistaId },
+            transaction: t
+        });
 
-        await t.commit();
+        await t.commit();
 
-        return res.status(204).json(); 
-        
-    } catch (error) {
-  
-        await t.rollback(); 
-        
-        return res.status(500).json({ 
-            error: 'Erro ao excluir entrevista. Operação desfeita.', 
-            details: error.message 
-        });
-    }
+        return res.status(204).json(); 
+        
+    } catch (error) {
+  
+        await t.rollback(); 
+        
+        return res.status(500).json({ 
+            error: 'Erro ao excluir entrevista. Operação desfeita.', 
+            details: error.message 
+        });
+    }
 };

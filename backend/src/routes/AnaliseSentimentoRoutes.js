@@ -1,10 +1,10 @@
 import express from "express";
 import {
-  criarAnaliseSentimento,
-  listarAnalises,
-  buscarAnalise,
-  deletarAnalise,
-  getDashboardInsights,
+  realizarAnalise, // CORREÇÃO: Usamos o nome da função que criamos para o POST
+  listarAnalises,
+  buscarAnalise,
+  deletarAnalise,
+  getDashboardInsights
 } from "../controllers/AnaliseSentimentoController.js";
 
 const router = express.Router();
