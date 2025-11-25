@@ -336,6 +336,17 @@ if (isLoading && secao === 2) {
         <h3 className="font-title md:text-[2vw] text-[6vw] text-primary">
           Pronto para enviar?
         </h3>
+        
+        
+        <div className="mt-[-10vw] md:mt-0">
+            <p className='text-primary md:w-[42vw] w-[97vw] md:text-[.7vw] text-[2.5vw] font-corpo md:text-justify text-center md:mx-0 mx-auto'>Caso queira visualizar e/ou corrigir suas respostas, você pode navegar pelos blocos interagindo com os ícones do menu lateral. Ao enviar suas respostas, você concorda com os <a href="#" onClick={() => document.getElementById('modalTermos').showModal()}><u>Termos de Privacidade</u></a>.</p>
+            <button type="button" className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 md:mb-0 md:mt-0" 
+                onClick={() =>document.getElementById("modalConfirmar").showModal() }>
+                <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
+                Finalizar
+                </p>
+            </button>
+        </div>
       </div>
     );
   } else {
@@ -361,27 +372,12 @@ if (isLoading && secao === 2) {
           </div>
 
           <div>
-            {secao < 7 ? (
-              <button type="button"  className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 mt-[2vh]"  onClick={avancaPasso}>
-                <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
-                  Continuar
-                </p>
-              </button>
-            ) : (
-              <div className="mt-[-10vw] md:mt-0">
-                <button
-                  type="button"
-                  className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 md:mb-0 md:mt-0" 
-                  onClick={() =>
-                    document.getElementById("modalConfirmar").showModal()
-                  }
-                >
-                  <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
-                    Finalizar
-                  </p>
-                </button>
-              </div>
-            )}
+            <button type="button"  className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 mt-[2vh]"  onClick={avancaPasso}>
+            <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
+                Continuar
+            </p>
+            </button>
+        
           </div>
         </form>
       </div>
