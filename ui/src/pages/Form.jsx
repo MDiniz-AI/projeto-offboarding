@@ -299,7 +299,7 @@ const htmlSubmitted = (
 );
 
 
-const secaoAtual = secao - 1;
+const secaoAtual = secao - 2;
 
 const perguntasDaSecao =
   perguntas && Array.isArray(perguntas[secaoAtual])
