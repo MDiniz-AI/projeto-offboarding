@@ -4,21 +4,17 @@ import { sequelize } from '../config/db.js';
 const saltRounds = 10;
 
 export const criarUsuario = async (req, res) => {
-    const { nome_completo, email, cargo, departamento, data_entrada, data_saida, motivo_saida, password } = req.body;
+    // tirei  motivo_saida, password,  cargo e departamento pq a unica pessoa logada vai ser o RH
+    const { nome_completo, email , data_saida } = req.body;
 
     try {
         
-        const hashedPassword = await bcrypt.hash(password, saltRounds); // senha criptografada
+       // const hashedPassword = await bcrypt.hash(password, saltRounds); // senha criptografada
 
         const novoUsuario = await Usuario.create({
             nome_completo,
             email,
-            cargo,
-            departamento,
-            data_entrada,
-            data_saida, 
-            motivo_saida, 
-            password: hashedPassword 
+            data_saida
         });
 
         const usuarioFormatado = novoUsuario.toJSON();
@@ -61,6 +57,35 @@ export const buscarUsuario = async (req, res) => {
         return res.status(500).json({ error: 'Erro ao buscar usuário.', details: error.message });
     }
 };
+
+
+export const buscarUsuarioPorEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({ error: "Email não informado." });
+    }
+
+    const usuario = await Usuario.findOne({
+      where: { email },
+      attributes: { exclude: ['password'] }
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    return res.status(200).json(usuario);
+
+  } catch (error) {
+    return res.status(500).json({
+      error: "Erro ao buscar usuário por email.",
+      details: error.message
+    });
+  }
+};
+
 
 // GET /users/:id/entrevistas  entrevista de um usuario
 export const buscarEntrevistasDoUsuario = async (req, res) => {

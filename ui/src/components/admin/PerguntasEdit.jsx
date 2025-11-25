@@ -4,7 +4,7 @@ import Seletor from "../Seletor.jsx"
 import { CaretDownIcon, FloppyDiskIcon, PlusIcon, TrashIcon } from "@phosphor-icons/react";
 import { createContext, useContext, useState, useEffect } from 'react'
 import { Squircle } from "corner-smoothing"; 
-
+import api from "../../lib/api.js";
 
 export default (props) => {
     const [tipoCampo, setTipoCampo] = useState("");
@@ -14,7 +14,6 @@ export default (props) => {
     function adicionarOpcao() {
             setOpcoes((prev) => [...prev, ""]); // adiciona mais um vazio
     }
-
 
     return <div>
             <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-auto h-[10vh] mt-[1vh] px-[2vw]">

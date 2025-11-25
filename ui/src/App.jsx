@@ -6,7 +6,7 @@ import Error from './pages/Error.jsx'
 import Admin from './pages/Admin.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
 
   return (
     <BrowserRouter>

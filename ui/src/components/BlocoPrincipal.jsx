@@ -1,9 +1,12 @@
 import estrela from '../assets/blip.svg'
 import { useNavigate } from "react-router-dom";
-import {HouseIcon, AtIcon, TargetIcon, UsersThreeIcon, StrategyIcon, TreeStructureIcon, MegaphoneIcon, CrownSimpleIcon, PowerIcon, DotsThreeCircleIcon} from '@phosphor-icons/react';
+import {
+  HouseIcon, AtIcon, TargetIcon, UsersThreeIcon,
+  StrategyIcon, TreeStructureIcon, MegaphoneIcon,
+  DotsThreeCircleIcon
+} from '@phosphor-icons/react';
 
-
-export default (props) => {
+export default function BlocoPrincipal(props) {
     const ativo = "bg-accent px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
     const inativo = "bg-secondary/30 px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
     const navigate = useNavigate();
@@ -11,15 +14,24 @@ export default (props) => {
     function redirectPagina(numPag){
         navigate(`/?secao=${numPag}`) 
     }
-    
+
     return (
         <div>
-            <img src={props.imagemFundo} alt="Foto de uma equipe trabalhando" className="hidden md:block w-screen h-screen object-cover"/>
+            <img
+                src={props.imagemFundo}
+                alt="Foto de uma equipe trabalhando"
+                className="hidden md:block w-screen h-screen object-cover"
+            />
+
             <div className='md:top-3 md:left-3 md:w-[53vw] md:h-[97vh] absolute top-0 left-0 w-screen h-screen bg-base-100 flex md:flex-row flex-col gap-[2vw] md:gap-[1vw] pt-[4vh] justify-end'>
+                
                 <div className='md:hidden w-screen h-screen'>
-                    {props.codigo}
+                    {props.children}
                 </div>
+
+
                 <div className='md:w-[.01vw] md:h-[90vh] h-[.1vh] w-screen bg-primary min-w-[.5px] md:hidden'></div>
+
                 <div className='flex md:flex-col md:w-[7vw] overflow-x-scroll overflow-y-hidden md:overflow-hidden mb-[2vh] md:mb-0 h-[15vh] md:h-full'>
                     <img onClick={() => redirectPagina(1)} src={estrela} alt="simbolo estrela" className='ml-[2vw] w-[6vh] h-[6vh]'/>
                     <div className='flex md:flex-col gap-[1vh] ml-[2vw] fixed bottom-[7vh]'>
@@ -32,11 +44,15 @@ export default (props) => {
                         <div onClick={() => redirectPagina(7)}className={props.idPag == 7 ? ativo : inativo}><DotsThreeCircleIcon size="4vh" weight="thin" className='text-primary' /></div>
                     </div>
                 </div>
+
+           
                 <div className='md:w-[.01vw] md:h-[90vh] h-[.1vh] w-screen bg-primary min-w-[.5px] hidden md:block'></div>
+
+     
                 <div className='hidden md:block md:w-full ml-[1vw]'>
-                    {props.codigo}
+                    {props.children}
                 </div>
             </div>
         </div>
-    )
+    );
 }

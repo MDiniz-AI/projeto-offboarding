@@ -4,16 +4,35 @@ import Pergunta from '../models/Pergunta.js';
  * Busca todas as perguntas do banco de dados.
  * O frontend vai chamar isso para montar o formulário.
  */
+
+function agruparPorCategoria(perguntasPlanas) {
+   
+    const perguntasAgrupadas = perguntasPlanas.reduce((acc, pergunta) => {
+        const categoria = pergunta.categoria;
+        
+        if (!acc[categoria]) {
+            acc[categoria] = [];
+        }
+        
+        acc[categoria].push(pergunta);
+        
+        return acc;
+    }, {}); 
+    
+    return Object.values(perguntasAgrupadas); 
+}
+
 export const listarPerguntas = async (req, res) => {
   try {
-    // Busca todas as perguntas no banco
     const perguntas = await Pergunta.findAll({
-      // Opcional, mas bom: ordenar por categoria para o front
-      order: [['categoria', 'ASC']],
+      order: [
+               
+                ['id_pergunta', 'ASC'] 
+            ]
     });
 
-    // Envia a lista de perguntas como um JSON
-    res.json(perguntas);
+    const perguntasEmSecoes = agruparPorCategoria(perguntas);
+    return res.json(perguntasEmSecoes);
 
   } catch (error) {
     console.error('Erro ao buscar perguntas:', error);
