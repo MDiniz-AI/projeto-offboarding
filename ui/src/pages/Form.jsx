@@ -6,15 +6,17 @@ import imgFundoFim from '../assets/form/fundo-fim.webp'
 import imgFundoLg from '../assets/form/fundo-lg.webp'
 import imgFundoLi from '../assets/form/fundo-li.webp'
 import imgFundoPd from '../assets/form/fundo-pd.webp'
+import imgFundoHm from '../assets/fundo-pg1.webp';
 
 import api from '../lib/api'
 
 import BlocoPrincipal from '../components/BlocoPrincipal'
 import FormRenderer from '../components/FormRenderer'
 import { createContext, useContext, useState, useEffect } from 'react'
-import {CaretRightIcon, CheckIcon, PaperPlaneTiltIcon, HouseIcon} from '@phosphor-icons/react';
+import {CaretRightIcon, CheckIcon, PaperPlaneTiltIcon, HouseIcon, ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon} from '@phosphor-icons/react';
 import Perguntas from '../perguntas.json'
 import { useNavigate,useSearchParams } from "react-router-dom";
+import { Squircle } from 'corner-smoothing'
 
 export const Contexto = createContext();
 
@@ -23,9 +25,9 @@ export default () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [perguntas, setPerguntas] = useState(Perguntas);
-    const [secao, setSecao] = useState(2);
+    const [secao, setSecao] = useState(1);
     const categorias = ["Perguntas gerais","Cultura e ambiente", "Liderança e gestão", "Estrutura, incentivos e oportunidades", "Comunicação e decisões estratégicas", "Perguntas específicas: Pedido de desligamento", "Perguntas específicas: Liderança", "Finalização"]
-    const imgVet = [ imgFundoPg, imgFundoCa, imgFundoLg, imgFundoEio, imgFundoCde, imgFundoPd, imgFundoLi, imgFundoFim ]
+    const imgVet = [ imgFundoHm, imgFundoPg, imgFundoCa, imgFundoLg, imgFundoEio, imgFundoCde, imgFundoPd, imgFundoLi, imgFundoFim ]
     const [ isSubmitted, setIsSubmitted ] = useState(false);
     const navigate = useNavigate();
     
@@ -33,10 +35,10 @@ export default () => {
         const param = searchParams.get("secao");
 
         if (param === null) {
-            setSecao(2);
+            setSecao(1);
         } else {
             const novaSecao = Number(param);
-            if (novaSecao == null || isNaN(novaSecao) || novaSecao > 9 || novaSecao < 2) secaoQuery = 2
+            if (novaSecao == null || isNaN(novaSecao) || novaSecao > 9 || novaSecao < 1) secaoQuery = 1
             else setSecao(novaSecao);
         }
     }, [searchParams]);
@@ -142,7 +144,41 @@ function App(){
                 </div>
             </form> 
         </div>
-        
+    
+    const htmlInicio = <div className="mt-[4vh] flex flex-col">
+                        <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center md:text-left text-primary">Pesquisa de offboarding</h1>
+                        <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[4vw] md:text-justify text-center text-primary mx-auto md:mx-0">Sua opinião é muito importante para nós. 💙 <br/> Esta pesquisa nos ajuda a entender melhor sua experiência e a aprimorar continuamente nosso ambiente de trabalho. ✍️</p>
+                        <div className="mt-[2vh] flex flex-col gap-[2.5vh] mx-auto md:mx-0">
+                            <div className="flex gap-[2.5vh]">
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                    <ClockCountdownIcon size="7vh" weight="thin" className="mx-auto text-primary" />
+                                    <p className="font-corpo text-[2vh] mx-auto text-primary">Leva 10 Minutos</p>
+                                </Squircle>
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                    <LockSimpleIcon size="7vh" weight="thin" className="mx-auto text-primary" />
+                                    <p className="font-corpo text-[2vh] mx-auto text-primary text-center">Anonimização de respostas</p>
+                                </Squircle>
+                            </div>
+                            
+                            <div className="flex gap-[2.5vh]">
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                    <LegoSmileyIcon size="7vh" weight="thin" className="mx-auto text-primary" />
+                                    <p className="font-corpo text-[2vh] mx-auto text-primary">Promove melhorias</p>
+                                </Squircle>
+                                <Squircle cornerRadius={20} cornerSmoothing={1} className="bg-secondary/30 md:w-[20vw] w-[45vw] h-[20vh] flex flex-col justify-center gap-2">
+                                    <ChartLineIcon size="7vh" weight="thin" className="mx-auto text-primary" />
+                                    <p className="font-corpo text-[2vh] mx-auto text-primary text-center">Identifica tendências</p>
+                                </Squircle>
+                            </div>
+                        </div>
+                        <div className="md:mt-[8vh] mt-[2vh]">
+                            <button onClick={avancaPasso} className='flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 mb-[1vh] md:mb-0'>
+                                <p className='font-corpo md:text-[1vw] text-[2vh] my-auto text-primary'> Continuar </p>
+                                <CaretRightIcon size="3.5vh" weight="thin" className='my-auto text-primary'/>
+                            </button>
+                        </div>
+                    </div>
+
     const htmlSubmitted = <div className='flex flex-col gap-[4vh] justify-center md:mt-[-4vh] mt-[25vh] md:mb-0 mb-[22vh] md:my-0'>
         <h1 className="font-title md:text-[3.5vw] text-[12vw] text-primary mx-auto">Obrigado!</h1>
         <p className="font-corpo md:w-[40vw] w-[97vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto mt-[-4vh]">Agradecemos por dedicar alguns minutos para compartilhar seu feedback e contribuir com a melhoria e a evolução do ambiente de trabalho. Desejamos muita sorte e sucesso no seu futuro.😊</p>
@@ -150,7 +186,7 @@ function App(){
     </div>
 
     return <>
-        <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : htmlForm} idPag={secao} imagemFundo={imgVet[secao-2]} />
+        <BlocoPrincipal codigo={isSubmitted ? htmlSubmitted : secao < 2 ? htmlInicio : htmlForm} idPag={secao} imagemFundo={imgVet[secao-1]} />
         <dialog id="modalTermos" className="modal">
             <div className="modal-box max-h-[92vh]">
                 <div className='flex gap-[5vw]'>

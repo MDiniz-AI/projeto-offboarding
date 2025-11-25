@@ -9,7 +9,7 @@ export default (props) => {
     const navigate = useNavigate();
 
     function redirectPagina(numPag){
-        numPag < 2 ? navigate(`/?secao=${numPag}`) : navigate(`/form?secao=${numPag}`) 
+        navigate(`/?secao=${numPag}`) 
     }
     
     return (
@@ -21,10 +21,9 @@ export default (props) => {
                 </div>
                 <div className='md:w-[.01vw] md:h-[90vh] h-[.1vh] w-screen bg-primary min-w-[.5px] md:hidden'></div>
                 <div className='flex md:flex-col md:w-[7vw] overflow-x-scroll overflow-y-hidden md:overflow-hidden mb-[2vh] md:mb-0 h-[15vh] md:h-full'>
-                    <img src={estrela} alt="simbolo estrela" className='ml-[2vw] w-[6vh] h-[6vh]'/>
+                    <img onClick={() => redirectPagina(1)} src={estrela} alt="simbolo estrela" className='ml-[2vw] w-[6vh] h-[6vh]'/>
                     <div className='flex md:flex-col gap-[1vh] ml-[2vw] fixed bottom-[7vh]'>
-                        <div onClick={() => redirectPagina(0)}className={props.idPag == 0 ? ativo : inativo}><HouseIcon size="4vh" weight="thin" className='text-primary' /></div>
-                        <div onClick={() => redirectPagina(1)}className={props.idPag == 1 ? ativo : inativo}><AtIcon size="4vh" weight="thin" className='text-primary' /></div>
+                        <div onClick={() => redirectPagina(1)}className={props.idPag == 1 ? ativo : inativo}><HouseIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div onClick={() => redirectPagina(2)}className={props.idPag == 2 ? ativo : inativo}><TargetIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div onClick={() => redirectPagina(3)}className={props.idPag == 3 ? ativo : inativo}><UsersThreeIcon size="4vh" weight="thin" className='text-primary' /></div>
                         <div onClick={() => redirectPagina(4)}className={props.idPag == 4 ? ativo : inativo}><StrategyIcon size="4vh" weight="thin" className='text-primary' /></div>

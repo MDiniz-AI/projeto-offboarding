@@ -16,7 +16,7 @@ export default () => {
                         <h1 className="font-title md:text-[3.5vw] text-[8vw] text-center text-primary mx-auto">Painel offboarding</h1>
                     </div>
                     <p className="font-corpo md:w-[40vw] w-[95vw] md:text-[1vw] text-[4vw] text-center text-primary mx-auto">Digite o seu email para realizar log-in</p>
-                    <div className='bg-[#1d1d1e] h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
+                    <div className='bg-primary h-[.01vh] min-h-[.5px] w-[40vw] mt-[3vh] '/>
                         <form action="" className="mt-[3vh] flex flex-col md:gap-[32vh] gap-[29vh]">
                             <div className=''> 
                                 <div className="flex flex-col gap-[1vh]">
