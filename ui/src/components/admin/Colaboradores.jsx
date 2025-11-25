@@ -48,22 +48,8 @@ export default () => {
   }
 
     useEffect(() => {
-       // carregarUsuarios();
-   // 👉 SIMULA UM USUÁRIO APARECENDO NA TABELA
-  const usuarioFake = {
-    id_usuario: 1,
-    nome_completo: "Usuário Teste",
-    email: "teste@example.com",
-    cargo: "Analista",
-    departamento: "TI",
-    data_entrada: "2023-01-01",
-    data_saida: "2025-01-01"
-  };
-
-  setUsuarios([usuarioFake]);
-  setUsuariosFiltrados([usuarioFake]);
-}, []);
-  
+        carregarUsuarios();
+    }, []);
 
 
   useEffect(() => {
