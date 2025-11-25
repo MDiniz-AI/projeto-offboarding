@@ -308,7 +308,7 @@ const perguntasDaSecao =
 
 let htmlContent;
 
-if (isLoading) {
+if (isLoading && secao === 2) {
   htmlContent = (
     <div className="flex flex-col gap-[1vh] items-center justify-center h-full text-primary font-title md:text-[2vw] text-[6vw]">
         <span class="loading loading-spinner loading-xl"></span>
@@ -317,7 +317,9 @@ if (isLoading) {
   );
 } else if (isSubmitted) {
   htmlContent = htmlSubmitted;
-} else if (!perguntasDaSecao || perguntasDaSecao.length === 0) {
+} else if (secao === 1 ){
+    htmlContent = htmlInicio;
+}else if (!perguntasDaSecao || perguntasDaSecao.length === 0) {
   htmlContent = (
     <div className="p-8 text-center text-red-500 font-corpo">
       Erro ao carregar o formulário. Por favor, tente novamente mais tarde.
@@ -325,7 +327,7 @@ if (isLoading) {
   );
 } else {
 
-  if (secao === 1) {
+  if (secao === 2) {
     htmlContent = htmlForm;
     
   } else if (secao === 7) {
@@ -389,7 +391,7 @@ if (isLoading) {
 
 return (
   <>
-    <BlocoPrincipal imagemFundo={imgVet[secaoAtual]} idPag={secao}>
+    <BlocoPrincipal imagemFundo={imgVet[secaoAtual+1]} idPag={secao}>
       {htmlContent}
     </BlocoPrincipal>
 
