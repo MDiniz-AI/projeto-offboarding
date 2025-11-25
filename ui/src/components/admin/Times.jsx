@@ -21,7 +21,7 @@ export default () => {
 
     return (
         <div>
-            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Times</h1>
+            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Departamento</h1>
             <div className="flex flex-row flex-wrap gap-[1vw]">    
                 <Squircle className="bg-secondary/30 w-[30vw] h-[43vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
                     <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">{objTime.nomeTime}</h2>

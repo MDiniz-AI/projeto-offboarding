@@ -82,7 +82,7 @@ export default () => {
             //   onClick={() => {
             //     document.getElementById("modalEdicao").showModal();
             //   }}
-            onClick={abrirModal}
+            onClick={() => document.getElementById('modalEdicao').showModal()}
               cornerRadius={10}
               cornerSmoothing={1}
               className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[4vh] ml-[17vw]"
