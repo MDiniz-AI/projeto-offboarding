@@ -81,11 +81,31 @@ function filtrarUsuarios(texto) {
     setPesquisa(texto);
   
   }
-  
+  async function gerarLink(usuario) {
+  try {
+    const payload = {
+      nome: usuario.nome_completo,
+      email: usuario.email
+    };
+
+    const response = await api.post("/auth/gerar-link", payload);
+
+    const link = response.data.link;
+
+    // copia o link para a área de transferência
+    await copyTextToClipboard(link);
+
+    alert("Link copiado para a área de transferência!");
+
+  } catch (error) {
+    console.error("Erro ao gerar link:", error);
+    alert("Erro ao gerar link. Veja o console.");
+  }
+}
 
     return(
         <div>
-            <h1 className="text-primary font-title text-[2.5vw] text-center my-[2vh]">Colaboradores</h1>
+            <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Colaboradores</h1>
             <div className="flex gap-[1vw] mr-[1vw]">
                 <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full h-[30vh] stat">
                     <p className="font-corpo text-primary text-[2vw] text-center">xx% respondido</p>
@@ -156,7 +176,7 @@ function filtrarUsuarios(texto) {
                                                     cornerRadius={10}
                                                     cornerSmoothing={1}
                                                     className="flex bg-secondary/50 w-[10vw] h-[6vh] justify-center"
-                                                    onClick={() => copyTextToClipboard(`${window.location.origin}/acessar?t=${u.token_acesso}`)}
+                                                    onClick={() => gerarLink(u)}
                                                 >
                                                     <LinkIcon size="4vh" weight="thin" className="my-auto" />
                                                     <p className="text-primary font-corpo my-auto font-light">Copiar Link</p>

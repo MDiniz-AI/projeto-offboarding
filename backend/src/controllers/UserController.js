@@ -1,5 +1,6 @@
 import { Usuario, Entrevista } from '../models/Relations.js'; 
 import bcrypt from 'bcrypt';
+import { gerarLinkTemporario } from './auth.controller.js';
 import { sequelize } from '../config/db.js'; 
 const saltRounds = 10;
 
@@ -159,6 +160,37 @@ export const deletarUsuario = async (req, res) => {
         return res.status(500).json({ 
             error: 'Erro ao deletar usuário. Verifique se há entrevistas associadas.', 
             details: error.message 
+        });
+    }
+};
+
+export const gerarLinkPorId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // 1. Buscar usuário pelo ID
+        const usuario = await Usuario.findByPk(id);
+
+        if (!usuario) {
+            return res.status(404).json({ error: "Usuário não encontrado." });
+        }
+
+        // 2. Gerar token usando o email do usuário
+        const token = await gerarLinkTemporario(usuario.email);
+
+        // 3. Montar o link temporário
+        const linkTemporario = `${process.env.FRONT_URL}/?t=${token}`;
+
+        return res.status(200).json({
+            usuario: usuario.nome_completo,
+            email: usuario.email,
+            link: linkTemporario
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            error: "Erro ao gerar link temporário.",
+            details: error.message
         });
     }
 };

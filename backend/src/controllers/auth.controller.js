@@ -12,7 +12,7 @@ export const gerarLinkTemporario =  (req, res) => {
     { expiresIn: "60m" }
   );
 
-   const link = `${process.env.FRONT_URL}/acessar?t=${token}`;
+   const link = `${process.env.FRONT_URL}/?t=${token}`;
    return res.json({link});
 };
 
