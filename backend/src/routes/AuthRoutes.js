@@ -8,11 +8,4 @@ const router = express.Router();
 
 router.post("/gerar-link", gerarLinkTemporario);
 
-router.get("/acessar/:token", verifyTempToken, (req, res) => {
-  return res.json({
-    mensagem: "Token válido! Acesso autorizado.",
-    dadosDoToken: req.user,
-  });
-});
-
 export default router;

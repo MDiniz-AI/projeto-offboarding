@@ -81,7 +81,27 @@ function filtrarUsuarios(texto) {
     setPesquisa(texto);
   
   }
-  
+  async function gerarLink(usuario) {
+  try {
+    const payload = {
+      nome: usuario.nome_completo,
+      email: usuario.email
+    };
+
+    const response = await api.post("/auth/gerar-link", payload);
+
+    const link = response.data.link;
+
+    // copia o link para a área de transferência
+    await copyTextToClipboard(link);
+
+    alert("Link copiado para a área de transferência!");
+
+  } catch (error) {
+    console.error("Erro ao gerar link:", error);
+    alert("Erro ao gerar link. Veja o console.");
+  }
+}
 
     return(
         <div>
@@ -156,7 +176,7 @@ function filtrarUsuarios(texto) {
                                                     cornerRadius={10}
                                                     cornerSmoothing={1}
                                                     className="flex bg-secondary/50 w-[10vw] h-[6vh] justify-center"
-                                                    onClick={() => copyTextToClipboard(`${window.location.origin}/acessar?t=${u.token_acesso}`)}
+                                                    onClick={() => gerarLink(u)}
                                                 >
                                                     <LinkIcon size="4vh" weight="thin" className="my-auto" />
                                                     <p className="text-primary font-corpo my-auto font-light">Copiar Link</p>
