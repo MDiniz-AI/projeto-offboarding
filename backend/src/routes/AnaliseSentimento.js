@@ -4,13 +4,20 @@ import {
   listarAnalises,
   buscarAnalise,
   deletarAnalise,
+  getDashboardInsights,
 } from "../controllers/AnaliseSentimentoController.js";
 
 const router = express.Router();
 
-router.post("/analise", criarAnaliseSentimento);
-router.get("/analises", listarAnalises);
-router.get("/analise/:id", buscarAnalise);
-router.delete("/analise/:id", deletarAnalise);
+// 1. POST: Rota de Análise do Formulário (Deve ser a raiz '/')
+router.post("/", realizarAnalise); 
+
+// 2. GET /api/analise/insights
+router.get("/insights", getDashboardInsights);
+
+// 3. GET /api/analise
+router.get("/", listarAnalises); // GET /api/analise -> Lista todas
+router.get("/:id", buscarAnalise); // GET /api/analise/:id
+router.delete("/:id", deletarAnalise); // DELETE /api/analise/:id
 
 export default router;

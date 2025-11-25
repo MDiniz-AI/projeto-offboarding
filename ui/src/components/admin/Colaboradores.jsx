@@ -27,6 +27,8 @@ export default () => {
 
     const [usuarios, setUsuarios] = useState([]);
     const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
+    const [usuariosFiltrados, setUsuariosFiltrados] = useState([]);
+    const [pesquisa, setPesquisa] = useState("");
 
     const formatter = new Intl.DateTimeFormat("pt-BR", {
         day: "2-digit",
@@ -35,18 +37,51 @@ export default () => {
     });
 
 
-     useEffect(() => {
-        async function carregarUsuarios() {
-            try {
-                const response = await api.get("/usuarios/users");
-                setUsuarios(response.data);
-            } catch (err) {
-                console.error("Erro ao carregar usuários:", err);
-            }
-        }
+    async function carregarUsuarios() {
+    try {
+      const response = await api.get("/usuarios/users");
+      setUsuarios(response.data);
+      setUsuariosFiltrados(response.data);
+    } catch (err) {
+      console.error("Erro ao carregar usuários:", err);
+    }
+  }
+
+    useEffect(() => {
         carregarUsuarios();
     }, []);
 
+
+  useEffect(() => {
+    const termo = pesquisa.trim().toLowerCase();
+
+    if (!termo) {
+      setUsuariosFiltrados(usuarios);
+      return;
+    }
+
+    const filtrados = usuarios.filter((usuario) => {
+      
+      const nome = (usuario.nome_completo || "").toLowerCase();
+      const cargo = (usuario.cargo || "").toLowerCase();
+      const departamento = (usuario.departamento || "").toLowerCase();
+
+      return (
+        nome.includes(termo) ||
+        cargo.includes(termo) ||
+        departamento.includes(termo)
+      );
+    });
+
+    setUsuariosFiltrados(filtrados);
+  }, [usuarios, pesquisa]);
+
+    
+function filtrarUsuarios(texto) {
+    setPesquisa(texto);
+  
+  }
+  
 
     return(
         <div>
@@ -65,7 +100,7 @@ export default () => {
                 <div className="flex mr-[1vw] gap-[5vw]">
                     <div className="flex flex-row gap-[1vh] w-full">
                         <label for="pesquisar" className="font-corpo md:text-[1vw] md:ml-0 ml-[2vw] text-[4vw] text-primary my-auto">Pesquisar</label>
-                        <input name="pesquisar" type="text" id="pesquisar" placeholder="Pesquisar" className="bg-secondary/30 p-[2vh] md:mx-0 w-full h-[7vh] md:w-full mx-auto font-corpo rounded-xl md:text-[1vw] text-[4vw] text-primary"/>
+                        <input name="pesquisar" type="text" id="pesquisar" placeholder="Pesquisar" value={pesquisa}  onChange={(e) => filtrarUsuarios(e.target.value)} className="bg-secondary/30 p-[2vh] md:mx-0 w-full h-[7vh] md:w-full mx-auto font-corpo rounded-xl md:text-[1vw] text-[4vw] text-primary"/>
                     </div>
                     <div>
                         <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center">
@@ -84,7 +119,7 @@ export default () => {
                     </thead>
 
                     <tbody>
-                                {usuarios.map((u) => (
+                                {usuariosFiltrados.map((u) => (
                                     <tr key={u.id_usuario} className="hover:bg-secondary/40">
                                         <td>
                                             <div className="flex items-center gap-3">
