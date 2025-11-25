@@ -21,7 +21,7 @@ const connectDB = async () => {
    // await sequelize.sync({ alter: true }); // sincroniza com meu db mas tem que tirar quando for pra prod
 
   } catch (err){
-    console.log("conectar mesmo assim")
+   
     /*catch (error) {
    
     console.error('❌ Erro ao conectar no MySQL :', error.message);

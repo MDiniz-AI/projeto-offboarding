@@ -258,8 +258,8 @@ function filtrarUsuarios(texto) {
                                     </label>
                                     <div class="tab-content bg-secondary/10 border-secondary/50 p-6">
                                         <h2 className="text-[1.5vw] font-title">Categoria</h2>
-                                        <RespostaViewUsr />
-                                        <RespostaViewUsr />
+                                        <RespostaViewUsr idUsuario={usuarioSelecionado.id} />
+                                        
                                     </div>
                                 </div>
                             </div>

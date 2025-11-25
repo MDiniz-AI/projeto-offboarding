@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.post("/", verifyTempToken, criarEntrevistaComRespostas);
-router.get("/entrevistas", verifyTempToken, listarEntrevistas);
+router.get("/entrevistas", listarEntrevistas);
 router.get("/entrevista/:id", verifyTempToken,  buscarEntrevista);
 router.delete('/entrevistas/:id', verifyTempToken, excluirEntrevista);
 

@@ -24,18 +24,6 @@ const Resposta = sequelize.define(
       allowNull: true,
       comment: "Score de sentimento (-1.0 a 1.0)",
     },
-
-    resposta_valor: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: "Intensidade da emoção",
-    },
-
-    texto_resposta: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-      comment: "Classificação (positive, negative, neutral)",
-    },
     theme: {
       type: DataTypes.STRING(100),
       allowNull: true,
@@ -61,12 +49,6 @@ const Resposta = sequelize.define(
         key: "id_entrevista",
       },
     },
-    analysisSource: {
-      type: DataTypes.STRING(10),
-      allowNull: true,
-      comment: "Fonte da análise (gemini ou mock)",
-    },
-    // =======================================================
   },
   {
     tableName: "resposta",
