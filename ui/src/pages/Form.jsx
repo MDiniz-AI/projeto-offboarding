@@ -338,7 +338,7 @@ if (isLoading && secao === 2) {
         </h3>
         
         
-        <div className="mt-[-10vw] md:mt-0">
+        <div className="mt-[30vw] md:mt-0">
             <p className='text-primary md:w-[42vw] w-[97vw] md:text-[.7vw] text-[2.5vw] font-corpo md:text-justify text-center md:mx-0 mx-auto'>Caso queira visualizar e/ou corrigir suas respostas, você pode navegar pelos blocos interagindo com os ícones do menu lateral. Ao enviar suas respostas, você concorda com os <a href="#" onClick={() => document.getElementById('modalTermos').showModal()}><u>Termos de Privacidade</u></a>.</p>
             <button type="button" className="flex md:gap-[32vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[41vw] mx-auto md:mx-0 md:mb-0 md:mt-0" 
                 onClick={() =>document.getElementById("modalConfirmar").showModal() }>
