@@ -19,7 +19,7 @@ export default () => {
                 chart: {
                 type: "donut",
                 },
-
+                
                 labels: [
                 "Depto. 1",
                 "Depto. 1/Depto. 1",
@@ -34,6 +34,9 @@ export default () => {
                     colors: "rgb(var(--color-primary))", // cor do texto
                     useSeriesColors: false,
                 },
+                },
+                tooltip: {
+                  enabled: true,
                 },
 
                 responsive: [
