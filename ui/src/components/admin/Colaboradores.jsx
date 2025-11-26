@@ -123,7 +123,7 @@ function filtrarUsuarios(texto) {
                         <input name="pesquisar" type="text" id="pesquisar" placeholder="Pesquisar" value={pesquisa}  onChange={(e) => filtrarUsuarios(e.target.value)} className="bg-secondary/30 p-[2vh] md:mx-0 w-full h-[7vh] md:w-full mx-auto font-corpo rounded-xl md:text-[1vw] text-[4vw] text-primary"/>
                     </div>
                     <div>
-                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex md:mx-0 mx-auto bg-secondary/50 md:w-[10vw] w-50 h-[7vh] justify-center">
+                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex md:mx-0 mx-auto bg-secondary/50 md:w-[10vw] w-50 h-[7vh] justify-center" onClick={() => {document.getElementById('modalCadastro').showModal()}}>
                             <PlusIcon size="4vh" weight="thin" className="my-auto" />
                             <p className="text-primary font-corpo my-auto">Adicionar</p>
                         </Squircle>
@@ -155,12 +155,10 @@ function filtrarUsuarios(texto) {
                                                 </div>
 
                                                 {/* Score fictício por enquanto */}
-                                                <div className="w-[12.5vw] h-[6vh] bg-secondary/60 rounded-xl"> 
-                                                    <div className="h-full rounded-xl" style={{ 
-                                                        width: `calc(${0.5} * 12.5vw)`, 
-                                                        backgroundColor: getBgClass(0.5)
-                                                    }} />
-                                                    <p className="text-primary text-center font-light text-[1vw] mt-[-4.5vh]">0.5</p>
+                                                
+                                                <div className="relative w-[12vw]"> 
+                                                        <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(0.5)}`} value={0.5 * 100} max="100">0.5</progress>
+                                                        <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                 </div>
                                             </div>
                                         </td>
@@ -286,6 +284,53 @@ function filtrarUsuarios(texto) {
                             </div>
                         </dialog>
             )}      
+
+            <dialog id="modalCadastro" class="modal">
+                <form method="dialog" class="modal-box max-w-lg">
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
+                    </form>
+                    
+                    <h3 class="text-3xl mb-4 font-title">Cadastro de Funcionário</h3>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Nome completo</span></label>
+                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Email</span></label>
+                    <input type="email" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Departamento</span></label>
+                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Cargo</span></label>
+                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Data de entrada</span></label>
+                    <input type="date" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-4">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Data de saída</span></label>
+                    <input type="date" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="modal-action">
+                    <button class="btn text-primary/80">Cancelar</button>
+                    <button class="btn btn-secondary text-primary/80">Salvar</button>
+                    </div>
+                </form>
+            </dialog>
+
+
         </div>
     )
 }
