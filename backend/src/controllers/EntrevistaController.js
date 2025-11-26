@@ -20,7 +20,7 @@ import analyzeBatch from '../services/analise_sentimento/analyze.js';
         },
         {
           model: Resposta,
-          attributes: ["id_pergunta", "resposta_texto", "resposta_valor", "score", "label", "theme", "riskLevel"],
+          attributes: ["id_pergunta", "resposta_texto", "resposta_valor", "score", "theme", "riskLevel"],
         },
       ],
       order: [["data_entrevista", "DESC"]],
@@ -44,7 +44,7 @@ export const buscarEntrevista = async (req, res) => {
                 { model: Usuario, attributes: ['nome_completo', 'cargo'] },
                 {
                     model: Resposta,
-                    attributes: ["id_pergunta", "resposta_texto", "resposta_valor", "score", "label", "theme", "riskLevel"],
+                    attributes: ["id_pergunta", "resposta_texto", "resposta_valor", "score", "theme", "riskLevel"],
                     include: [{
                         model: Pergunta, 
                         attributes: ['texto_pergunta', 'categoria']

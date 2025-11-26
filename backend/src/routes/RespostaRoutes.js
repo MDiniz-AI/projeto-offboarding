@@ -16,10 +16,10 @@ const router = express.Router();
 router.post('/', verifyTempToken, salvarRespostas);
 
 // GET /api/respostas   (Listar todas)
-router.get('/', verifyTempToken, listarRespostas);
+router.get('/',  listarRespostas);
 
 // GET /api/respostas/:id  (Buscar uma específica)
-router.get('/:id', verifyTempToken, buscarResposta);
+router.get('/:id', buscarResposta);
 
 // PUT /api/respostas/:id  (Atualizar)
 router.put('/:id', verifyTempToken, atualizarResposta);

@@ -5,17 +5,22 @@ import { sequelize } from '../config/db.js';
 const saltRounds = 10;
 
 export const criarUsuario = async (req, res) => {
-    // tirei  motivo_saida, password,  cargo e departamento pq a unica pessoa logada vai ser o RH
-    const { nome_completo, email , data_saida } = req.body;
+    
+    const { nome_completo, email , departamento , cargo, data_entrada , data_saida , motivo_saida , password } = req.body;
 
     try {
         
-       // const hashedPassword = await bcrypt.hash(password, saltRounds); // senha criptografada
+        const hashedPassword = await bcrypt.hash(password, saltRounds); // senha criptografada
 
         const novoUsuario = await Usuario.create({
             nome_completo,
             email,
-            data_saida
+            departamento,
+            cargo,
+            data_entrada,
+            motivo_saida,
+            data_saida,
+            password
         });
 
         const usuarioFormatado = novoUsuario.toJSON();
