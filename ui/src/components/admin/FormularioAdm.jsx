@@ -20,13 +20,9 @@ export default () => {
     }
 
   const getBgClass = (valor) => {
-    if (valor > 0.9) return "#277CDD";
-    if (valor >= 0.75) return "#22B457";
-    if (valor >= 0.6) return "#2DB61E";
-    if (valor >= 0.4) return "#DDB927";
-    if (valor >= 0.25) return "#FF3939";
-    if (valor >= 0.1) return "#5F1D1D";
-    return "#1E1E1E";
+    if (valor >= 0.75) return "progress-success";
+    if (valor >= 0.25) return "progress-warning";
+    return "progress-error";
   };
 
 
@@ -34,54 +30,33 @@ export default () => {
         <div>
             <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Formulário</h1>
             <div className="flex flex-row flex-wrap gap-[1vw]">    
-                <Squircle className="bg-secondary/30 md:w-90 w-83 h-55 px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
+                <Squircle className="bg-secondary/30 md:w-[24vw] w-83 h-55 md:h-[27vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
                     <h2 className="font-title text-primary text-2xl text-center mt-[1vw]">{objFormulario.nomeCategoria}</h2>
                     <div className="flex flex-row gap-[2vw]">
-                        <div>
-                            <div className="w-37.5 h-10 bg-secondary/60 rounded-xl"> 
-                                <div className="h-full rounded-xl" style={{ 
-                                    width: `calc(${objFormulario.valorScore} * (22.5rem/2.2))`, 
-                                    backgroundColor: `${getBgClass(objFormulario.valorScore)}` 
-                                    }} />
-                                    {/* 0.10 ou menos -> pessimo
-                                    0.10 a 0.25 -> muito ruim
-                                    0.25 a 0.4 -> ruim
-                                    0.4 a 0.6 -> regular
-                                    0.6 a 0.75 -> bom
-                                    0.75 a 0.9 -> muito bom
-                                    acima de 0.9 -> perfeito */}
-                  <p className="text-primary text-center font-corpo text-md mt-[-2rem]">
-                    {objFormulario.valorScore}
-                  </p>
-                </div>
-                <p className="text-primary text-center font-corpo text-xs">
-                  Score Médio
-                </p>
-              </div>
-              <div>
-                <div className="w-37.5 h-10 bg-secondary/60 rounded-xl">
-                  <div
-                    className="h-full rounded-xl"
-                    style={{
-                      width: `calc(${objFormulario.valorInten} * (22.5rem/2.2))`,
-                      backgroundColor: `${getBgClass(
-                        objFormulario.valorInten
-                      )}`,
-                    }}
-                  />
-                  <p className="text-primary text-center font-corpo text-md mt-[-2rem]">
+                    <div className="relative">
+                        <progress class={`progress md:w-[10vw] w-39 h-[5vh] ${getBgClass(objFormulario.valorScore)}`}  value={objFormulario.valorScore * 100} max="100"></progress>
+                        
+                        <p className="text-primary text-center font-corpo text-md absolute bottom-7 md:bottom-8 left-15 md:left-[4vw]">
+                          {objFormulario.valorScore}
+                        </p>
+              
+                        <p className="text-primary text-center font-corpo text-xs">
+                          Score Médio
+                        </p>
+                    </div>
+              <div className="relative">
+                <progress class={`progress md:w-[10vw] w-39 h-[5vh] ${getBgClass(objFormulario.valorInten)}`} value={objFormulario.valorInten * 100} max="100"></progress>
+                
+                <p className="text-primary text-center font-corpo text-md absolute bottom-7 md:bottom-8 left-15 md:left-[4vw]">
                     {objFormulario.valorInten}
                   </p>
-                </div>
+                
                 <p className="text-primary text-center font-corpo text-xs">
                   Intensidade Média
                 </p>
               </div>
             </div>
             <Squircle
-            //   onClick={() => {
-            //     document.getElementById("modalEdicao").showModal();
-            //   }}
             onClick={() => document.getElementById('modalEdicao').showModal()}
               cornerRadius={10}
               cornerSmoothing={1}
@@ -105,50 +80,43 @@ export default () => {
             {objFormulario.nomeCategoria}
           </h1>
           <div className="flex flex-row gap-[2vw] mt-[1vh]">
-            <div>
-              <div className="w-[42vw] h-[7vh] bg-secondary/60 rounded-xl">
-                <div
-                  className="h-full rounded-xl"
-                  style={{
-                    width: `calc(${objFormulario.valorScore} * 42vw)`,
-                    backgroundColor: `${getBgClass(objFormulario.valorScore)}`,
-                  }}
-                />
-                {/* 0.10 ou menos -> pessimo
-                                    0.10 a 0.25 -> muito ruim
-                                    0.25 a 0.4 -> ruim
-                                    0.4 a 0.6 -> regular
-                                    0.6 a 0.75 -> bom
-                                    0.75 a 0.9 -> muito bom
-                                    acima de 0.9 -> perfeito */}
-                                <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{objFormulario.valorScore}</p>
-                            </div>
-                            <p className="text-primary text-center font-corpo text-[1vw]">Score Médio</p>
-                        </div>
-                        <div>
-                            <div className="w-[42vw] h-[7vh] bg-secondary/60 rounded-xl"> 
-                                <div className="h-full rounded-xl" style={{ 
-                                    width: `calc(${objFormulario.valorInten} * 42vw)`, 
-                                    backgroundColor: `${getBgClass(objFormulario.valorInten)}`
-                                }} />
-                                <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{objFormulario.valorInten}</p>
-                            </div>
-                            <p className="text-primary text-center font-corpo text-[1vw]">Intensidade Média</p>
-                        </div>
-                    </div>
-                <div className="mt-[2vh]">
-                    <div className="flex flex-row gap-[68vw]">
-                        <h2 className="font-title md:text-[1.7vw] text-[6vw] text-primary mt-5">Perguntas</h2>
-                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[1vh]" onClick={adicionarPerg}>
-                            <PlusIcon size="4vh" weight="thin" className="my-auto" />
-                            <p className="text-primary font-corpo my-auto">Adicionar</p>
-                        </Squircle>
-                    </div>
-                    <div>
-                        {perg.map((valor, index) => (
-                            <PerguntasEdit />
-                        ))}
-                    </div>
+            <div className="relative flex-1">
+                <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objFormulario.valorScore)}`}  value={objFormulario.valorScore * 100} max="100"></progress>
+                
+                <p className="text-primary text-center font-corpo text-md absolute bottom-15 md:bottom-10 left-15 md:left-[20vw]">
+                  {objFormulario.valorScore}
+                </p>
+      
+                <p className="text-primary text-center font-corpo text-md">
+                  Score Médio
+                </p>
+            </div>
+
+            <div className="relative flex-1">
+                <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objFormulario.valorInten)}`}  value={objFormulario.valorInten * 100} max="100"></progress>
+                
+                <p className="text-primary text-center font-corpo text-md absolute bottom-15 md:bottom-10 left-15 md:left-[20vw]">
+                  {objFormulario.valorInten}
+                </p>
+      
+                <p className="text-primary text-center font-corpo text-md">
+                  Intensidade Média
+                </p>
+            </div>          
+          </div>
+          <div className="mt-[2vh]">
+              <div className="flex flex-row md:gap-[68vw] gap-15">
+                  <h2 className="font-title md:text-[1.7vw] text-[6vw] text-primary mt-5">Perguntas</h2>
+                  <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 md:w-[10vw] w-33 h-[7vh] justify-center mt-[1vh]" onClick={adicionarPerg}>
+                      <PlusIcon size="4vh" weight="thin" className="my-auto" />
+                      <p className="text-primary font-corpo my-auto">Adicionar</p>
+                  </Squircle>
+              </div>
+              <div>
+                  {perg.map((valor, index) => (
+                      <PerguntasEdit />
+                  ))}
+              </div>
                 </div>
             </div>
         </dialog>

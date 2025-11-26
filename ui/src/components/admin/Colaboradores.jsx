@@ -104,26 +104,26 @@ function filtrarUsuarios(texto) {
 }
 
     return(
-        <div>
+        <div className="md:pr-0 pr-5">
             <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Colaboradores</h1>
-            <div className="flex gap-[1vw] mr-[1vw]">
-                <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full h-[30vh] stat">
-                    <p className="font-corpo text-primary text-[2vw] text-center">xx% respondido</p>
+            <div className="flex md:flex-row flex-col gap-[1vw] mr-[1vw]">
+                <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full md:h-[30vh] h-30">
+                    <p className="font-corpo text-primary text-2xl text-center">xx% respondido</p>
                 </Squircle>
 
-                <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full h-[30vh]">
-                    <p className="font-corpo text-primary text-[2vw] text-center">xx% não respondido</p>
+                <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full md:h-[30vh] h-30">
+                    <p className="font-corpo text-primary text-2xl text-center">xx% não respondido</p>
                 </Squircle>
             </div>
             <div>
-                <h2 className="text-primary font-title text-[2vw] my-[2vh]">(ex)Colaboradores</h2>
-                <div className="flex mr-[1vw] gap-[5vw]">
-                    <div className="flex flex-row gap-[1vh] w-full">
+                <h2 className="text-primary font-title text-2xl my-[2vh]">(ex)Colaboradores</h2>
+                <div className="flex md:flex-row flex-col mr-[1vw] gap-[5vw]">
+                    <div className="flex md:flex-row flex-col gap-[1vh] w-full">
                         <label for="pesquisar" className="font-corpo md:text-[1vw] md:ml-0 ml-[2vw] text-[4vw] text-primary my-auto">Pesquisar</label>
                         <input name="pesquisar" type="text" id="pesquisar" placeholder="Pesquisar" value={pesquisa}  onChange={(e) => filtrarUsuarios(e.target.value)} className="bg-secondary/30 p-[2vh] md:mx-0 w-full h-[7vh] md:w-full mx-auto font-corpo rounded-xl md:text-[1vw] text-[4vw] text-primary"/>
                     </div>
                     <div>
-                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center">
+                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex md:mx-0 mx-auto bg-secondary/50 md:w-[10vw] w-50 h-[7vh] justify-center" onClick={() => {document.getElementById('modalCadastro').showModal()}}>
                             <PlusIcon size="4vh" weight="thin" className="my-auto" />
                             <p className="text-primary font-corpo my-auto">Adicionar</p>
                         </Squircle>
@@ -155,12 +155,10 @@ function filtrarUsuarios(texto) {
                                                 </div>
 
                                                 {/* Score fictício por enquanto */}
-                                                <div className="w-[12.5vw] h-[6vh] bg-secondary/60 rounded-xl"> 
-                                                    <div className="h-full rounded-xl" style={{ 
-                                                        width: `calc(${0.5} * 12.5vw)`, 
-                                                        backgroundColor: getBgClass(0.5)
-                                                    }} />
-                                                    <p className="text-primary text-center font-light text-[1vw] mt-[-4.5vh]">0.5</p>
+                                                
+                                                <div className="relative w-[12vw]"> 
+                                                        <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(0.5)}`} value={0.5 * 100} max="100">0.5</progress>
+                                                        <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                 </div>
                                             </div>
                                         </td>
@@ -242,9 +240,9 @@ function filtrarUsuarios(texto) {
                                         Visão Geral
                                     </label>
                                     <div class="tab-content bg-secondary/10 border-secondary/50 p-6">
-                                        <div className="flex flex-wrap gap-[1vw]">
-                                            <Squircle className="bg-secondary/30 w-[19vw] h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
-                                                <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">Salário e Benefícios</h2>
+                                        <div className="flex md:flex-row flex-col flex-wrap gap-[1vw]">
+                                            <Squircle className="bg-secondary/30 md:w-[19vw] w-screen h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
+                                                <h2 className="font-title text-primary text-xl text-center mt-[1vw]">Salário e Benefícios</h2>
                                                 <div className="flex flex-col gap-[1vw]">
                                                     <div>
                                                         <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
@@ -286,6 +284,53 @@ function filtrarUsuarios(texto) {
                             </div>
                         </dialog>
             )}      
+
+            <dialog id="modalCadastro" class="modal">
+                <form method="dialog" class="modal-box max-w-lg">
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
+                    </form>
+                    
+                    <h3 class="text-3xl mb-4 font-title">Cadastro de Funcionário</h3>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Nome completo</span></label>
+                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Email</span></label>
+                    <input type="email" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Departamento</span></label>
+                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Cargo</span></label>
+                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-3">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Data de entrada</span></label>
+                    <input type="date" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="form-control mb-4">
+                    <label class="label"><span class="label-text font-corpo text-primary/80">Data de saída</span></label>
+                    <input type="date" class="input input-secondary w-full font-corpo text-primary/80" />
+                    </div>
+
+                    <div class="modal-action">
+                    <button class="btn text-primary/80">Cancelar</button>
+                    <button class="btn btn-secondary text-primary/80">Salvar</button>
+                    </div>
+                </form>
+            </dialog>
+
+
         </div>
     )
 }
