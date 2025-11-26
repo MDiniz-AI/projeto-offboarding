@@ -276,8 +276,8 @@ function filtrarUsuarios(texto) {
                                         <PencilIcon size="4vh" weight="thin" className="my-auto" />
                                         Respostas
                                     </label>
-                                    <div class="tab-content bg-secondary/10 border-secondary/50 p-6">
-                                        <h2 className="text-[1.5vw] font-title">Categoria</h2>
+                                    <div class="tab-content bg-secondary/10 border-secondary/50 p-7">
+                                        <h2 className="text-[1.5vw] font-title">Categoria:</h2>
                                         <RespostaViewUsr emailUsuario={usuarioSelecionado.email} />
                                         
                                     </div>

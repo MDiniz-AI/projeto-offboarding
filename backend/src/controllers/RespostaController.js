@@ -38,7 +38,7 @@ export const salvarRespostas = async (req, res) => {
     const respostasParaSalvar = respostas.map((r) => ({
       id_pergunta: r.id_pergunta,
       id_entrevista: id_entrevista_criada,
-      resposta_texto: r.resposta_texto || null,
+      texto_resposta: r.texto_resposta || null,
       resposta_valor: r.resposta_valor ?? null,
     }));
 
@@ -103,11 +103,13 @@ export const buscarResposta = async (req, res) => {
 // PUT /respostas/:id
 export const atualizarResposta = async (req, res) => {
   const respostaId = req.params.id;
-  const { resposta_texto } = req.body;
+  const { texto_resposta
+ } = req.body;
 
   try {
     const [updatedRows] = await Resposta.update(
-      { resposta_texto },
+      { texto_resposta
+ },
       { where: { id_resposta: respostaId } }
     );
 

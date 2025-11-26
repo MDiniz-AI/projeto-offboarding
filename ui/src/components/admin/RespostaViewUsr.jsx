@@ -13,6 +13,7 @@ import api from "../../lib/api";
 
 export default (props) => {
   const [perguntas, setPerguntas] = useState([]);
+  const [aberto, setAberto] = useState(null);
   const [entrevistasUsuario, setEntrevistasUsuario] = useState([]);
   const [idUsuarioReal, setIdUsuarioReal] = useState(null);
   const [respostas, setRespostas] = useState([]);
@@ -51,7 +52,7 @@ export default (props) => {
           (e) => Number(e.id_usuario) === Number(idUsuarioReal)
         );
 
-       // console.log("Entrevistas filtradas:", filtradas);
+        console.log("Entrevistas filtradas:", filtradas);
 
         setEntrevistasUsuario(filtradas);
       } catch (error) {
@@ -92,7 +93,7 @@ export default (props) => {
       const response = await api.get("/respostas/");
       const todasRespostas = response.data.flat();
 
-     // console.log("Respostas carregadas:", todasRespostas);
+      console.log("Respostas carregadas:", todasRespostas);
 
       setRespostas(todasRespostas);
     } catch (err) {
@@ -103,30 +104,57 @@ export default (props) => {
   carregarRespostas();
 }, []);
 
+respostas.forEach((r, i) => {
+  console.log(`Resposta ${i}:`, r);
+});
+
+
 const respostasUsuario = respostas.filter(
-  (r) => Number(r.entrevistum.id_usuario) === Number(idUsuarioReal)
+  (r) => Number(r.entrevistum?.id_usuario) === Number(idUsuarioReal)
 );
 
-//console.log("Respostas do usuário:", respostasUsuario);
+
+const respostasPorCategoria = respostasUsuario.reduce((acc, item) => {
+  const categoria = item.perguntum?.categoria || "Sem categoria";
+
+  if (!acc[categoria]) {
+    acc[categoria] = [];
+  }
+
+  acc[categoria].push(item);
+  return acc;
+}, {});
 
 
+
+console.log("Respostas do usuário:", respostasUsuario);
 
   function adicionarOpcao() {
     setOpcoes((prev) => [...prev, ""]); // adiciona mais um vazio
   }
 
+
  return (
-  <div>
-    {respostasUsuario.length > 0 &&
-      respostasUsuario.map((resp, index) => (
+<div>
+  {Object.keys(respostasPorCategoria).map((categoria) => (
+    <div key={categoria} className="mb-6">
+
+      {/* TÍTULO DA CATEGORIA */}
+      <h2 className="text-2xl font-bold text-primary mb-2">
+        {categoria}
+      </h2>
+
+      {/* LISTA DE RESPOSTAS DA CATEGORIA */}
+      {respostasPorCategoria[categoria].map((resp, index) => (
         <div key={resp.id_resposta}>
+          
           <Squircle
             cornerRadius={10}
             cornerSmoothing={1}
             className="flex bg-secondary/50 w-auto h-[10vh] mt-[1vh] px-[2vw]"
           >
             <p className="text-primary font-corpo my-auto w-[82vw]">
-              {resp.perguntum?.texto_pergunta || "Pergunta não encontrada"}
+              {resp.perguntum?.texto_pergunta}
             </p>
 
             <CaretDownIcon
@@ -134,24 +162,36 @@ const respostasUsuario = respostas.filter(
               weight="thin"
               className="my-auto"
               onClick={() =>
-                setAberto((prev) => (prev === index ? null : index))
+                setAberto((prev) =>
+                  prev === `${categoria}-${index}` ? null : `${categoria}-${index}`
+                )
               }
             />
           </Squircle>
 
-          {aberto === index && (
+          {aberto === `${categoria}-${index}` && (
             <Squircle
               cornerRadius={10}
               cornerSmoothing={1}
               className="bg-secondary/10 w-auto h-auto px-[2vw] py-[2vh]"
             >
               <p className="font-corpo text-[1vw]">Resposta</p>
+              <p className="font-corpo text-[1.5vw]">
+                {resp.texto_resposta
 
-              <p className="font-corpo text-[1.5vw]">{resp.resposta_texto}</p>
+                    ? resp.texto_resposta
+
+                    : resp.resposta_valor !== null && resp.resposta_valor !== undefined
+                    ? resp.resposta_valor
+                    : "Sem resposta"}
+                </p>
             </Squircle>
           )}
         </div>
       ))}
-  </div>
+    </div>
+  ))}
+</div>
+
 );
 };
