@@ -4,14 +4,10 @@ import { CaretDownIcon, DotsThreeIcon, EyeglassesIcon, LightbulbIcon, LinkIcon, 
 export default () => {
 
     const getBgClass = (valor) => {
-        if (valor > 0.9) return "#277CDD";
-        if (valor >= 0.75) return "#22B457";
-        if (valor >= 0.6) return "#2DB61E";
-        if (valor >= 0.4) return "#DDB927";
-        if (valor >= 0.25) return "#FF3939";
-        if (valor >= 0.1) return "#5F1D1D";
-        return "#1E1E1E";
-    };
+    if (valor >= 0.75) return "progress-success";
+    if (valor >= 0.25) return "progress-warning";
+    return "progress-error";
+  };
 
     const objTime = {
         nomeTime: "Time 1",
@@ -23,18 +19,19 @@ export default () => {
         <div className="md:pr-2 pr-7">
             <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Departamento</h1>
             <div className="flex md:flex-row flex-col flex-wrap gap-3">    
-                <Squircle className="bg-secondary/30 md:w-[30vw] w-full h-70 px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
+                <Squircle className="bg-secondary/30 md:w-[30vw] w-full md:h-[35vh] h-70 px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
                     <h2 className="font-title text-primary text-2xl text-center mt-[1vw]">{objTime.nomeTime}</h2>
                     <div className="flex flex-col gap-2">
-                        <div>
-                            <div className="w-full h-10 bg-secondary/60 rounded-xl"> 
-                                <div className="h-full rounded-xl" style={{ 
-                                    width: `calc(${objTime.valorScore} * 100%)`, 
-                                    backgroundColor: `${getBgClass(objTime.valorScore)}` 
-                                    }} />
-                                <p className="text-primary text-center font-corpo text-xs mt-[-1.8rem]">{objTime.valorScore}</p>
-                            </div>
-                            <p className="text-primary text-center font-corpo text-sm">Score Médio</p>
+                        <div className="relative">
+                            <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objTime.valorScore)}`}  value={objTime.valorScore * 100} max="100"></progress>
+                
+                            <p className="text-primary text-center font-corpo text-md absolute bottom-15 md:bottom-10 left-15 md:left-[12.5vw]">
+                            {objTime.valorScore}
+                            </p>
+                
+                            <p className="text-primary text-center font-corpo text-md">
+                            Score Médio
+                            </p>
                         </div>
                         <Squircle className="bg-secondary/30 w-full h-15 px-[1vw] py-[1vh] flex gap-[.5vw]" cornerRadius={20} cornerSmoothing={1}>
                             <LightbulbIcon size="full" weight="thin" className="my-auto text-primary w-7" />
@@ -55,15 +52,16 @@ export default () => {
                         </form>
                         <div className="flex mt-[1vh]">
                             <div className="flex gap-[1vw] w-full">
-                                <h1 className="font-title text-xl text-primary">Time 1</h1>
+                                <h1 className="font-title text-4xl text-primary">Time 1</h1>
                             </div>
-                            <div className="h-[6vh] bg-secondary/60 rounded-xl my-auto w-full"> 
-                                <div className="h-full rounded-xl" style={{ 
-                                    width: `calc(0.5 * 100%)`, 
-                                    backgroundColor: `${getBgClass(0.5)}` 
-                                }} />
-                                <p className="text-primary text-center font-light font-corpo text-[1vw] mt-[-4.5vh]">0.5</p>
-                            </div>    
+                            <div className="relative w-full">
+                                <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objTime.valorScore)}`}  value={objTime.valorScore * 100} max="100">0.5</progress>
+                    
+                                <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">
+                                    {objTime.valorScore}
+                                </span>
+                            </div>
+                 
                         </div>
         
                         <div className="mt-[2vh]">
@@ -79,22 +77,16 @@ export default () => {
                                             <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">Salário e Benefícios</h2>
                                             <div className="flex flex-col gap-[1vw]">
                                                 <div>
-                                                    <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
-                                                        <div className="h-full rounded-xl" style={{ 
-                                                            width: `calc(${0.5} * 12.5vw)`, 
-                                                            backgroundColor: `${getBgClass(0.5)}` 
-                                                        }} />
-                                                        <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{0.5}</p>
+                                                    <div className="relative"> 
+                                                        <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objTime.valorScore)}`}  value={objTime.valorScore * 100} max="100">0.5</progress>
+                                                        <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                     </div>
                                                     <p className="text-primary text-center font-corpo text-[1vw]">Score Médio</p>
                                                 </div>
                                                 <div>
-                                                    <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
-                                                        <div className="h-full rounded-xl" style={{ 
-                                                            width: `calc(${0.5} * 12.5vw)`, 
-                                                            backgroundColor: `${getBgClass(0.5)}`
-                                                        }} />
-                                                        <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{0.5}</p>
+                                                    <div className="relative"> 
+                                                        <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objTime.valorScore)}`}  value={objTime.valorScore * 100} max="100">0.5</progress>
+                                                        <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                     </div>
                                                     <p className="text-primary text-center font-corpo text-[1vw]">Intensidade Média</p>
                                                 </div>
@@ -134,12 +126,9 @@ export default () => {
                                                         <div class="font-bold">João da Silva</div>
                                                         <div class="text-sm opacity-50">Função</div>
                                                         </div>
-                                                        <div className="w-[12.5vw] h-[6vh] bg-secondary/60 rounded-xl"> 
-                                                            <div className="h-full rounded-xl" style={{ 
-                                                                width: `calc(0.5 * 12.5vw)`, 
-                                                                backgroundColor: `${getBgClass(0.5)}` 
-                                                            }} />
-                                                            <p className="text-primary text-center font-light text-[1vw] mt-[-4.5vh]">0.5</p>
+                                                        <div className="relative w-[12vw]"> 
+                                                            <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objTime.valorScore)}`}  value={objTime.valorScore * 100} max="100">0.5</progress>
+                                                            <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -162,12 +151,9 @@ export default () => {
                                             <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">Time 1</h2>
                                             <div className="flex flex-col gap-[1vw]">
                                                 <div>
-                                                    <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
-                                                        <div className="h-full rounded-xl" style={{ 
-                                                            width: `calc(${0.5} * 12.5vw)`, 
-                                                            backgroundColor: `${getBgClass(0.5)}` 
-                                                        }} />
-                                                        <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{0.5}</p>
+                                                    <div className="w-full relative"> 
+                                                        <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(objTime.valorScore)}`}  value={objTime.valorScore * 100} max="100">0.5</progress>
+                                                        <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                     </div>
                                                     <p className="text-primary text-center font-corpo text-[1vw]">Score Médio</p>
                                                 </div>
