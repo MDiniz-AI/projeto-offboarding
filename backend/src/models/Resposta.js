@@ -12,11 +12,11 @@ const Resposta = sequelize.define(
     },
     resposta_texto: {
       type: DataTypes.TEXT,
-      allowNull: false,
+     
     },
     resposta_valor: {
       type: DataTypes.STRING(255),
-      allowNull: false,
+    
     },
     // ======== NOVOS CAMPOS DE ANÁLISE DE SENTIMENTO ========
     score: {
