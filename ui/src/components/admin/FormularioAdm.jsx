@@ -34,13 +34,13 @@ export default () => {
         <div>
             <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Formulário</h1>
             <div className="flex flex-row flex-wrap gap-[1vw]">    
-                <Squircle className="bg-secondary/30 w-[30vw] h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
-                    <h2 className="font-title text-primary text-[1.7vw] text-center mt-[1vw]">{objFormulario.nomeCategoria}</h2>
+                <Squircle className="bg-secondary/30 md:w-90 w-83 h-55 px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
+                    <h2 className="font-title text-primary text-2xl text-center mt-[1vw]">{objFormulario.nomeCategoria}</h2>
                     <div className="flex flex-row gap-[2vw]">
                         <div>
-                            <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl"> 
+                            <div className="w-37.5 h-10 bg-secondary/60 rounded-xl"> 
                                 <div className="h-full rounded-xl" style={{ 
-                                    width: `calc(${objFormulario.valorScore} * 12.5vw)`, 
+                                    width: `calc(${objFormulario.valorScore} * (22.5rem/2.2))`, 
                                     backgroundColor: `${getBgClass(objFormulario.valorScore)}` 
                                     }} />
                                     {/* 0.10 ou menos -> pessimo
@@ -50,30 +50,30 @@ export default () => {
                                     0.6 a 0.75 -> bom
                                     0.75 a 0.9 -> muito bom
                                     acima de 0.9 -> perfeito */}
-                  <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">
+                  <p className="text-primary text-center font-corpo text-md mt-[-2rem]">
                     {objFormulario.valorScore}
                   </p>
                 </div>
-                <p className="text-primary text-center font-corpo text-[1vw]">
+                <p className="text-primary text-center font-corpo text-xs">
                   Score Médio
                 </p>
               </div>
               <div>
-                <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl">
+                <div className="w-37.5 h-10 bg-secondary/60 rounded-xl">
                   <div
                     className="h-full rounded-xl"
                     style={{
-                      width: `calc(${objFormulario.valorInten} * 12.5vw)`,
+                      width: `calc(${objFormulario.valorInten} * (22.5rem/2.2))`,
                       backgroundColor: `${getBgClass(
                         objFormulario.valorInten
                       )}`,
                     }}
                   />
-                  <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">
+                  <p className="text-primary text-center font-corpo text-md mt-[-2rem]">
                     {objFormulario.valorInten}
                   </p>
                 </div>
-                <p className="text-primary text-center font-corpo text-[1vw]">
+                <p className="text-primary text-center font-corpo text-xs">
                   Intensidade Média
                 </p>
               </div>
@@ -85,7 +85,7 @@ export default () => {
             onClick={() => document.getElementById('modalEdicao').showModal()}
               cornerRadius={10}
               cornerSmoothing={1}
-              className="flex bg-secondary/50 w-[10vw] h-[7vh] justify-center mt-[4vh] ml-[17vw]"
+              className="flex bg-secondary/50 w-40 h-[7vh] justify-center mt-[4vh] mx-auto"
             >
               <DotsThreeIcon size="4vh" weight="thin" className="my-auto" />
               <p className="text-primary font-corpo my-auto">Detalhes</p>
