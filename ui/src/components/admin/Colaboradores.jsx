@@ -6,15 +6,21 @@ import api from "../../lib/api";
 
 export default () => {
 
-    const getBgClass = (valor) => {
-        if (valor > 0.9) return "#277CDD";
-        if (valor >= 0.75) return "#22B457";
-        if (valor >= 0.6) return "#2DB61E";
-        if (valor >= 0.4) return "#DDB927";
-        if (valor >= 0.25) return "#FF3939";
-        if (valor >= 0.1) return "#5F1D1D";
-        return "#1E1E1E";
+    const usuarioFake = {
+        id_usuario: 1,
+        nome_completo: "Usuário Exemplo",
+        cargo: "Cargo Teste",
+        departamento: "TI",
+        email: "teste@example.com",
+        data_entrada: "2024-01-01",
+        data_saida: "2024-12-31"
     };
+
+    const getBgClass = (valor) => {
+    if (valor >= 0.75) return "progress-success";
+    if (valor >= 0.25) return "progress-warning";
+    return "progress-error";
+  };
 
     async function copyTextToClipboard(texto) {
         try {
@@ -229,13 +235,10 @@ function filtrarUsuarios(texto) {
                                         
                                     </div>
                                 </div>
-                                <div className="h-[6vh] bg-secondary/60 rounded-xl my-auto w-full"> 
-                                    <div className="h-full rounded-xl" style={{ 
-                                        width: `calc(0.5 * 100%)`, 
-                                        backgroundColor: `${getBgClass(0.5)}` 
-                                    }} />
-                                    <p className="text-primary text-center font-light font-corpo text-[1vw] mt-[-4.5vh]">0.5</p>
-                                </div>    
+                                <div className="relative h-[6vh] my-auto w-full"> 
+                                    <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(0.5)}`} value={0.5 * 100} max="100">0.5</progress>
+                                    <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
+                                </div>
                             </div>
 
                             <div className="mt-[2vh]">
@@ -248,27 +251,21 @@ function filtrarUsuarios(texto) {
                                     <div class="tab-content bg-secondary/10 border-secondary/50 p-6">
                                         <div className="flex md:flex-row flex-col flex-wrap gap-[1vw]">
                                             <Squircle className="bg-secondary/30 md:w-[19vw] w-screen h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
-                                                <h2 className="font-title text-primary text-xl text-center mt-[1vw]">Salário e Benefícios</h2>
+                                                <h2 className="font-title text-primary text-2xl text-center mt-[1vw]">Salário e Benefícios</h2>
                                                 <div className="flex flex-col gap-[1vw]">
                                                     <div>
-                                                        <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
-                                                            <div className="h-full rounded-xl" style={{ 
-                                                                width: `calc(${0.5} * 12.5vw)`, 
-                                                                backgroundColor: `${getBgClass(0.5)}` 
-                                                                }} />
-                                                            <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{0.5}</p>
+                                                        <div className="relative h-[7vh] my-auto w-[16vw]"> 
+                                                            <progress class={`progress md:w-full w-39 h-full ${getBgClass(0.5)}`} value={0.5 * 100} max="100">0.5</progress>
+                                                            <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                         </div>
-                                                        <p className="text-primary text-center font-corpo text-[1vw]">Score Médio</p>
+                                                        <p className="text-primary text-center font-corpo text-md">Score Médio</p>
                                                     </div>
                                                     <div>
-                                                        <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
-                                                            <div className="h-full rounded-xl" style={{ 
-                                                                width: `calc(${0.5} * 12.5vw)`, 
-                                                                backgroundColor: `${getBgClass(0.5)}`
-                                                            }} />
-                                                            <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{0.5}</p>
+                                                        <div className="relative h-[7vh] my-auto w-[16vw]"> 
+                                                            <progress class={`progress md:w-full w-39 h-full ${getBgClass(0.5)}`} value={0.5 * 100} max="100">0.5</progress>
+                                                            <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
                                                         </div>
-                                                        <p className="text-primary text-center font-corpo text-[1vw]">Intensidade Média</p>
+                                                        <p className="text-primary text-center font-corpo text-md">Intensidade Média</p>
                                                     </div>
                                                 </div>
                                             </Squircle>       
@@ -311,7 +308,10 @@ function filtrarUsuarios(texto) {
 
                     <div class="form-control mb-3">
                     <label class="label"><span class="label-text font-corpo text-primary/80">Departamento</span></label>
-                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
+                    <select name="depto" id="depto" className="select w-full select-secondary font-corpo">
+                        <option key={1} value="Nenhum" disabled hidden selected="selected">Selecione uma opção</option>
+                        {/*Aplicar o map de funcionarios existentes como opções**/}
+                    </select>
                     </div>
 
                     <div class="form-control mb-3">
