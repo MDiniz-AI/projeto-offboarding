@@ -8,4 +8,8 @@ const router = express.Router();
 
 router.post("/gerar-link", gerarLinkTemporario);
 
+router.get("/validar", verifyTempToken, (req, res) => {
+  return res.json({ valido: true, dados: req.user });
+});
+
 export default router;
