@@ -3,6 +3,7 @@ import { CaretDownIcon, DotsThreeIcon, EyeglassesIcon, LinkIcon, PencilIcon, Plu
 import { useEffect, useState } from "react";
 import RespostaViewUsr from "./RespostaViewUsr";
 import api from "../../lib/api";
+import sha256 from 'crypto-js/sha256';
 
 export default () => {
 
@@ -11,7 +12,7 @@ export default () => {
         nome_completo: "Usuário Exemplo",
         cargo: "Cargo Teste",
         departamento: "TI",
-        email: "teste@example.com",
+        email: "teste@teste.com.br",
         data_entrada: "2024-01-01",
         data_saida: "2024-12-31"
     };
@@ -157,7 +158,7 @@ function filtrarUsuarios(texto) {
                                             <div className="flex items-center gap-3">
                                                 <div className="avatar">
                                                     <div className="mask mask-squircle h-12 w-12">
-                                                        <img src="https://i.pravatar.cc/150?u=${u.email}" />
+                                                        <img src={`https://gravatar.com/avatar/${sha256(u.email)}?s=50`} />
                                                     </div>
                                                 </div>
 
@@ -221,7 +222,8 @@ function filtrarUsuarios(texto) {
                             </form>
                             <div className="flex">
                                 <div className="flex gap-[1vw] w-full">
-                                    <img src="https://i.pravatar.cc/150?u=${usuarioSelecionado.email}" class="mask mask-squircle w-[8vw] h-[8vw] object-cover"/>
+                                    {/* <img src="https://i.pravatar.cc/150?u=${usuarioSelecionado.email}" class="mask mask-squircle w-[8vw] h-[8vw] object-cover"/> */}
+                                    <img src={`https://gravatar.com/avatar/${sha256(usuarioSelecionado.email)}?s=200`} class="mask mask-squircle w-[8vw] h-[8vw] object-cover"/>
                                     <div className="flex flex-col my-auto">
                                         <h1 className="font-title md:text-[2vw] text-[6vw] text-primary">{usuarioSelecionado.nome_completo}</h1>
                                         <p className="font-corpo md:text-[1vw] text-[4vw] text-primary">{usuarioSelecionado.departamento || "Departamento"}</p> 
