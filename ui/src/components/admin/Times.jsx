@@ -18,10 +18,10 @@ export default () => {
     return (
         <div className="md:pr-2 pr-7">
             <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Departamento</h1>
-            <Squircle cornerRadius={10} cornerSmoothing={1} className="flex mx-auto bg-secondary/50 md:w-[10vw] w-50 h-[7vh] justify-center" onClick={() => {document.getElementById('modalCadastro').showModal()}}>
+            {/* <Squircle cornerRadius={10} cornerSmoothing={1} className="flex mx-auto bg-secondary/50 md:w-[10vw] w-50 h-[7vh] justify-center" onClick={() => {document.getElementById('modalCadastro').showModal()}}>
                 <PlusIcon size="4vh" weight="thin" className="my-auto" />
                 <p className="text-primary font-corpo my-auto">Adicionar</p>
-            </Squircle>
+            </Squircle> */}
             <div className="flex md:flex-row flex-col flex-wrap gap-3">    
                 <Squircle className="bg-secondary/30 md:w-[30vw] w-full md:h-[35vh] h-70 px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
                     <h2 className="font-title text-primary text-2xl text-center mt-[1vw]">{objTime.nomeTime}</h2>
