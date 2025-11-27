@@ -51,6 +51,12 @@ export default () => {
         carregarUsuarios();
     }, []);
 
+    useEffect(() => {
+  
+  setUsuarios([usuarioFake]);
+  setUsuariosFiltrados([usuarioFake]);
+}, []);
+
 
   useEffect(() => {
     const termo = pesquisa.trim().toLowerCase();
