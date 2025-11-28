@@ -25,8 +25,7 @@ function agruparPorCategoria(perguntasPlanas) {
 export const listarPerguntas = async (req, res) => {
   try {
     const perguntas = await Pergunta.findAll({
-      order: [
-               
+      order: [         
                 ['id_pergunta', 'ASC'] 
             ]
     });
@@ -40,12 +39,10 @@ export const listarPerguntas = async (req, res) => {
   }
 };
 
-// Adicione isso DEPOIS da função listarPerguntas
-
 // 2. CRIAR uma nova pergunta
 export const criarPergunta = async (req, res) => {
   try {
-    // Pega os dados enviados no corpo da requisição (JSON)
+
     const novaPergunta = await Pergunta.create(req.body);
     res.status(201).json(novaPergunta);
   } catch (error) {
@@ -75,17 +72,16 @@ export const buscarPergunta = async (req, res) => {
 export const atualizarPergunta = async (req, res) => {
   try {
     const { id } = req.params;
-    
-    // Atualiza onde o ID for igual ao passado na URL
+    console.log("Do back:" ,id )
+   
     const [linhasAtualizadas] = await Pergunta.update(req.body, {
-      where: { id: id }
+      where: { id_pergunta: id }
     });
 
     if (linhasAtualizadas === 0) {
       return res.status(404).json({ msg: 'Pergunta não encontrada ou sem alterações' });
     }
 
-    // Busca a pergunta atualizada para devolver pro front
     const perguntaAtualizada = await Pergunta.findByPk(id);
     res.json(perguntaAtualizada);
 
