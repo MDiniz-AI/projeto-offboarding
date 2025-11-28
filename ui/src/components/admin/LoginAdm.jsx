@@ -3,6 +3,7 @@ import Blip from '../../assets/blip.svg?react'
 import GoogleLogo from '../../assets/Google__G__logo.svg'
 import MicrosoftLogo from '../../assets/Microsoft_logo.svg'
 import { CaretRightIcon } from '@phosphor-icons/react'
+import { SignInButton } from '@clerk/clerk-react'
 
 export default () => {
 
@@ -24,8 +25,19 @@ export default () => {
                                     <input name="email" type="email" id="email" placeholder="Digite o seu email aqui" className="bg-secondary/30 p-[2vh] md:w-[40vw] md:mx-0 w-full mx-auto font-corpo rounded-xl md:text-[1vw] text-[4vw] text-primary"/>
                                 </div>
                                 <div className='flex gap-[1.5vw] mt-[2vh] justify-center'>
-                                    <button><img src={GoogleLogo} alt="Logo do google" className='md:w-[3.2vw] w-[13vw] bg-secondary/30 p-[1.8vh] rounded-xl'/></button>
-                                    <button><img src={MicrosoftLogo} alt="Logo da Microsoft" className='md:w-[3.2vw] w-[13vw] bg-secondary/30 p-[1.8vh] rounded-xl'/></button>
+                                        <SignInButton
+                                    mode="redirect"
+                                    redirectUrl="/admin"
+                                    signInOptions={{ strategy: "oauth_google" }}>        
+                                    <button type='button'><img src={GoogleLogo} alt="Logo do google" className='md:w-[3.2vw] w-[13vw] bg-secondary/30 p-[1.8vh] rounded-xl'/></button>
+                                    </SignInButton>
+
+                                    <SignInButton
+                                    mode="redirect"
+                                    redirectUrl="/admin"
+                                    signInOptions={{ strategy: "oauth_microsoft" }}>
+                                   <button type='button'><img src={MicrosoftLogo} alt="Logo da Microsoft" className='md:w-[3.2vw] w-[13vw] bg-secondary/30 p-[1.8vh] rounded-xl'/></button>
+                                    </SignInButton>
                                 </div>
                             </div>
                             <button onClick={{}} className='flex md:gap-[31vw] gap-[60vw] bg-accent md:p-[1vw] p-[3vw] rounded-xl w-[97vw] md:w-[40vw] mx-auto md:mx-0 mb-[1vh] md:mb-0 '>
