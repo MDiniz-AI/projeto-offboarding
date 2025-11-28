@@ -1,0 +1,272 @@
+# Plataforma de Offboarding Inteligente
+
+## 📌 Sobre
+
+O objetivo deste projeto é desenvolver um **sistema completo de offboarding** que simula o processo de entrevistas de desligamento, permitindo analisar informações de forma estruturada e extrair insights relevantes sobre a experiência dos colaboradores.
+
+Para isso, o sistema será construído com uma arquitetura moderna e escalável:
+
+- **Back-end em Node.js**, responsável pela gestão das rotas, processamento dos dados e integração com serviços externos.
+- **Front-end em React**, onde será criado um **formulário interativo** que simula a entrevista de desligamento e oferece uma experiência simples e intuitiva para o usuário.
+- **MySQL como banco de dados**, armazenando todos os registros gerados de forma organizada e flexível, ainda que utilizando dados fictícios para fins de demonstração.
+
+Além do fluxo básico de coleta de informações, o sistema contará com um **módulo de análise de sentimentos**, implementado por meio da API de IA do Google. Esse recurso permitirá identificar automaticamente padrões positivos, negativos ou neutros nas respostas, enriquecendo a interpretação dos resultados.
+
+Por fim, todas as informações serão apresentadas em um **dashboard dinâmico**, com gráficos, indicadores e estatísticas que facilitam a visualização e auxiliam na tomada de decisões estratégicas.
+
+## 🚀 Tecnologias utilizadas
+
+![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Clerk](https://img.shields.io/badge/Clerk-F7DF1E?style=for-the-badge&logo=clerk&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Google AI](https://img.shields.io/badge/Google%20AI-4285F4?style=for-the-badge&logo=google&logoColor=white)
+
+## 🏗️ Arquitetura do Sistema
+
+A plataforma foi desenvolvida com uma arquitetura que integra autenticação, coleta de dados, análise com IA e visualização em dashboard. O fluxo geral pode ser resumido em cinco etapas:
+
+1. Interface(Front-end - React + Vite + TailwindCSS)
+
+- Formulário interativo de entrevista;
+
+- Telas de login,questionários e dashboard;
+
+- Integração com Clerk para autenticação;
+
+- Comunicação com o back-end via API REST;
+
+2. Autenticação (Clerk)
+
+- Login via e-mail, Google ou Microsoft;
+
+- Gestão de sessão e usuários (dentro do dashboard do Clerk);
+
+- Proteção de rotas privadas;
+
+- Envio de JWT ao back-end para validação;
+
+3. Back-end (Node.js)
+
+- Receber e validar dados enviados pelo front-end;
+
+- Processar respostas da entrevista;
+
+- Integrar com a Google AI para análise de sentimentos;
+
+4. Banco de Dados (MySQL)
+
+- Registro completo das entrevistas;
+
+- Resultados da análise de sentimentos;
+
+5. Serviço de IA (Google AI)
+   O Sentiment Service é o módulo responsável por analisar as respostas textuais do formulário de offboarding, retornando:
+
+- Retorna sentimento: negative, neutral ou positive;
+
+- score: variação entre -1 (muito negativo) e +1 (muito positivo);
+
+- magnitude: intensidade da emoção (≥ 0);
+
+- overall: média geral das emoções detectadas;
+
+- Resultado final é armazenado e exibido no dashboard;
+
+## ⚙️ Funcionalidades
+
+Desenvolvido para trazer mais conforto para o entrevistado e maior assertividade para a empresa, a plataforma conta com telas interativas, fáceis e rápidas, um dashboard e análise de sentimentos integrada via IA. O resultado é uma experiência dinâmica, bonita e atraente para o usuário.
+
+### Tela principal
+
+Mostra a importância da Pesquisa e revela o quanto o processo é prático e rápido.
+
+(Print da tela principal)
+
+### Tela de Login
+
+Login simples e rápido oferecendo opções de logar com e-mail, Google ou Microsft.
+
+(Print da tela loging com Modal)
+
+### Telas de Pesquisas
+
+Questionários dinâmicos, leves, rápidos e seguros.
+
+(Print da tela questionário)
+
+### Dashboard
+
+Dashboards dinâmicos com análises de sentimentos.
+
+(Print do dashboard)
+
+## 🙋🏻‍♂️ Autores
+
+- [Joice Cristina](https://github.com/Joice-crypto)
+- [Micael Diniz](https://github.com/MDiniz-AI)
+- [Miguel Balbo](https://github.com/MiguelBalbo)
+- [Thaís Silva](https://github.com/ThaisSil)
+- [Vitor Sternik](https://github.com/Vitorfs2509)
+
+## 📡 Endpoints da API
+
+A API do projeto expõe dois endpoints principais, responsáveis pela submissão do formulário de desligamento e pela entrega dos dados agregados usados no dashboard.
+
+**1. Endpoint de Submissão de Formulário (POST)**
+
+Envia as respostas do formulário e aciona a análise de sentimentos.
+
+| Atributo | Detalhes |
+| :--- | :--- |
+| **URL** | `http://localhost:5001/api/entrevistas` |
+| **Método** | `POST` |
+| **Controller** | `EntrevistaController.js` |
+| **Segurança** | Requer **id_usuario** válido no **Body** (proveniente do contexto de login) |
+
+
+  📥 **Request Body (Exemplo)**
+
+O Frontend monta um objeto JSON com o ID do usuário logado e um array de
+respostas.
+
+| Campo | Tipo | Descrição | Exemplo de Conteúdo
+| :--- | :--- |  :--- |  :--- |
+| **id_usuario**  | Integer | ID do usuário que está preenchendo o formulário. | 12345
+| **respostas** | Array | Lista de respostas do formulário. |`[{ "pergunta": "Motivo da saída", "resposta": "Busca por novo desafio" }, ...]`|
+
+
+
+   📤 **Response – 201 Created**
+
+Em caso de sucesso, o backend retorna a confirmação de que os dados foram salvos
+e, opcionalmente, os resultados da análise de sentimento para feedback imediato.
+
+| Status | HTTP | Body de Exemplo
+| :--- | :--- |  :--- |
+| 201 | Created | `[{ "mensagem": "Formulário e Análise de Sentimento salvos com sucesso.", "analise_id": 999 }]` |
+
+
+**2. Endpoint de Visualização Agregada (GET)**
+
+Retorna dados pré-processados para visualização no dashboard.
+
+| Atributo | Detalhes |
+| :--- | :--- |
+| **URL** | `http://localhost:5001/api/analise/insights` |
+| **Método** | `GET` |
+| **Controller** | `AnaliseSentimentoController.js` |
+| **Função** | `getDashboardInsights` |
+
+
+  📤 **Response – 200 OK**
+
+  O Backend retorna um JSON pré-agregado, pronto para plotagem no dashboard. Os
+dados serão um resumo dos insights de sentimento e motivos de saída.
+
+| Status | HTTP | Body de Exemplo
+| :--- | :--- | :--- |
+| 200 | OK | `[{ "total_entrevistas": 500, "sentimento_resumo": {"positivo": 60, "negativo": 15, "neutro": 25}, principais_motivos": [{"motivo": "Melhor salário", "contagem": 150}, {"motivo": "Cultura", "contagem": 100}] }]` |
+
+
+
+## 🛠️ Como executar o projeto
+
+### Pré-requisitos
+
+Certifique-se de ter o Node.js e o MySQL instalados em sua máquina.
+
+### 1. Clonar o Repositório
+
+- Clone este repositório em sua máquina local usando o comando `git clone`.
+
+  -git clone [Repo](https://github.com/MDiniz-AI/projeto-offboarding.gitRL)
+
+### 2. Instalar Dependências
+
+- Este projeto utiliza uma estrutura com pastas separadas para o backend e o frontend (ui). Instale as dependências em cada diretório:
+  Dependências do Backend:
+
+`cd backend`
+
+`npm install`
+
+`cd ..`
+
+  Dependências do Frontend (ui):
+
+ `cd ui`
+
+ `npm install`
+
+ `cd ..`
+
+
+### 3. Configurar e iniciar
+
+- Você precisará de dois terminais abertos, um para o backend e um para o frontend.
+
+No Terminal 1, navegue até a pasta `backend`e inicie o serviço da API.
+
+`cd backend`
+
+`npm start`
+
+No Terminal 2, navegue até a pasta `ui`e inicie o servidor de densenvolvimento do frontend:
+
+`cd ui`
+
+`npm run dev`
+
+
+## 🤖 Serviço de Análise de Sentimentos (Google AI)
+O backend usa o Sentiment Service (serviço interno responsável por analisar respostas abertas do formulário) para extrair insights das entrevistas de offboarding.
+O módulo de IA do Google retorna os seguintes resultados após analisar as respostas textuais:
+* **Sentimento (Label):** Classifica a resposta como `negative`, `neutral`, ou `positive`.
+* **Score:** Variação entre $\mathbf{-1}$ (muito negativo) e $\mathbf{+1}$ (muito positivo).
+* **Magnitude:** Intensidade da emoção (sempre $\ge 0$).
+* **Overall:** Média geral das emoções detectadas em todas as respostas.
+O resultado final é armazenado no Banco de Dados (MySQL) e exibido no Dashboard.
+
+### 🔗 Rota utilizada pelo Backend
+O Backend (Node.js) faz a requisição para o serviço de análise de sentimentos através da rota:
+
+`POST /sentiment/analyze`
+
+**📥 Estrutura de Resposta (Exemplo do Serviço)** 
+O serviço devolve a análise estruturada:
+
+JSON
+
+`{
+  "results": [
+    // Array de resultados por pergunta
+    {
+      "score": -0.8, 
+      "magnitude": 0.9, 
+      "label": "negative"
+    },
+    // ...
+  ],
+  "overall": -0.25 // Média geral
+}`
+
+**Configuração de Ambiente:**
+
+O projeto já inclui um arquivo `.env`.
+
+| Ambiente | Variáveis | Detalhes
+| :--- | :--- | :--- |
+| **Desenvolvimento** | `USE_MOCK=true` `PORT=5050` | Recomendado para testes locais. O serviço roda na porta `5050`.|
+| **Produção (Google AI)** | `USE_MOCK=false` `GOOGLE_APPLICATION_CREDENTIALS=/caminho/da/sua-chave.json` | Requer credenciais da Google AI. |
+
+
+**🧪 Teste Rápido (Exemplo cURL)**
+Para testar o serviço localmente (assumindo que ele está rodando na porta `5050`), utilize o seguinte comando:
+
+`curl -s -X POST http://localhost:5050/sentiment/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"items":[    {"sectionId":"sal_benef","sectionName":"Salário & Benefícios","questionId":"q_salario","questionText":"O salário te agradava?","answerText":"PIOR SALÁRIO DO MUNDO!!!"},    {"sectionId":"gestao","sectionName":"Gestão","questionId":"q_motivo","questionText":"O que influenciou sua saída?","answerText":"gestão abusiva e assédio"}  ]}'`

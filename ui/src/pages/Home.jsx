@@ -9,11 +9,36 @@ import MicrosoftLogo from '../assets/Microsoft_logo.svg'
 import imgFundoHm from '../assets/fundo-pg1.webp';
 import imgFundoLog from '../assets/fundo-pg2.webp'
 import { useNavigate, useSearchParams } from "react-router-dom";
+import api from "../lib/api.js";
 
 
 import { Contexto } from "../pages/Form.jsx";
 
 export default () => {
+
+    const [autorizado, setAutorizado] = useState(null);
+    const [erro, setErro] = useState(null);
+
+   const token = new URLSearchParams(window.location.search).get("t");
+
+    useEffect(() => {
+   
+        if (!token) {
+            setErro("Link inválido. O token não foi encontrado.");
+            setAutorizado(false);
+            return;
+        }
+
+        api.get(`/auth/validar?t=${token}`)
+            .then(() => {
+                setAutorizado(true);
+            })
+            .catch(() => {
+                setErro("Este link expirou ou é inválido.");
+                setAutorizado(false);
+            });
+
+    }, [token]);
 
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -41,6 +66,7 @@ export default () => {
     }
 
     return(
+
         <Contexto.Provider value={{ pagAtual }}>
                     <App />
         </Contexto.Provider>
