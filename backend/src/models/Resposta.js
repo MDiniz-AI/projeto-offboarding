@@ -10,49 +10,47 @@ const Resposta = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
-    texto_resposta: {
+    // GARANTINDO QUE O NOME ESTÁ CERTO
+    resposta_texto: {
       type: DataTypes.TEXT,
-     
+      allowNull: false, // Isso causa o erro se o Sequelize ignorar o campo
+      defaultValue: " " // ADICIONADO: Valor padrão de segurança no banco
     },
     resposta_valor: {
       type: DataTypes.STRING(255),
-    
+      allowNull: true, // Pode ser nulo se for texto livre
     },
-    // ======== NOVOS CAMPOS DE ANÁLISE DE SENTIMENTO ========
+    
+    // CAMPOS DE IA
     score: {
       type: DataTypes.FLOAT,
+      allowNull: true, 
+    },
+    magnitude: {
+      type: DataTypes.FLOAT,
       allowNull: true,
-      comment: "Score de sentimento (-1.0 a 1.0)",
+    },
+    label: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
     },
     theme: {
       type: DataTypes.STRING(100),
       allowNull: true,
-      comment: "Tema principal identificado pelo LLM",
     },
     riskLevel: {
       type: DataTypes.STRING(10),
       allowNull: true,
-      comment: "Nível de risco para o RH (High, Medium, Low)",
     },
     analysisSource: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(20),
       allowNull: true,
-      comment: "Fonte da análise (gemini ou mock)",
-    },
-
-    // FK da entrevista
-    id_entrevista: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "entrevista",
-        key: "id_entrevista",
-      },
-    },
+    }
   },
   {
     tableName: "resposta",
-    timestamps: false,
+    timestamps: false, // Se você usa createdAt/updatedAt
+    underscored: false // Garante que resposta_texto seja resposta_texto mesmo
   }
 );
 

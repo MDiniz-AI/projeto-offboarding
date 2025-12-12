@@ -1,11 +1,9 @@
-import express from "express";
-import jwt from "jsonwebtoken";
-import { verifyTempToken } from "../middlewares/auth.js";
-import { gerarLinkTemporario } from "../controllers/auth.controller.js";
-
+import express from 'express';
+import { login } from '../controllers/AuthController.js';
 
 const router = express.Router();
 
-router.post("/gerar-link", gerarLinkTemporario);
+// Rota de Login: POST http://localhost:5001/api/auth/login
+router.post('/login', login);
 
 export default router;

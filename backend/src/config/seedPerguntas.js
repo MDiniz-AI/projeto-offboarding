@@ -1,89 +1,162 @@
-
-import Pergunta from '../models/Pergunta.js';
-
-// prof pediu para usar apenas o json e depois se der tempo usar perguntas do bd
+import { Pergunta } from '../models/Relations.js';
 
 export const seedPerguntas = async () => {
   try {
-    const count = await Pergunta.count();
-    if (count > 0) {
-      console.log('⚠️ Seed ignorado: tabela de perguntas já populada.');
-      return;
+    console.log('🌱 [CHRO Mode] Sincronizando perguntas estratégicas (Preservando IDs)...');
+
+    const perguntasEstrategicas = [
+      // ---------------------------------------------------------
+      // SEÇÃO 2: Perguntas gerais
+      // ---------------------------------------------------------
+      {
+        texto_pergunta: "Em uma escala de 1 a 7, como você avalia sua experiência geral na empresa?",
+        categoria: "Perguntas gerais",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+      {
+        texto_pergunta: "Defina a cultura da nossa empresa em uma única palavra ou frase curta.",
+        categoria: "Perguntas gerais",
+        tipo_resposta: 0, // Texto Curto
+        opcoes: null
+      },
+      {
+        texto_pergunta: "Você recomendaria a empresa a um amigo como um bom lugar para trabalhar?",
+        categoria: "Perguntas gerais",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+
+      // ---------------------------------------------------------
+      // SEÇÃO 3: Cultura e ambiente
+      // ---------------------------------------------------------
+      {
+        texto_pergunta: "O ambiente de trabalho promovia seu bem-estar físico e mental?",
+        categoria: "Cultura e ambiente",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+      {
+        texto_pergunta: "Descreva uma situação onde você sentiu (ou não sentiu) os valores da empresa na prática.",
+        categoria: "Cultura e ambiente",
+        tipo_resposta: 1, // Texto Longo
+        opcoes: null
+      },
+
+      // ---------------------------------------------------------
+      // SEÇÃO 4: Liderança e gestão
+      // ---------------------------------------------------------
+      {
+        texto_pergunta: "Seu líder direto te dava autonomia para realizar suas tarefas?",
+        categoria: "Liderança e gestão",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+      {
+        texto_pergunta: "O que seu líder poderia ter feito diferente para melhorar sua experiência?",
+        categoria: "Liderança e gestão",
+        tipo_resposta: 1, // Texto Longo
+        opcoes: null
+      },
+
+      // ---------------------------------------------------------
+      // SEÇÃO 5: Estrutura, incentivos e oportunidades
+      // ---------------------------------------------------------
+      {
+        texto_pergunta: "As ferramentas e tecnologias disponíveis eram adequadas para o seu trabalho?",
+        categoria: "Estrutura, incentivos e oportunidades",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+      {
+        texto_pergunta: "Como você avalia a clareza do plano de carreira e oportunidades de crescimento?",
+        categoria: "Estrutura, incentivos e oportunidades",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+      {
+        texto_pergunta: "O pacote de benefícios atendia às suas necessidades?",
+        categoria: "Estrutura, incentivos e oportunidades",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+
+      // ---------------------------------------------------------
+      // SEÇÃO 6: Comunicação e decisões estratégicas
+      // ---------------------------------------------------------
+      {
+        texto_pergunta: "A comunicação da alta liderança sobre os rumos da empresa era clara?",
+        categoria: "Comunicação e decisões estratégicas",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+      {
+        texto_pergunta: "Você se sentia ouvido(a) nas decisões que impactavam sua área?",
+        categoria: "Comunicação e decisões estratégicas",
+        tipo_resposta: 2, // Seletor
+        opcoes: JSON.stringify(["Sim, sempre", "Na maioria das vezes", "Raramente", "Nunca"])
+      },
+
+      // ---------------------------------------------------------
+      // SEÇÃO 7: Perguntas específicas: Pedido de desligamento
+      // ---------------------------------------------------------
+      {
+        texto_pergunta: "Qual foi o fator principal para a sua decisão de sair?",
+        categoria: "Perguntas específicas: Pedido de desligamento",
+        tipo_resposta: 2, // Seletor
+        opcoes: JSON.stringify([
+            "Melhor oportunidade salarial", 
+            "Insatisfação com a liderança", 
+            "Falta de crescimento/carreira", 
+            "Ambiente/Cultura", 
+            "Mudança de área/carreira",
+            "Motivos pessoais",
+            "Outros"
+        ])
+      },
+      {
+        texto_pergunta: "Existe algo que a empresa poderia ter feito para evitar sua saída?",
+        categoria: "Perguntas específicas: Pedido de desligamento",
+        tipo_resposta: 1, // Texto Longo
+        opcoes: null
+      },
+
+      // ---------------------------------------------------------
+      // SEÇÃO 8: Perguntas específicas: Liderança
+      // ---------------------------------------------------------
+      {
+        texto_pergunta: "Como você avalia a competência técnica do seu gestor?",
+        categoria: "Perguntas específicas: Liderança",
+        tipo_resposta: 3, // Range
+        opcoes: null
+      },
+      {
+        texto_pergunta: "Seu gestor fornecia feedbacks construtivos regularmente?",
+        categoria: "Perguntas específicas: Liderança",
+        tipo_resposta: 2, // Seletor
+        opcoes: JSON.stringify(["Sim, frequentemente", "Às vezes", "Raramente", "Nunca"])
+      }
+    ];
+
+    // LÓGICA DE SINCRONIZAÇÃO INTELIGENTE (UPSERT)
+    // Se a pergunta já existe, atualiza os campos (exceto ID). Se não, cria.
+    for (const p of perguntasEstrategicas) {
+        const perguntaExistente = await Pergunta.findOne({ 
+            where: { texto_pergunta: p.texto_pergunta } 
+        });
+
+        if (perguntaExistente) {
+            // Atualiza caso você mude o tipo ou categoria no código, mas MANTÉM O ID
+            await perguntaExistente.update(p);
+        } else {
+            // Cria nova apenas se não existir
+            await Pergunta.create(p);
+        }
     }
 
-    const categoriasMap = [
-      "Geral",
-      "Cultura e valores",
-      "Liderança",
-      "Experiência e futuro",
-      "Desligamento",
-      "Considerações finais"
-    ];
-
-
-    const dadosDoFront = [
-      // Grupo 0
-      [
-        { question: "Como descreveria sua experiência geral na empresa?*", type: 3, option: null, required: true },
-        { question: "Qual é a sua opinião sobre o clima organizacional de sua equipe/time?*", type: 3, option: null, required: true },
-        { question: "Você se sentia ouvido e reconhecido?*", type: 2, option: ["opc1", "opc2"], required: true },
-        { question: "Qual é a sua opinião sobre o pacote de salário e benefícios oferecido pela empresa (em comparação com o mercado)*?", type: 3, option: null, required: true },
-        { question: "Ainda sobre pacote de salário e benefícios, o que poderia melhorar?", type: 0, option: null, required: false }
-      ],
-
-      // Grupo 1
-      [
-        { question: "Pensando em sua jornada aqui, o que você mais sentiu orgulho ou o que mais te deu energia no dia a dia?*", type: 1, option: null, required: true },
-        { question: "Quais valores da Blip poderiam ser mais coerentes?*", type: 2, option: ["opc1", "opc2"], required: true },
-        { question: "Gostaria de Justificar?", type: 1, option: null, required: false }
-      ],
-
-      // Grupo 2
-      [
-        { question: "Como você avaliaria o apoio de sua liderança direta no seu desenvolvimento e bem-estar?*", type: 3, required: true },
-        { question: "Há algo que poderia melhorar?", type: 0, option: null, required: false }
-      ],
-
-      // Grupo 3
-      [
-        { question: "Se você tivesse um \"superpoder\" para mudar uma única coisa na Blip a fim de melhorar a experiência dos times, o que você mudaria?*", type: 0, required: true },
-        { question: "No futuro, você voltaria a trabalhar na Blip?", type: 2, option: ["opc1", "opc2"], required: false }
-      ],
-
-      // Grupo 4
-      [
-        { question: "Como você avalia a forma como seu desligamento foi comunicado e conduzido, considerando clareza, respeito e suporte?*", type: 3, required: true },
-        { question: "Se desejar, compartilhe o porquê da sua nota anterior", type: 0, option: null, required: false }
-      ],
-
-      // Grupo 5
-      [
-        { question: "Se pudesse dar um conselho direto ao CEO e à alta liderança, qual seria?", type: 0, option: null, required: false },
-        { question: "Gostaria de dizer/adicionar algo que ainda não foi perguntado?", type: 1, option: null, required: false }
-      ]
-    ];
-
-    
-    const perguntasParaSalvar = [];
-
-    dadosDoFront.forEach((grupo, indexCategoria) => {
-      const categoria = categoriasMap[indexCategoria] || "Outros";
-
-      grupo.forEach(item => {
-        perguntasParaSalvar.push({
-          texto_pergunta: item.question,
-          tipo_resposta: item.type,
-          opcoes: item.option,
-          obrigatoria: item.required,
-          categoria: categoria
-        });
-      });
-    });
-
-    await Pergunta.bulkCreate(perguntasParaSalvar);
-    console.log("✅ Perguntas inseridas com sucesso!");
+    console.log('✅ Seed de perguntas sincronizado! IDs preservados.');
 
   } catch (error) {
-    console.error("❌ Erro ao rodar seed de perguntas:", error);
+    console.error('❌ Erro ao rodar seed de perguntas:', error);
   }
 };

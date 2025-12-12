@@ -1,50 +1,87 @@
-import BlocoPrincipalAdm from "../components/admin/BlocoPrincipalAdm.jsx"
-import { createContext, useContext, useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from "react-router-dom";
-import FormularioAdm from "../components/admin/FormularioAdm.jsx";
-import Colaboradores from "../components/admin/Colaboradores.jsx";
-import Times from "../components/admin/Times.jsx";
-import Config from "../components/admin/Config.jsx";
-import HomeAdm from "../components/admin/HomeAdm.jsx";
-import LoginAdm from "../components/admin/LoginAdm.jsx";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from "react-router-dom";
 
+// Componentes Admin (Assumindo que você vai criá-los ou já tem)
+import BlocoPrincipalAdm from "../components/admin/BlocoPrincipalAdm";
+import FormularioAdm from "../components/admin/FormularioAdm";
+import Colaboradores from "../components/admin/Colaboradores";
+import Times from "../components/admin/Times";
+import Config from "../components/admin/Config";
+import HomeAdm from "../components/admin/HomeAdm";
+import LoginAdm from "../components/admin/LoginAdm";
 
-export const Contexto = createContext();
+// Contexto Admin
+export const AdminContext = createContext();
 
-export default() => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    let secaoQuery = Number(searchParams.get("pag") == null ? null : searchParams.get("pag"));
-    if (secaoQuery == null || isNaN(secaoQuery) || secaoQuery < 1 || secaoQuery > 0) secaoQuery = 0
+// --- COMPONENTE DE CONTEÚDO (Visual) ---
+function AdminContent() {
+  const { pagAtual, token, logout } = useContext(AdminContext);
 
-    const [pagAtual, setPagAtual] = useState(secaoQuery);
+  // 1. Se não tiver token, força a tela de Login
+  if (!token) {
+    return <LoginAdm />;
+  }
 
-    // verifica a página atual pela query
-    useEffect(() => {
-        let novaSecao = Number(searchParams.get("pag"));
-        if (novaSecao == null || isNaN(secaoQuery) || secaoQuery > 9 || secaoQuery < 2) secaoQuery = 2
-        setPagAtual(novaSecao ?? 0);
-    }, [searchParams]);
+  // 2. Se estiver logado, mostra o Dashboard
+  return (
+    <div className="flex">
+      {/* Menu Lateral Fixo */}
+      <div className="fixed left-0 top-0 h-full z-10">
+        <BlocoPrincipalAdm pagina={pagAtual} onLogout={logout} />
+      </div>
 
-    return (
-        <Contexto.Provider value={{pagAtual}}>
-            <App />
-        </Contexto.Provider>
-    )
+      {/* Área de Conteúdo (Margem para não ficar embaixo do menu) */}
+      <div className="ml-[8vw] w-full p-8">
+        {pagAtual === 0 && <HomeAdm />}
+        {pagAtual === 1 && <Times />}
+        {pagAtual === 2 && <Colaboradores />}
+        {pagAtual === 3 && <FormularioAdm />}
+        {pagAtual === 4 && <Config />}
+      </div>
+    </div>
+  );
+}
 
-    function App(){
+// --- COMPONENTE PRINCIPAL (Lógica e Provider) ---
+export default function AdminPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-        const { pagAtual } = useContext(Contexto);
+  // Estado de Autenticação (Lê do localStorage ao iniciar)
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  
+  // Estado de Navegação (Abas)
+  const [pagAtual, setPagAtual] = useState(0);
 
-        const htmlForm = <div>
-            <div className="ml-[7vw]">
-                {pagAtual == 0 ? <HomeAdm /> : pagAtual == 1 ? <Times /> : pagAtual == 2 ? <Colaboradores /> : pagAtual == 3 ? <FormularioAdm /> : pagAtual == 4 ? <Config /> : null}
-            </div>
-            {
-              pagAtual < 5 ? <div className="fixed"><BlocoPrincipalAdm pagina={pagAtual}/></div> : <LoginAdm />
-            }
-        </div>
-        
-
-        return htmlForm;
+  // Sincroniza URL (?pag=X) com estado interno
+  useEffect(() => {
+    const pagParam = searchParams.get("pag");
+    let novaSecao = pagParam ? Number(pagParam) : 0;
+    
+    // Validação simples para não quebrar se digitarem pag=99
+    if (isNaN(novaSecao) || novaSecao < 0 || novaSecao > 4) {
+        novaSecao = 0;
     }
+    setPagAtual(novaSecao);
+  }, [searchParams]);
+
+  // Função para Login (será chamada pelo componente LoginAdm)
+  function login(newToken) {
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    navigate('/admin'); // Redireciona/Recarrega para limpar query params se quiser
+  }
+
+  // Função para Logout
+  function logout() {
+    localStorage.removeItem('token');
+    setToken(null);
+    navigate('/admin');
+  }
+
+  return (
+    <AdminContext.Provider value={{ pagAtual, token, login, logout }}>
+      <AdminContent />
+    </AdminContext.Provider>
+  );
 }

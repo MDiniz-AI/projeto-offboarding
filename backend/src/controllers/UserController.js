@@ -1,15 +1,14 @@
 import { Usuario, Entrevista } from '../models/Relations.js'; 
 import bcrypt from 'bcrypt';
-import { gerarLinkTemporario } from './auth.controller.js';
+import jwt from 'jsonwebtoken'; // ADICIONADO: Para gerar o token aqui mesmo
 import { sequelize } from '../config/db.js'; 
+
 const saltRounds = 10;
 
 export const criarUsuario = async (req, res) => {
-    
     const { nome_completo, email , departamento , cargo, data_entrada , data_saida , motivo_saida , password } = req.body;
 
     try {
-        
         const hashedPassword = await bcrypt.hash(password, saltRounds); // senha criptografada
 
         const novoUsuario = await Usuario.create({
@@ -20,7 +19,7 @@ export const criarUsuario = async (req, res) => {
             data_entrada,
             motivo_saida,
             data_saida,
-            password
+            password: hashedPassword // Usando a senha hash
         });
 
         const usuarioFormatado = novoUsuario.toJSON();
@@ -101,7 +100,7 @@ export const buscarEntrevistasDoUsuario = async (req, res) => {
                 model: Entrevista,
                 order: [['data_entrevista', 'DESC']]
             }],
-            attributes: ['usuario_id', 'nome_completo'] 
+            attributes: ['id_usuario', 'nome_completo'] // Ajustado para id_usuario (confirme se seu model usa id_usuario ou usuario_id)
         });
 
         if (!usuario) {
@@ -126,7 +125,7 @@ export const atualizarUsuario = async (req, res) => {
         }
 
         const [updatedRows] = await Usuario.update(dados, {
-            where: { usuario_id: userId }
+            where: { id_usuario: userId } // Confirmar chave primária (id_usuario ou usuario_id)
         });
 
         if (updatedRows === 0) {
@@ -147,7 +146,7 @@ export const atualizarUsuario = async (req, res) => {
 export const deletarUsuario = async (req, res) => {
     try {
         const deletedRows = await Usuario.destroy({
-            where: { usuario_id: req.params.id }
+            where: { id_usuario: req.params.id } // Confirmar chave primária
         });
 
         if (deletedRows === 0) {
@@ -164,6 +163,7 @@ export const deletarUsuario = async (req, res) => {
     }
 };
 
+// NOVO: Geração de link segura e independente
 export const gerarLinkPorId = async (req, res) => {
     try {
         const { id } = req.params;
@@ -175,11 +175,21 @@ export const gerarLinkPorId = async (req, res) => {
             return res.status(404).json({ error: "Usuário não encontrado." });
         }
 
-        // 2. Gerar token usando o email do usuário
-        const token = await gerarLinkTemporario(usuario.email);
+        // 2. Gerar token JWT (Link expira em 48h)
+        // Importante: Usamos process.env.JWT_SECRET que já configuramos
+        const token = jwt.sign(
+            { 
+                email: usuario.email, 
+                id: usuario.id_usuario 
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '48h' }
+        );
 
         // 3. Montar o link temporário
-        const linkTemporario = `${process.env.FRONT_URL}/?t=${token}`;
+        // Usa a variável de ambiente ou fallback para localhost
+        const baseUrl = process.env.FRONT_URL || 'http://localhost:5173';
+        const linkTemporario = `${baseUrl}/?t=${token}`;
 
         return res.status(200).json({
             usuario: usuario.nome_completo,

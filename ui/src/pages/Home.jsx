@@ -2,7 +2,7 @@ import BlocoPrincipal from "../components/BlocoPrincipal"
 import {ClockCountdownIcon, LockSimpleIcon, LegoSmileyIcon, ChartLineIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { Squircle } from 'corner-smoothing';
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import InputCurto from "../components/InputCurto";
 import GoogleLogo from '../assets/Google__G__logo.svg'
 import MicrosoftLogo from '../assets/Microsoft_logo.svg'
@@ -11,7 +11,7 @@ import imgFundoLog from '../assets/fundo-pg2.webp'
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 
-import { Contexto } from "../pages/Form.jsx";
+import { Contexto } from "../context/FormContext"
 
 export default () => {
 

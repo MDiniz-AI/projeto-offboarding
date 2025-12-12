@@ -13,7 +13,7 @@ import { jwtDecode } from "jwt-decode";
 
 import BlocoPrincipal from "../components/BlocoPrincipal";
 import FormRenderer from "../components/FormRenderer";
-import { createContext, useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import {
   CaretRightIcon,
   CheckIcon,
@@ -27,8 +27,7 @@ import {
 import Perguntas from "../perguntas.json";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Squircle } from "corner-smoothing";
-
-export const Contexto = createContext();
+import { Contexto } from "../context/FormContext"
 
 export default () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -62,10 +61,16 @@ export default () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // MUDANÇA: Pegar o token da URL para autenticar a busca de perguntas
+    const token = new URLSearchParams(window.location.search).get("t");
+
     async function buscarPerguntas() {
       setIsLoading(true);
       try {
-        const response = await api.get("/perguntas/");
+        // MUDANÇA: Configuração do Header de Autorização
+        const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+        
+        const response = await api.get("/perguntas/", config);
 
         console.log("Dados brutos da API:", response.data);
 
@@ -75,8 +80,10 @@ export default () => {
             texto: p.texto_pergunta,
             categoria: p.categoria,
             tipo: p.tipo_resposta,
-            opcoes: p.opcoes,
-            texto_resposta: "",
+            // MUDANÇA: Converter as opções de string para JSON se necessário
+            opcoes: typeof p.opcoes === 'string' ? JSON.parse(p.opcoes) : p.opcoes,
+            // MUDANÇA: Usar 'resposta_texto' para alinhar com o Backend
+            resposta_texto: "", 
             resposta_valor: null,
           }))
         );
@@ -89,7 +96,11 @@ export default () => {
       }
     }
 
-    buscarPerguntas();
+    if (token) {
+        buscarPerguntas();
+    } else {
+        setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -105,7 +116,8 @@ export default () => {
         novaSecao > 9 ||
         novaSecao < 1
       )
-        secaoQuery = 1;
+        // secaoQuery = 1; // Comentei pois parecia erro de digitação no original
+        setSecao(1);
       else setSecao(novaSecao);
     }
   }, [searchParams]);
@@ -114,14 +126,15 @@ export default () => {
     setSecao(secao + 1);
   }
 
-  function atualizarResposta(idPergunta, texto_resposta, resposta_valor) {
+  function atualizarResposta(idPergunta, resposta_texto, resposta_valor) {
     setPerguntas((prev) =>
       prev.map((secao) =>
         secao.map((p) =>
           p.id === idPergunta
             ? {
                 ...p,
-                ...(texto_resposta !== undefined && { texto_resposta }),
+                // MUDANÇA: Atualiza o campo correto se o valor não for undefined
+                ...(resposta_texto !== undefined && { resposta_texto }),
                 ...(resposta_valor !== undefined && { resposta_valor }),
               }
             : p
@@ -138,13 +151,17 @@ export default () => {
         alert("Token não encontrado!");
         return;
       }
+      
+      const authConfig = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
 
       const decoded = jwtDecode(token);
       console.log(token);
       const email = decoded.email;
 
-      // busca o usuario pelo email
-      const userResponse = await api.get(`/usuarios/email/${email}`);
+      // busca o usuario pelo email (com autenticação)
+      const userResponse = await api.get(`/usuarios/email/${email}`, authConfig);
       console.log(userResponse);
       const id_usuario = userResponse.data.usuario_id;
 
@@ -153,9 +170,10 @@ export default () => {
         return;
       }
 
+      // MUDANÇA: Mapeia usando 'resposta_texto' para enviar ao Backend
       const respostas = perguntas.flat().map((p) => ({
         id_pergunta: p.id,
-        texto_resposta: p.texto_resposta ?? "",
+        resposta_texto: p.resposta_texto ?? "", 
         resposta_valor: p.resposta_valor ?? null,
       }));
 
@@ -163,11 +181,7 @@ export default () => {
 
       const payload = { id_usuario, respostas };
 
-      const response = await api.post("/respostas/", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.post("/respostas/", payload, authConfig);
 
       console.log("✔️ Enviado com sucesso:", response.data);
 
@@ -414,7 +428,7 @@ function App() {
   if (isLoading && secao === 2) {
     htmlContent = (
       <div className="flex flex-col gap-[1vh] items-center justify-center h-full text-primary font-title md:text-[2vw] text-[6vw]">
-        <span class="loading loading-spinner loading-xl"></span>
+        <span className="loading loading-spinner loading-xl"></span>
         Carregando Formulário...
       </div>
     );
@@ -463,6 +477,11 @@ function App() {
               <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
                 Finalizar
               </p>
+              <CheckIcon
+                size="4vh"
+                weight="thin"
+                className="my-auto text-primary"
+              />
             </button>
           </div>
         </div>
@@ -497,6 +516,11 @@ function App() {
                 <p className="font-corpo md:text-[1vw] text-[4vw] my-auto text-primary">
                   Continuar
                 </p>
+                <CaretRightIcon
+                  size="4vh"
+                  weight="thin"
+                  className="my-auto text-primary"
+                />
               </button>
             </div>
           </form>
@@ -515,7 +539,7 @@ function App() {
         <div className="modal-box max-h-[92vh]">
           <div className="flex gap-[5vw]">
             <form method="dialog">
-              <button classname="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">
+              <button className="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">
                 ✕
               </button>
             </form>
@@ -563,7 +587,7 @@ function App() {
       <dialog id="modalConfirmar" className="modal">
         <div className="modal-box">
           <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">
+            <button className="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">
               ✕
             </button>
           </form>
@@ -583,7 +607,7 @@ function App() {
                 <PaperPlaneTiltIcon size="2.5vh" weight="thin" />
                 Enviar
               </button>
-              <button className="btn btn-outline text-red-400  font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[32vw] h-[6vh] btn-error">
+              <button className="btn btn-outline text-red-400  font-corpo md:text-[.9vw] text-[3.5vw] md:w-[8vw] w-[32vw] h-[6vh] btn-error">
                 ✕ Cancelar
               </button>
             </form>

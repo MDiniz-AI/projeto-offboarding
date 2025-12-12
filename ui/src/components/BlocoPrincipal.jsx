@@ -1,5 +1,5 @@
 import estrela from '../assets/blip.svg'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom"; // ADICIONADO: useSearchParams
 import {
   HouseIcon, AtIcon, TargetIcon, UsersThreeIcon,
   StrategyIcon, TreeStructureIcon, MegaphoneIcon,
@@ -10,9 +10,16 @@ export default function BlocoPrincipal(props) {
     const ativo = "bg-accent px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
     const inativo = "bg-secondary/30 px-[1.1vh] py-[1.1vh] w-[6vh] h-[6vh] rounded-4xl";
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams(); // ADICIONADO: Para ler o token da URL
 
     function redirectPagina(numPag){
-        navigate(`/?secao=${numPag}`) 
+        // ALTERAÇÃO: Verifica se existe um token e o mantém na navegação
+        const token = searchParams.get("t");
+        if (token) {
+            navigate(`/?secao=${numPag}&t=${token}`);
+        } else {
+            navigate(`/?secao=${numPag}`);
+        }
     }
 
     return (

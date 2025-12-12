@@ -5,7 +5,7 @@ import Bom from '../assets/smiley-thin2.svg?react'
 import Regular from '../assets/smiley-meh-thin.svg?react'
 import Ruim from '../assets/smiley-sad-thin2.svg?react'
 import Incrivel from '../assets/smiley-thin.svg?react'
-import { Contexto } from "../pages/Form.jsx";
+import { Contexto } from "../context/FormContext"
 import { useContext } from "react";
 import {SmileyMehIcon, SmileySadIcon, SmileyIcon} from '@phosphor-icons/react';
 
