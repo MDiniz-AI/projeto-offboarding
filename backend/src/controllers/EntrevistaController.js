@@ -60,12 +60,12 @@ export const criarEntrevistaComRespostas = async (req, res) => {
         status_entrevista = 'Finalizada' 
     } = req.body;
 
-    // Validação de Token (Fallback para ID 1 se não tiver token no ambiente de dev)
+    // Validação de Token
     let userEmail = null;
     if (req.user && req.user.email) {
         userEmail = req.user.email;
     } else {
-        // Fallback para dev: usa usuário ID 1 se não vier autenticado
+        // Fallback apenas para dev
         console.warn("⚠️ Token não encontrado. Tentando usuário de fallback ID 1.");
         const userTeste = await Usuario.findByPk(1);
         if (userTeste) userEmail = userTeste.email;
@@ -81,6 +81,24 @@ export const criarEntrevistaComRespostas = async (req, res) => {
             return res.status(404).json({ error: 'Usuário não encontrado.' });
         }
 
+        // --- TRAVA DE SEGURANÇA: UNICIDADE ---
+        // Verifica se já existe uma entrevista para este usuário
+        const entrevistaExistente = await Entrevista.findOne({
+            where: { id_usuario: usuario.usuario_id },
+            transaction: t
+        });
+
+        if (entrevistaExistente) {
+            await t.rollback();
+            console.warn(`🚫 Usuário ${usuario.email} tentou responder novamente.`);
+            // Retorna 409 (Conflict) para indicar que já existe
+            return res.status(409).json({ 
+                error: 'Você já respondeu a esta pesquisa de offboarding. O formulário só pode ser enviado uma vez.' 
+            });
+        }
+        // -------------------------------------
+
+        // Cria a Entrevista
         const novaEntrevista = await Entrevista.create({
             id_usuario: usuario.usuario_id, 
             data_entrevista,
@@ -89,7 +107,7 @@ export const criarEntrevistaComRespostas = async (req, res) => {
         
         const id_entrevista_criada = novaEntrevista.id_entrevista;
 
-        // Prepara dados para IA
+        // IA Prep
         const respostasParaAnalise = respostas
             .filter(r => r.resposta_texto && typeof r.resposta_texto === 'string' && r.resposta_texto.trim().length > 2)
             .map(r => ({
@@ -102,21 +120,18 @@ export const criarEntrevistaComRespostas = async (req, res) => {
              resultadosAnalise = await analyzeBatch(respostasParaAnalise, { language: "pt" });
         }
 
+        // Mesclagem
         const respostasParaCriar = respostas.map(original => {
             const analise = resultadosAnalise.find(a => a.questionId === original.id_pergunta) || {};
             
-            // 1. Sanitização do texto (Evita erro 1364 - Field doesn't have default value)
             let textoFinal = original.resposta_texto;
             if (!textoFinal || typeof textoFinal !== 'string' || textoFinal.trim() === "") {
                 textoFinal = " "; 
             }
 
-            // 2. Sanitização da Fonte de Análise (Evita erro 1406 - Data too long)
-            // Usamos 'manual' (6 chars) em vez de 'estruturado' (11 chars) para garantir.
             let analysisSource = analise.source || 'manual'; 
             if (analysisSource.length > 20) analysisSource = analysisSource.substring(0, 20);
 
-            // 3. Sanitização do Tema (Evita Data too long)
             let theme = (analise.allThemes && analise.allThemes.length > 0) ? analise.allThemes[0] : 'Geral';
             if (theme && theme.length > 99) theme = theme.substring(0, 99);
 

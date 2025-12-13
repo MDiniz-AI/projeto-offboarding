@@ -148,47 +148,36 @@ export default () => {
     try {
       const token = new URLSearchParams(window.location.search).get("t");
       if (!token) {
-        alert("Token não encontrado!");
+        alert("Token não encontrado! Use o link enviado por e-mail.");
         return;
       }
-      
+
       const authConfig = {
         headers: { Authorization: `Bearer ${token}` },
       };
-
-      const decoded = jwtDecode(token);
-      console.log(token);
-      const email = decoded.email;
-
-      // busca o usuario pelo email (com autenticação)
-      const userResponse = await api.get(`/usuarios/email/${email}`, authConfig);
-      console.log(userResponse);
-      const id_usuario = userResponse.data.usuario_id;
-
-      if (!email) {
-        alert("Token inválido: e-mail ausente.");
-        return;
-      }
-
-      // MUDANÇA: Mapeia usando 'resposta_texto' para enviar ao Backend
+      
       const respostas = perguntas.flat().map((p) => ({
         id_pergunta: p.id,
-        resposta_texto: p.resposta_texto ?? "", 
+        resposta_texto: p.resposta_texto ?? "",
         resposta_valor: p.resposta_valor ?? null,
       }));
 
-      console.log(respostas);
+      const payload = { respostas };
 
-      const payload = { id_usuario, respostas };
+      console.log("Enviando payload:", payload);
+      
+      await api.post("/respostas/", payload, authConfig);
 
-      const response = await api.post("/respostas/", payload, authConfig);
-
-      console.log("✔️ Enviado com sucesso:", response.data);
-
+      console.log("✔️ Enviado com sucesso!");
       enviaDados();
+
     } catch (err) {
-      console.error("❌ Erro ao enviar:", err.response?.data || err);
-      alert("Erro ao enviar respostas.");
+      console.error("❌ Erro ao enviar:", err);
+      
+      // MELHORIA: Captura a mensagem específica do Backend (ex: "Você já respondeu...")
+      const mensagemErro = err.response?.data?.error || "Ocorreu um erro ao enviar suas respostas. Tente novamente.";
+      
+      alert(mensagemErro);
     }
   }
 

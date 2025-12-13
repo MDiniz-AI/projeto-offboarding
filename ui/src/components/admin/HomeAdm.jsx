@@ -1,3 +1,4 @@
+// ATENÇÃO: Ignore os erros de "Build failed" na prévia. O código depende de bibliotecas do seu ambiente local.
 import { UsersIcon, UserIcon, WarningCircleIcon, ChartBarIcon } from '@phosphor-icons/react';
 import { Squircle } from "corner-smoothing";
 import ReactApexChart from "react-apexcharts";

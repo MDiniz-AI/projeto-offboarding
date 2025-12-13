@@ -1,336 +1,549 @@
-import { Squircle } from "corner-smoothing"
-import { CaretDownIcon, DotsThreeIcon, EyeglassesIcon, LinkIcon, PencilIcon, PlusIcon } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
-import RespostaViewUsr from "./RespostaViewUsr";
-import api from "../../lib/api";
+import React, { useState, useEffect } from 'react';
+import { 
+  UserPlus, 
+  Link as LinkIcon, 
+  Trash, 
+  PencilSimple, 
+  Copy, 
+  Check, 
+  MagnifyingGlass,
+  X,
+  Warning,
+  PaperPlaneTilt, 
+  ShieldCheck,
+  CaretDown,
+  User
+} from '@phosphor-icons/react';
+import api from '../../lib/api';
 
-export default () => {
+export default function Colaboradores() {
+  const [colaboradores, setColaboradores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [busca, setBusca] = useState("");
+  
+  // --- ESTADOS DE CONTROLE ---
+  const [modalCadastroAberto, setModalCadastroAberto] = useState(false);
+  const [modalConfigLinkAberto, setModalConfigLinkAberto] = useState(false); 
+  const [modalLinkAberto, setModalLinkAberto] = useState(false);
+  const [modalDeleteAberto, setModalDeleteAberto] = useState(false);
+  
+  // Estados de Ação
+  const [usuarioParaDeletar, setUsuarioParaDeletar] = useState(null);
+  const [editandoUsuario, setEditandoUsuario] = useState(null); 
 
-    const getBgClass = (valor) => {
-        if (valor > 0.9) return "#277CDD";
-        if (valor >= 0.75) return "#22B457";
-        if (valor >= 0.6) return "#2DB61E";
-        if (valor >= 0.4) return "#DDB927";
-        if (valor >= 0.25) return "#FF3939";
-        if (valor >= 0.1) return "#5F1D1D";
-        return "#1E1E1E";
-    };
+  // Estados de Link
+  const [selectedUser, setSelectedUser] = useState(null); 
+  const [configLink, setConfigLink] = useState({ tipo: 'voluntaria', lider: 'false' });
+  const [linkGerado, setLinkGerado] = useState("");
+  const [usuarioLink, setUsuarioLink] = useState("");
+  const [copiado, setCopiado] = useState(false);
 
-    async function copyTextToClipboard(texto) {
-        try {
-            await navigator.clipboard.writeText(texto);
-            console.log('Texto copiado com sucesso');
-        } catch (err) {
-            console.error('Falha ao copiar: ', err);
-        }
-    }
+  // Formulário
+  const initialFormState = {
+    nome_completo: "",
+    email: "",
+    departamento: "",
+    cargo: "",
+    data_entrada: "",
+    password: "",
+    admin: false 
+  };
+  const [formData, setFormData] = useState(initialFormState);
 
-    const [usuarios, setUsuarios] = useState([]);
-    const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-    const [usuariosFiltrados, setUsuariosFiltrados] = useState([]);
-    const [pesquisa, setPesquisa] = useState("");
-
-    const formatter = new Intl.DateTimeFormat("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    });
-
-
-    async function carregarUsuarios() {
+  // --- 1. CARREGAR DADOS ---
+  async function fetchColaboradores() {
+    setLoading(true);
     try {
-      const response = await api.get("/usuarios/users");
-      setUsuarios(response.data);
-      setUsuariosFiltrados(response.data);
-    } catch (err) {
-      console.error("Erro ao carregar usuários:", err);
+      const response = await api.get('/usuarios');
+      console.log("👥 Colaboradores carregados:", response.data);
+      setColaboradores(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar colaboradores:", error);
+    } finally {
+      setLoading(false);
     }
   }
-
-    useEffect(() => {
-        carregarUsuarios();
-    }, []);
-
 
   useEffect(() => {
-    const termo = pesquisa.trim().toLowerCase();
+    fetchColaboradores();
+  }, []);
 
-    if (!termo) {
-      setUsuariosFiltrados(usuarios);
-      return;
+  // --- 2. EDIÇÃO ---
+  function handleAbrirEdicao(colab) {
+      console.log("✏️ Editando usuário:", colab);
+      setEditandoUsuario(colab);
+      setFormData({
+          nome_completo: colab.nome_completo || "",
+          email: colab.email || "",
+          departamento: colab.departamento || "",
+          cargo: colab.cargo || "",
+          data_entrada: colab.data_entrada ? String(colab.data_entrada).split('T')[0] : "", 
+          password: "",
+          admin: Boolean(colab.admin) 
+      });
+      setModalCadastroAberto(true);
+  }
+
+  function handleAbrirCadastro() {
+      setEditandoUsuario(null);
+      setFormData(initialFormState);
+      setModalCadastroAberto(true);
+  }
+
+  // --- 3. SALVAR (POST/PUT) ---
+  async function handleSalvar(e) {
+    e.preventDefault();
+    try {
+      if (editandoUsuario) {
+          // UPDATE
+          const id = editandoUsuario.usuario_id || editandoUsuario.id;
+          const payload = { ...formData };
+          if (!payload.password) delete payload.password; 
+
+          await api.put(`/usuarios/${id}`, payload);
+          alert("Colaborador atualizado com sucesso!");
+
+      } else {
+          // CREATE
+          const payload = {
+            ...formData,
+            password: formData.password || "blip123",
+            motivo_saida: "N/A", 
+            data_saida: null
+          };
+          await api.post('/usuarios', payload);
+          alert("Colaborador cadastrado com sucesso!");
+      }
+
+      setModalCadastroAberto(false);
+      setFormData(initialFormState);
+      fetchColaboradores(); 
+
+    } catch (error) {
+      console.error("❌ Erro ao salvar:", error);
+      const msg = error.response?.data?.error || "Erro desconhecido ao salvar.";
+      const details = error.response?.data?.details || "";
+      alert(`Erro: ${msg} \n${details}`);
     }
-
-    const filtrados = usuarios.filter((usuario) => {
-      
-      const nome = (usuario.nome_completo || "").toLowerCase();
-      const cargo = (usuario.cargo || "").toLowerCase();
-      const departamento = (usuario.departamento || "").toLowerCase();
-
-      return (
-        nome.includes(termo) ||
-        cargo.includes(termo) ||
-        departamento.includes(termo)
-      );
-    });
-
-    setUsuariosFiltrados(filtrados);
-  }, [usuarios, pesquisa]);
-
-    
-function filtrarUsuarios(texto) {
-    setPesquisa(texto);
-  
   }
-  async function gerarLink(usuario) {
-  try {
-    const payload = {
-      nome: usuario.nome_completo,
-      email: usuario.email
-    };
 
-    const response = await api.post("/auth/gerar-link", payload);
-
-    const link = response.data.link;
-
-    // copia o link para a área de transferência
-    await copyTextToClipboard(link);
-
-    alert("Link copiado para a área de transferência!");
-
-  } catch (error) {
-    console.error("Erro ao gerar link:", error);
-    alert("Erro ao gerar link. Veja o console.");
+  // --- 4. EXCLUSÃO ---
+  function handleAbrirDelete(colab) {
+      setUsuarioParaDeletar(colab);
+      setModalDeleteAberto(true);
   }
-}
 
-    return(
-        <div className="md:pr-0 pr-5">
-            <h1 className="text-primary font-title text-4xl text-center my-[2vh]">Colaboradores</h1>
-            <div className="flex md:flex-row flex-col gap-[1vw] mr-[1vw]">
-                <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full md:h-[30vh] h-30">
-                    <p className="font-corpo text-primary text-2xl text-center">xx% respondido</p>
-                </Squircle>
+  async function confirmarDelete() {
+      if (!usuarioParaDeletar) return;
+      try {
+          const id = usuarioParaDeletar.usuario_id || usuarioParaDeletar.id;
+          await api.delete(`/usuarios/${id}`);
+          
+          alert("Colaborador removido.");
+          setModalDeleteAberto(false);
+          setUsuarioParaDeletar(null);
+          fetchColaboradores(); 
+      } catch (error) {
+          console.error("❌ Erro ao deletar:", error);
+          const msg = error.response?.data?.error || "Erro ao excluir.";
+          alert(`Não foi possível excluir: ${msg}`);
+      }
+  }
 
-                <Squircle cornerRadius={20} cornerSmoothing={1} className="flex justify-center items-center bg-secondary/30 w-full md:h-[30vh] h-30">
-                    <p className="font-corpo text-primary text-2xl text-center">xx% não respondido</p>
-                </Squircle>
+  // --- 5. GERAÇÃO DE LINKS ---
+  function abrirConfiguracaoLink(user) {
+      setSelectedUser(user);
+      setConfigLink({ tipo: 'voluntaria', lider: 'false' });
+      setModalConfigLinkAberto(true);
+  }
+
+  async function handleGerarLinkFinal() {
+    if (!selectedUser) return;
+    try {
+      const id = selectedUser.usuario_id || selectedUser.id;
+      const response = await api.get(`/usuarios/${id}/gerar-link`, {
+          params: { tipo: configLink.tipo, lider: configLink.lider }
+      });
+      setLinkGerado(response.data.link);
+      setUsuarioLink(selectedUser.nome_completo);
+      setModalConfigLinkAberto(false);
+      setModalLinkAberto(true);
+      setCopiado(false);
+    } catch (error) {
+      console.error("Erro ao gerar link:", error);
+      alert("Erro ao gerar link.");
+    }
+  }
+
+  function copyToClipboard() {
+    navigator.clipboard.writeText(linkGerado);
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 2000);
+  }
+
+  // --- FILTROS ---
+  const colaboradoresFiltrados = colaboradores.filter(c => 
+    (c.nome_completo?.toLowerCase() || "").includes(busca.toLowerCase()) ||
+    (c.email?.toLowerCase() || "").includes(busca.toLowerCase())
+  );
+
+  // Separação em dois grupos
+  const listaAdmins = colaboradoresFiltrados.filter(c => c.admin);
+  const listaColaboradores = colaboradoresFiltrados.filter(c => !c.admin);
+
+  // Componente interno para Renderizar Tabela (Reutilizável)
+  const TabelaUsuarios = ({ dados }) => (
+    <div className="overflow-x-auto rounded-xl">
+        <table className="table table-zebra table-fixed w-full">
+            <thead className="text-primary font-title text-lg border-b border-primary/10">
+                <tr>
+                    <th className="w-[30%] bg-white/90 backdrop-blur-md">Nome</th>
+                    <th className="w-[25%] bg-white/90 backdrop-blur-md">Cargo / Depto</th>
+                    <th className="w-[25%] bg-white/90 backdrop-blur-md">Email</th>
+                    <th className="w-[20%] text-center bg-white/90 backdrop-blur-md">Ações</th>
+                </tr>
+            </thead>
+            <tbody className="font-corpo text-primary/80">
+                {dados.map((colab) => (
+                    <tr key={colab.usuario_id || colab.id} className="hover:bg-secondary/10 transition-colors">
+                        <td className="truncate">
+                            <div className="flex items-center gap-2" title={colab.nome_completo}>
+                                <span className="font-bold truncate block">{colab.nome_completo}</span>
+                                {colab.admin && (
+                                    <div className="tooltip tooltip-right flex-shrink-0" data-tip="Administrador">
+                                        <ShieldCheck size={18} className="text-accent" weight="fill" />
+                                    </div>
+                                )}
+                            </div>
+                        </td>
+                        <td className="truncate">
+                            <div className="flex flex-col truncate">
+                                <span className="font-bold text-xs truncate" title={colab.cargo}>{colab.cargo}</span>
+                                <span className="text-xs opacity-70 truncate" title={colab.departamento}>{colab.departamento}</span>
+                            </div>
+                        </td>
+                        <td className="text-sm truncate" title={colab.email}>
+                            {colab.email}
+                        </td>
+                        <td className="text-center">
+                            <div className="flex justify-center gap-2">
+                                <button 
+                                    onClick={() => abrirConfiguracaoLink(colab)}
+                                    className="btn btn-sm btn-circle btn-ghost text-accent tooltip tooltip-left" 
+                                    data-tip="Gerar Link"
+                                >
+                                    <LinkIcon size={20} weight="bold" />
+                                </button>
+                                <button 
+                                    onClick={() => handleAbrirEdicao(colab)}
+                                    className="btn btn-sm btn-circle btn-ghost text-primary/50 hover:text-primary tooltip tooltip-left"
+                                    data-tip="Editar Usuário"
+                                >
+                                    <PencilSimple size={20} />
+                                </button>
+                                <button 
+                                    onClick={() => handleAbrirDelete(colab)}
+                                    className="btn btn-sm btn-circle btn-ghost text-error/70 hover:text-error tooltip tooltip-left"
+                                    data-tip="Excluir Usuário"
+                                >
+                                    <Trash size={20} />
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                ))}
+                {dados.length === 0 && (
+                    <tr>
+                        <td colSpan="4" className="text-center py-4 text-primary/50 italic">
+                            Nenhum usuário encontrado nesta categoria.
+                        </td>
+                    </tr>
+                )}
+            </tbody>
+        </table>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-full gap-6">
+      {/* Cabeçalho */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+            <h1 className="text-primary font-title text-4xl">Gestão de Colaboradores</h1>
+            <p className="text-primary/60 font-corpo text-sm mt-1">Gerencie quem terá acesso ao formulário de offboarding.</p>
+        </div>
+        <button 
+            onClick={handleAbrirCadastro} 
+            className="btn btn-accent text-primary font-corpo rounded-xl shadow-md flex items-center gap-2 whitespace-nowrap"
+        >
+            <UserPlus size={24} />
+            Novo Colaborador
+        </button>
+      </div>
+
+      {/* Busca */}
+      <div className="relative w-full md:w-1/3">
+        <MagnifyingGlass size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50" />
+        <input 
+            type="text" 
+            placeholder="Buscar por nome ou email..." 
+            className="input input-bordered w-full pl-10 bg-secondary/10 border-none rounded-xl text-primary placeholder-primary/50 focus:outline-accent"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+        />
+      </div>
+
+      {/* Área de Conteúdo Scrollável */}
+      <div className="flex-1 overflow-y-auto pr-2 space-y-8">
+        {loading ? (
+            <div className="flex justify-center items-center h-40 text-primary">
+                <span className="loading loading-spinner loading-lg"></span>
             </div>
-            <div>
-                <h2 className="text-primary font-title text-2xl my-[2vh]">(ex)Colaboradores</h2>
-                <div className="flex md:flex-row flex-col mr-[1vw] gap-[5vw]">
-                    <div className="flex md:flex-row flex-col gap-[1vh] w-full">
-                        <label for="pesquisar" className="font-corpo md:text-[1vw] md:ml-0 ml-[2vw] text-[4vw] text-primary my-auto">Pesquisar</label>
-                        <input name="pesquisar" type="text" id="pesquisar" placeholder="Pesquisar" value={pesquisa}  onChange={(e) => filtrarUsuarios(e.target.value)} className="bg-secondary/30 p-[2vh] md:mx-0 w-full h-[7vh] md:w-full mx-auto font-corpo rounded-xl md:text-[1vw] text-[4vw] text-primary"/>
+        ) : (
+            <>
+                {/* TABELA 1: ADMINISTRADORES */}
+                <section>
+                    <div className="flex items-center gap-2 mb-3">
+                        <ShieldCheck size={24} className="text-accent" weight="fill" />
+                        <h2 className="text-xl font-bold text-primary font-title">Administradores</h2>
+                        <span className="badge badge-ghost text-xs font-bold">{listaAdmins.length}</span>
                     </div>
-                    <div>
-                        <Squircle cornerRadius={10} cornerSmoothing={1} className="flex md:mx-0 mx-auto bg-secondary/50 md:w-[10vw] w-50 h-[7vh] justify-center" onClick={() => {document.getElementById('modalCadastro').showModal()}}>
-                            <PlusIcon size="4vh" weight="thin" className="my-auto" />
-                            <p className="text-primary font-corpo my-auto">Adicionar</p>
-                        </Squircle>
+                    <div className="bg-white/50 backdrop-blur-sm rounded-3xl shadow-sm overflow-hidden border border-white/20 p-4">
+                        <TabelaUsuarios dados={listaAdmins} />
+                    </div>
+                </section>
+
+                {/* TABELA 2: COLABORADORES */}
+                <section>
+                    <div className="flex items-center gap-2 mb-3">
+                        <User size={24} className="text-primary/70" weight="bold" />
+                        <h2 className="text-xl font-bold text-primary font-title">Colaboradores (Acesso Formulário)</h2>
+                        <span className="badge badge-ghost text-xs font-bold">{listaColaboradores.length}</span>
+                    </div>
+                    <div className="bg-white/50 backdrop-blur-sm rounded-3xl shadow-sm overflow-hidden border border-white/20 p-4">
+                        <TabelaUsuarios dados={listaColaboradores} />
+                    </div>
+                </section>
+            </>
+        )}
+      </div>
+
+      {/* --- MODAIS (Permanecem iguais) --- */}
+
+      {/* MODAL CADASTRO/EDIÇÃO */}
+      {modalCadastroAberto && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-base-100 rounded-3xl p-8 max-w-2xl shadow-2xl border border-white/20">
+            <div className="flex justify-between items-center mb-6">
+                <h3 className="font-title text-2xl text-primary">
+                    {editandoUsuario ? "Editar Colaborador" : "Cadastrar Colaborador"}
+                </h3>
+                <button onClick={() => setModalCadastroAberto(false)} className="btn btn-sm btn-circle btn-ghost text-primary"><X size={24}/></button>
+            </div>
+            
+            <form onSubmit={handleSalvar} className="flex flex-col gap-4 font-corpo">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="form-control">
+                        <label className="label text-primary">Nome Completo</label>
+                        <input required type="text" className="input input-bordered rounded-xl bg-secondary/10" 
+                            value={formData.nome_completo} 
+                            onChange={e => setFormData({...formData, nome_completo: e.target.value})} 
+                        />
+                    </div>
+                    <div className="form-control">
+                        <label className="label text-primary">Email Corporativo</label>
+                        <input required type="email" className="input input-bordered rounded-xl bg-secondary/10" 
+                             value={formData.email} 
+                             onChange={e => setFormData({...formData, email: e.target.value})} 
+                             disabled={!!editandoUsuario} 
+                        />
+                    </div>
+                    <div className="form-control">
+                        <label className="label text-primary">Departamento</label>
+                        <input required type="text" className="input input-bordered rounded-xl bg-secondary/10" 
+                             value={formData.departamento} 
+                             onChange={e => setFormData({...formData, departamento: e.target.value})} 
+                        />
+                    </div>
+                    <div className="form-control">
+                        <label className="label text-primary">Cargo</label>
+                        <input required type="text" className="input input-bordered rounded-xl bg-secondary/10" 
+                             value={formData.cargo} 
+                             onChange={e => setFormData({...formData, cargo: e.target.value})} 
+                        />
+                    </div>
+                    <div className="form-control">
+                        <label className="label text-primary">Data de Entrada</label>
+                        <input required type="date" className="input input-bordered rounded-xl bg-secondary/10" 
+                             value={formData.data_entrada} 
+                             onChange={e => setFormData({...formData, data_entrada: e.target.value})} 
+                        />
+                    </div>
+                    <div className="form-control">
+                        <label className="label text-primary">Senha {editandoUsuario ? "(Vazio = Manter atual)" : "(Opcional)"}</label>
+                        <input type="password" placeholder={editandoUsuario ? "******" : "Padrão: blip123"} className="input input-bordered rounded-xl bg-secondary/10" 
+                             value={formData.password} 
+                             onChange={e => setFormData({...formData, password: e.target.value})} 
+                        />
                     </div>
                 </div>
-                <table className="table table-zebra font-corpo mt-[2vh] border-separate">
-                    <thead>
-                        <tr>
-                            <th>Colaborador</th>
-                            <th>Departamento</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
 
-                    <tbody>
-                                {usuariosFiltrados.map((u) => (
-                                    <tr key={u.id_usuario} className="hover:bg-secondary/40">
-                                        <td>
-                                            <div className="flex items-center gap-3">
-                                                <div className="avatar">
-                                                    <div className="mask mask-squircle h-12 w-12">
-                                                        <img src="https://i.pravatar.cc/150?u=${u.email}" />
-                                                    </div>
-                                                </div>
+                <div className="form-control mt-2 bg-secondary/5 p-4 rounded-xl border border-secondary/10">
+                    <label className="label cursor-pointer justify-start gap-4 p-0">
+                        <input 
+                            type="checkbox" 
+                            className="toggle toggle-accent" 
+                            checked={formData.admin}
+                            onChange={(e) => setFormData({...formData, admin: e.target.checked})}
+                        />
+                        <span className="label-text text-primary font-bold flex items-center gap-2">
+                            <ShieldCheck size={20} weight={formData.admin ? "fill" : "regular"} />
+                            Acesso de Administrador
+                        </span>
+                    </label>
+                    <span className="text-xs text-primary/60 mt-2 pl-14">
+                        Habilita acesso a este painel de gestão de usuários.
+                    </span>
+                </div>
 
-                                                <div>
-                                                    <div className="font-bold">{u.nome_completo}</div>
-                                                    <div className="text-sm opacity-50">{u.cargo || "Função"}</div>
-                                                </div>
-
-                                                {/* Score fictício por enquanto */}
-                                                
-                                                <div className="relative w-[12vw]"> 
-                                                        <progress class={`progress md:w-full w-39 h-[5vh] ${getBgClass(0.5)}`} value={0.5 * 100} max="100">0.5</progress>
-                                                        <span className="absolute inset-0 flex items-center justify-center text-sm font-corpo text-primary">{0.5}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <span className="badge badge-ghost badge-sm">{u.departamento || "Departamento"}</span>
-                                        </td>
-
-                                        <td>
-                                            <div className="flex gap-[1vw]">
-                                                
-                                                <Squircle 
-                                                    cornerRadius={10}
-                                                    cornerSmoothing={1}
-                                                    className="flex bg-secondary/50 w-[10vw] h-[6vh] justify-center"
-                                                    onClick={() => gerarLink(u)}
-                                                >
-                                                    <LinkIcon size="4vh" weight="thin" className="my-auto" />
-                                                    <p className="text-primary font-corpo my-auto font-light">Copiar Link</p>
-                                                </Squircle>
-
-                                                <Squircle 
-                                                    cornerRadius={10}
-                                                    cornerSmoothing={1}
-                                                    className="flex bg-secondary/50 w-[10vw] h-[6vh] justify-center"
-                                                    onClick={() => {
-                                                        setUsuarioSelecionado(u);
-                                                        document.getElementById('modalDetalhes').showModal();
-                                                    }}
-                                                >
-                                                    <DotsThreeIcon size="4vh" weight="thin" className="my-auto" />
-                                                    <p className="text-primary font-corpo my-auto font-light">Detalhes</p>
-                                                </Squircle>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {usuarioSelecionado && (
-
-                        <dialog id="modalDetalhes" className="modal">
-                            <div className="modal-box max-w-90/100 ">
-                            <form method="dialog">
-                                <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
-                            </form>
-                            <div className="flex">
-                                <div className="flex gap-[1vw] w-full">
-                                    <img src="https://i.pravatar.cc/150?u=${usuarioSelecionado.email}" class="mask mask-squircle w-[8vw] h-[8vw] object-cover"/>
-                                    <div className="flex flex-col my-auto">
-                                        <h1 className="font-title md:text-[2vw] text-[6vw] text-primary">{usuarioSelecionado.nome_completo}</h1>
-                                        <p className="font-corpo md:text-[1vw] text-[4vw] text-primary">{usuarioSelecionado.departamento || "Departamento"}</p> 
-                                        <p className="font-corpo md:text-[1vw] text-[4vw] text-primary">{usuarioSelecionado.cargo || "Cargo"}</p> 
-                                        <p className="font-corpo md:text-[1vw] text-[4vw] text-primary"> Data de Entrada:
-                                        {formatter.format(new Date(usuarioSelecionado.data_entrada)) || "Data de entrada"}
-                                        </p> 
-                                        <p className="font-corpo md:text-[1vw] text-[4vw] text-primary"> Data de Saída:
-                                            {formatter.format(new Date(usuarioSelecionado.data_saida)) || "Data de saída"}
-                                        </p> 
-                                        
-                                    </div>
-                                </div>
-                                <div className="h-[6vh] bg-secondary/60 rounded-xl my-auto w-full"> 
-                                    <div className="h-full rounded-xl" style={{ 
-                                        width: `calc(0.5 * 100%)`, 
-                                        backgroundColor: `${getBgClass(0.5)}` 
-                                    }} />
-                                    <p className="text-primary text-center font-light font-corpo text-[1vw] mt-[-4.5vh]">0.5</p>
-                                </div>    
-                            </div>
-
-                            <div className="mt-[2vh]">
-                                <div class="tabs tabs-lift">
-                                    <label className="tab flex gap-[.5vw] border-secondary/50 border-b-0">
-                                        <input type="radio" name="my_tabs_3" class="tab" aria-label="Visão Geral" />
-                                        <EyeglassesIcon size="4vh" weight="thin" className="my-auto" />
-                                        Visão Geral
-                                    </label>
-                                    <div class="tab-content bg-secondary/10 border-secondary/50 p-6">
-                                        <div className="flex md:flex-row flex-col flex-wrap gap-[1vw]">
-                                            <Squircle className="bg-secondary/30 md:w-[19vw] w-screen h-[35vh] px-[1.2vw] py-[1vh] flex-col" cornerRadius={20} cornerSmoothing={1}>
-                                                <h2 className="font-title text-primary text-xl text-center mt-[1vw]">Salário e Benefícios</h2>
-                                                <div className="flex flex-col gap-[1vw]">
-                                                    <div>
-                                                        <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
-                                                            <div className="h-full rounded-xl" style={{ 
-                                                                width: `calc(${0.5} * 12.5vw)`, 
-                                                                backgroundColor: `${getBgClass(0.5)}` 
-                                                                }} />
-                                                            <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{0.5}</p>
-                                                        </div>
-                                                        <p className="text-primary text-center font-corpo text-[1vw]">Score Médio</p>
-                                                    </div>
-                                                    <div>
-                                                        <div className="w-[12.5vw] h-[7vh] bg-secondary/60 rounded-xl mx-auto"> 
-                                                            <div className="h-full rounded-xl" style={{ 
-                                                                width: `calc(${0.5} * 12.5vw)`, 
-                                                                backgroundColor: `${getBgClass(0.5)}`
-                                                            }} />
-                                                            <p className="text-primary text-center font-corpo text-[1vw] mt-[-5vh]">{0.5}</p>
-                                                        </div>
-                                                        <p className="text-primary text-center font-corpo text-[1vw]">Intensidade Média</p>
-                                                    </div>
-                                                </div>
-                                            </Squircle>       
-                                        </div>                     
-                                    </div>
-
-                                    <label className="tab flex gap-[.5vw] border-secondary/50 border-b-0">
-                                        <input type="radio" name="my_tabs_3" class="tab" aria-label="Respostas"/>
-                                        <PencilIcon size="4vh" weight="thin" className="my-auto" />
-                                        Respostas
-                                    </label>
-                                    <div class="tab-content bg-secondary/10 border-secondary/50 p-7">
-                                        <h2 className="text-[1.5vw] font-title">Categoria:</h2>
-                                        <RespostaViewUsr emailUsuario={usuarioSelecionado.email} />
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                        </dialog>
-            )}      
-
-            <dialog id="modalCadastro" class="modal">
-                <form method="dialog" class="modal-box max-w-lg">
-                    <form method="dialog">
-                        <button class="btn btn-sm btn-circle btn-secondary absolute right-[1vw] top-[4vh] text-primary">✕</button>
-                    </form>
-                    
-                    <h3 class="text-3xl mb-4 font-title">Cadastro de Funcionário</h3>
-
-                    <div class="form-control mb-3">
-                    <label class="label"><span class="label-text font-corpo text-primary/80">Nome completo</span></label>
-                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
-                    </div>
-
-                    <div class="form-control mb-3">
-                    <label class="label"><span class="label-text font-corpo text-primary/80">Email</span></label>
-                    <input type="email" class="input input-secondary w-full font-corpo text-primary/80" />
-                    </div>
-
-                    <div class="form-control mb-3">
-                    <label class="label"><span class="label-text font-corpo text-primary/80">Departamento</span></label>
-                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
-                    </div>
-
-                    <div class="form-control mb-3">
-                    <label class="label"><span class="label-text font-corpo text-primary/80">Cargo</span></label>
-                    <input type="text" class="input input-secondary w-full font-corpo text-primary/80" />
-                    </div>
-
-                    <div class="form-control mb-3">
-                    <label class="label"><span class="label-text font-corpo text-primary/80">Data de entrada</span></label>
-                    <input type="date" class="input input-secondary w-full font-corpo text-primary/80" />
-                    </div>
-
-                    <div class="form-control mb-4">
-                    <label class="label"><span class="label-text font-corpo text-primary/80">Data de saída</span></label>
-                    <input type="date" class="input input-secondary w-full font-corpo text-primary/80" />
-                    </div>
-
-                    <div class="modal-action">
-                    <button class="btn text-primary/80">Cancelar</button>
-                    <button class="btn btn-secondary text-primary/80">Salvar</button>
-                    </div>
-                </form>
-            </dialog>
-
-
+                <div className="modal-action mt-8">
+                    <button type="button" onClick={() => setModalCadastroAberto(false)} className="btn btn-ghost text-primary/70">Cancelar</button>
+                    <button type="submit" className="btn btn-accent text-primary px-8 rounded-xl">
+                        {editandoUsuario ? "Salvar Alterações" : "Cadastrar"}
+                    </button>
+                </div>
+            </form>
+          </div>
         </div>
-    )
+      )}
+
+      {/* MODAL DELETE */}
+      {modalDeleteAberto && usuarioParaDeletar && (
+        <div className="modal modal-open">
+            <div className="modal-box bg-base-100 rounded-3xl p-8 shadow-2xl border border-white/20">
+                <div className="flex flex-col items-center text-center gap-4">
+                    <div className="bg-error/10 p-4 rounded-full">
+                        <Warning size={48} className="text-error" />
+                    </div>
+                    <h3 className="font-title text-2xl text-primary">Excluir Colaborador?</h3>
+                    <p className="font-corpo text-primary/70">
+                        Tem certeza que deseja remover <strong>{usuarioParaDeletar.nome_completo}</strong>? <br/>
+                        Esta ação não pode ser desfeita.
+                    </p>
+                    
+                    <div className="flex gap-4 mt-4 w-full">
+                        <button onClick={() => setModalDeleteAberto(false)} className="btn btn-ghost flex-1">Cancelar</button>
+                        <button onClick={confirmarDelete} className="btn btn-error flex-1 text-white">Sim, Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* MODAL CONFIGURAR FORMULÁRIO */}
+      {modalConfigLinkAberto && selectedUser && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-base-100 rounded-3xl p-8 max-w-md shadow-2xl border border-white/20 overflow-visible">
+            <div className="flex justify-between items-center mb-6">
+                <h3 className="font-title text-xl text-primary">Configurar Formulário</h3>
+                <button onClick={() => setModalConfigLinkAberto(false)} className="btn btn-sm btn-circle btn-ghost text-primary"><X size={24}/></button>
+            </div>
+            
+            <div className="mb-6 border-b border-primary/10 pb-4">
+                <p className="text-sm text-primary/60">Gerar link para:</p>
+                <p className="font-title text-2xl text-primary mt-1">{selectedUser.nome_completo}</p>
+            </div>
+
+            <div className="flex flex-col gap-6">
+                <div className="form-control">
+                    <span className="label-text font-bold text-primary text-md mb-2 block">Tipo de Saída:</span>
+                    <div className="dropdown dropdown-bottom w-full">
+                        <div 
+                            tabIndex={0} 
+                            role="button" 
+                            className="btn w-full justify-between bg-base-200 text-primary font-normal border-none hover:bg-base-300 no-animation"
+                        >
+                            {configLink.tipo === 'voluntaria' ? 'Voluntária (Pediu Demissão)' : 'Involuntária (Demitido)'}
+                            <CaretDown size={16} weight="bold" />
+                        </div>
+                        <ul tabIndex={0} className="dropdown-content z-[999] menu p-2 shadow-xl bg-base-100 rounded-box w-full mt-1 border border-primary/10">
+                            <li>
+                                <a 
+                                    className={configLink.tipo === 'voluntaria' ? 'active font-bold' : ''}
+                                    onClick={() => {
+                                        setConfigLink({...configLink, tipo: 'voluntaria'});
+                                        document.activeElement.blur();
+                                    }}
+                                >
+                                    Voluntária (Pediu Demissão)
+                                </a>
+                            </li>
+                            <li>
+                                <a 
+                                    className={configLink.tipo === 'involuntaria' ? 'active font-bold' : ''}
+                                    onClick={() => {
+                                        setConfigLink({...configLink, tipo: 'involuntaria'});
+                                        document.activeElement.blur();
+                                    }}
+                                >
+                                    Involuntária (Demitido)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div className="form-control">
+                    <label className="label cursor-pointer flex-row items-center justify-between">
+                        <span className="label-text font-bold text-primary text-md">Cargo de Líder?</span>
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    name="lider" 
+                                    className="radio radio-primary radio-sm" 
+                                    checked={configLink.lider === 'true'} 
+                                    onChange={() => setConfigLink({...configLink, lider: 'true'})} 
+                                />
+                                <span className="text-sm">Sim</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    name="lider" 
+                                    className="radio radio-primary radio-sm" 
+                                    checked={configLink.lider === 'false'} 
+                                    onChange={() => setConfigLink({...configLink, lider: 'false'})} 
+                                />
+                                <span className="text-sm">Não</span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                
+                <button onClick={handleGerarLinkFinal} className="btn btn-accent w-full mt-4 rounded-xl text-primary font-bold shadow-md">
+                    <PaperPlaneTilt size={20} weight="bold" /> Gerar Link
+                </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalLinkAberto && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-base-100 rounded-3xl p-8 shadow-2xl border border-white/20">
+            <h3 className="font-title text-2xl text-primary mb-2">Link Gerado! 🚀</h3>
+            <p className="text-primary/70 font-corpo mb-6">Link para <strong>{usuarioLink}</strong> (48h validade).</p>
+            <div className="bg-secondary/10 p-4 rounded-xl flex items-center gap-2 border border-secondary/20">
+                <code className="text-sm break-all text-primary font-mono bg-transparent w-full">{linkGerado}</code>
+                <button onClick={copyToClipboard} className={`btn btn-square btn-sm ${copiado ? 'btn-success' : 'btn-ghost'} transition-all`}>
+                    {copiado ? <Check size={20} className="text-white"/> : <Copy size={20} className="text-primary"/>}
+                </button>
+            </div>
+            <div className="modal-action mt-6"><button onClick={() => setModalLinkAberto(false)} className="btn btn-primary rounded-xl w-full">Concluído</button></div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

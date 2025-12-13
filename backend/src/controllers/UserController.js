@@ -1,15 +1,26 @@
 import { Usuario, Entrevista } from '../models/Relations.js'; 
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'; // ADICIONADO: Para gerar o token aqui mesmo
+import jwt from 'jsonwebtoken'; 
 import { sequelize } from '../config/db.js'; 
 
 const saltRounds = 10;
 
+// POST /usuarios (CRIAR)
 export const criarUsuario = async (req, res) => {
-    const { nome_completo, email , departamento , cargo, data_entrada , data_saida , motivo_saida , password } = req.body;
+    // Adicionei 'admin' na desestruturação
+    const { nome_completo, email, departamento, cargo, data_entrada, data_saida, motivo_saida, password, role, admin } = req.body;
 
     try {
-        const hashedPassword = await bcrypt.hash(password, saltRounds); // senha criptografada
+        const senhaParaSalvar = password || Math.random().toString(36).slice(-8) + "Blip!";
+        const hashedPassword = await bcrypt.hash(senhaParaSalvar, saltRounds);
+
+        const motivoFinal = motivo_saida || "N/A - Aguardando Entrevista";
+        
+        // Lógica de Conversão: Se 'admin' for true OU 'role' for 'admin', salva como 'admin'
+        let roleFinal = 'colaborador';
+        if (admin === true || role === 'admin') {
+            roleFinal = 'admin';
+        }
 
         const novoUsuario = await Usuario.create({
             nome_completo,
@@ -17,21 +28,25 @@ export const criarUsuario = async (req, res) => {
             departamento,
             cargo,
             data_entrada,
-            motivo_saida,
-            data_saida,
-            password: hashedPassword // Usando a senha hash
+            motivo_saida: motivoFinal,
+            data_saida: data_saida || null,
+            password: hashedPassword,
+            role: roleFinal // Salva no formato que o banco espera
         });
 
         const usuarioFormatado = novoUsuario.toJSON();
-        delete usuarioFormatado.password; 
+        delete usuarioFormatado.password;
+        // Devolve o campo admin para o frontend já atualizar a lista corretamente
+        usuarioFormatado.admin = usuarioFormatado.role === 'admin';
         
         return res.status(201).json(usuarioFormatado);
 
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            return res.status(400).json({ error: 'Email já cadastrado.' });
+            return res.status(400).json({ error: 'Este email já está cadastrado no sistema.' });
         }
-        return res.status(500).json({ error: 'Erro ao criar usuário.', details: error.message });
+        console.error("Erro ao criar usuário:", error);
+        return res.status(500).json({ error: 'Erro interno ao criar usuário.', details: error.message });
     }
 };
 
@@ -41,7 +56,15 @@ export const listarUsuarios = async (req, res) => {
         const usuarios = await Usuario.findAll({
             attributes: { exclude: ['password'] } 
         });
-        return res.status(200).json(usuarios);
+
+        // Mapeia para incluir o campo 'admin' (booleano) que o Frontend espera
+        const usuariosFormatados = usuarios.map(usuario => {
+            const u = usuario.toJSON();
+            u.admin = u.role === 'admin';
+            return u;
+        });
+
+        return res.status(200).json(usuariosFormatados);
     } catch (error) {
         return res.status(500).json({ error: 'Erro ao listar usuários.', details: error.message });
     }
@@ -57,12 +80,16 @@ export const buscarUsuario = async (req, res) => {
         if (!usuario) {
             return res.status(404).json({ error: 'Usuário não encontrado.' });
         }
-        return res.status(200).json(usuario);
+
+        // Formata para incluir admin
+        const usuarioFormatado = usuario.toJSON();
+        usuarioFormatado.admin = usuarioFormatado.role === 'admin';
+
+        return res.status(200).json(usuarioFormatado);
     } catch (error) {
         return res.status(500).json({ error: 'Erro ao buscar usuário.', details: error.message });
     }
 };
-
 
 export const buscarUsuarioPorEmail = async (req, res) => {
   try {
@@ -81,7 +108,11 @@ export const buscarUsuarioPorEmail = async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    return res.status(200).json(usuario);
+    // Formata para incluir admin
+    const usuarioFormatado = usuario.toJSON();
+    usuarioFormatado.admin = usuarioFormatado.role === 'admin';
+
+    return res.status(200).json(usuarioFormatado);
 
   } catch (error) {
     return res.status(500).json({
@@ -91,8 +122,7 @@ export const buscarUsuarioPorEmail = async (req, res) => {
   }
 };
 
-
-// GET /users/:id/entrevistas  entrevista de um usuario
+// GET /users/:id/entrevistas
 export const buscarEntrevistasDoUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findByPk(req.params.id, {
@@ -100,7 +130,7 @@ export const buscarEntrevistasDoUsuario = async (req, res) => {
                 model: Entrevista,
                 order: [['data_entrevista', 'DESC']]
             }],
-            attributes: ['id_usuario', 'nome_completo'] // Ajustado para id_usuario (confirme se seu model usa id_usuario ou usuario_id)
+            attributes: ['usuario_id', 'nome_completo'] 
         });
 
         if (!usuario) {
@@ -113,19 +143,27 @@ export const buscarEntrevistasDoUsuario = async (req, res) => {
     }
 };
 
-
+// PUT /usuarios/:id (ATUALIZAR)
 export const atualizarUsuario = async (req, res) => {
     const userId = req.params.id;
     let dados = req.body;
     
     try {
-        // Se a senha estiver sendo atualizada, ela deve ser criptografada primeiro
+        // Se a senha foi enviada, criptografa antes de salvar
         if (dados.password) {
             dados.password = await bcrypt.hash(dados.password, saltRounds);
         }
 
+        // Lógica de Conversão na Edição: admin (bool) -> role (string)
+        if (dados.admin !== undefined) {
+            dados.role = dados.admin ? 'admin' : 'colaborador';
+        } else if (dados.role) {
+            // Mantém suporte caso envie 'role' direto
+            dados.role = dados.role === 'admin' ? 'admin' : 'colaborador';
+        }
+
         const [updatedRows] = await Usuario.update(dados, {
-            where: { id_usuario: userId } // Confirmar chave primária (id_usuario ou usuario_id)
+            where: { usuario_id: userId } 
         });
 
         if (updatedRows === 0) {
@@ -136,7 +174,11 @@ export const atualizarUsuario = async (req, res) => {
             attributes: { exclude: ['password'] }
         });
         
-        return res.status(200).json(usuarioAtualizado);
+        // Retorna com o campo admin formatado
+        const usuarioFormatado = usuarioAtualizado.toJSON();
+        usuarioFormatado.admin = usuarioFormatado.role === 'admin';
+
+        return res.status(200).json(usuarioFormatado);
     } catch (error) {
         return res.status(500).json({ error: 'Erro ao atualizar usuário.', details: error.message });
     }
@@ -146,7 +188,7 @@ export const atualizarUsuario = async (req, res) => {
 export const deletarUsuario = async (req, res) => {
     try {
         const deletedRows = await Usuario.destroy({
-            where: { id_usuario: req.params.id } // Confirmar chave primária
+            where: { usuario_id: req.params.id }
         });
 
         if (deletedRows === 0) {
@@ -155,7 +197,6 @@ export const deletarUsuario = async (req, res) => {
 
         return res.status(204).send(); 
     } catch (error) {
-        // Se houver entrevistas ligadas a este usuário (Chave Estrangeira), ele n vai ser excluido e vai dar erro
         return res.status(500).json({ 
             error: 'Erro ao deletar usuário. Verifique se há entrevistas associadas.', 
             details: error.message 
@@ -163,37 +204,36 @@ export const deletarUsuario = async (req, res) => {
     }
 };
 
-// NOVO: Geração de link segura e independente
+// GET /users/:id/gerar-link
 export const gerarLinkPorId = async (req, res) => {
     try {
         const { id } = req.params;
+        const { tipo, lider } = req.query; 
 
-        // 1. Buscar usuário pelo ID
         const usuario = await Usuario.findByPk(id);
 
         if (!usuario) {
             return res.status(404).json({ error: "Usuário não encontrado." });
         }
 
-        // 2. Gerar token JWT (Link expira em 48h)
-        // Importante: Usamos process.env.JWT_SECRET que já configuramos
         const token = jwt.sign(
             { 
                 email: usuario.email, 
-                id: usuario.id_usuario 
+                id: usuario.usuario_id,
+                contexto: {
+                    tipo_saida: tipo || 'voluntaria',
+                    is_lider: lider === 'true'
+                }
             }, 
             process.env.JWT_SECRET, 
             { expiresIn: '48h' }
         );
 
-        // 3. Montar o link temporário
-        // Usa a variável de ambiente ou fallback para localhost
         const baseUrl = process.env.FRONT_URL || 'http://localhost:5173';
         const linkTemporario = `${baseUrl}/?t=${token}`;
 
         return res.status(200).json({
             usuario: usuario.nome_completo,
-            email: usuario.email,
             link: linkTemporario
         });
 
