@@ -1,12 +1,13 @@
 import Pergunta from '../models/Pergunta.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 /**
- * Busca todas as perguntas do banco de dados.
- * O frontend vai chamar isso para montar o formulário.
+ * Função auxiliar para agrupar array plano em array de seções
  */
-
 function agruparPorCategoria(perguntasPlanas) {
-   
     const perguntasAgrupadas = perguntasPlanas.reduce((acc, pergunta) => {
         const categoria = pergunta.categoria;
         
@@ -22,17 +23,56 @@ function agruparPorCategoria(perguntasPlanas) {
     return Object.values(perguntasAgrupadas); 
 }
 
+// 1. LISTAR PERGUNTAS (COM FILTRO DE CONTEXTO JWT)
 export const listarPerguntas = async (req, res) => {
   try {
-    const perguntas = await Pergunta.findAll({
+    // 1. Busca TODAS as perguntas do banco
+    const todasPerguntas = await Pergunta.findAll({
       order: [
-               
-                ['id_pergunta', 'ASC'] 
-            ]
+         ['id_pergunta', 'ASC'] 
+      ]
     });
 
-    const perguntasEmSecoes = agruparPorCategoria(perguntas);
-    return res.json(perguntasEmSecoes);
+    // 2. Define o Contexto Padrão (caso não tenha token)
+    let userContext = { tipo_saida: 'voluntaria', is_lider: false };
+
+    // 3. Tenta ler o Token do Header para pegar o contexto real
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            if (decoded.contexto) {
+                userContext = decoded.contexto;
+                console.log("🔍 Contexto identificado:", userContext);
+            }
+        } catch (err) {
+            console.log("⚠️ Token inválido ou ausente ao listar perguntas. Usando padrão.");
+        }
+    }
+
+    // 4. APLICA O FILTRO (Server-Side Filtering)
+    const perguntasFiltradas = todasPerguntas.filter(p => {
+        // Normaliza para evitar erros de maiúsculas/minúsculas e trata nulos
+        const condicaoSaida = (p.condicao_saida || 'todos').toLowerCase();
+        const condicaoCargo = (p.condicao_cargo || 'todos').toLowerCase();
+
+        // Verifica Tipo de Saída (Voluntária vs Involuntária)
+        // Se for 'todos', passa. Se for igual ao do usuário, passa.
+        const matchSaida = condicaoSaida === 'todos' || condicaoSaida === userContext.tipo_saida;
+
+        // Verifica Liderança
+        // Se for 'todos', passa. Se for 'lider' E o usuário for líder, passa.
+        const matchCargo = condicaoCargo === 'todos' || (condicaoCargo === 'lider' && userContext.is_lider);
+
+        return matchSaida && matchCargo;
+    });
+
+    // 5. Agrupa e envia
+    const perguntasEmSecoes = agruparPorCategoria(perguntasFiltradas);
+    
+    // Se, após filtrar, não sobrar nada (ex: config errada), retorna array vazio para não quebrar o front
+    return res.json(perguntasEmSecoes || []);
 
   } catch (error) {
     console.error('Erro ao buscar perguntas:', error);
@@ -40,12 +80,9 @@ export const listarPerguntas = async (req, res) => {
   }
 };
 
-// Adicione isso DEPOIS da função listarPerguntas
-
 // 2. CRIAR uma nova pergunta
 export const criarPergunta = async (req, res) => {
   try {
-    // Pega os dados enviados no corpo da requisição (JSON)
     const novaPergunta = await Pergunta.create(req.body);
     res.status(201).json(novaPergunta);
   } catch (error) {
@@ -71,21 +108,19 @@ export const buscarPergunta = async (req, res) => {
   }
 };
 
-// 4. ATUALIZAR uma pergunta (Esta é a que estava dando erro no console)
+// 4. ATUALIZAR uma pergunta
 export const atualizarPergunta = async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Atualiza onde o ID for igual ao passado na URL
     const [linhasAtualizadas] = await Pergunta.update(req.body, {
-      where: { id: id }
+      where: { id: id } // Se seu Primary Key no model for diferente de 'id', ajuste aqui
     });
 
     if (linhasAtualizadas === 0) {
       return res.status(404).json({ msg: 'Pergunta não encontrada ou sem alterações' });
     }
 
-    // Busca a pergunta atualizada para devolver pro front
     const perguntaAtualizada = await Pergunta.findByPk(id);
     res.json(perguntaAtualizada);
 
@@ -107,7 +142,7 @@ export const deletarPergunta = async (req, res) => {
       return res.status(404).json({ msg: 'Pergunta não encontrada' });
     }
 
-    res.status(204).send(); // 204 = No Content (Deletado com sucesso, sem corpo de resposta)
+    res.status(204).send(); 
   } catch (error) {
     console.error('Erro ao deletar:', error);
     res.status(500).json({ msg: 'Erro ao deletar pergunta' });

@@ -2,161 +2,151 @@ import { Pergunta } from '../models/Relations.js';
 
 export const seedPerguntas = async () => {
   try {
-    console.log('🌱 [CHRO Mode] Sincronizando Matriz de Perguntas (Voluntário/Involuntário/Liderança)...');
-
-    /* ESTRATÉGIA DE PERGUNTAS:
-       1. Núcleo Comum (Todos respondem): Cultura, Clima, Estrutura.
-       2. Condicional de Saída: 
-          - Voluntária: Foco em retenção e motivos da escolha.
-          - Involuntária: Foco em respeito no processo e feedback prévio.
-       3. Condicional de Cargo:
-          - Liderança: Foco em autonomia, estratégia e apoio da diretoria.
-    */
+    console.log('🌱 [CHRO Mode] Sincronizando Matriz de Perguntas Estratégicas...');
 
     const perguntasEstrategicas = [
       // ==============================================================================
       // 🟢 NÚCLEO COMUM (TODOS RESPONDEM)
       // ==============================================================================
       
-      // SEÇÃO: Perguntas gerais
       {
         texto_pergunta: "Em uma escala de 1 a 7, como você avalia sua experiência geral na empresa?",
         categoria: "Perguntas gerais",
-        tipo_resposta: 3, // Range
-        opcoes: null
+        tipo_resposta: 3, 
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'todos'
       },
       {
         texto_pergunta: "Você recomendaria a empresa a um amigo como um bom lugar para trabalhar (eNPS)?",
         categoria: "Perguntas gerais",
         tipo_resposta: 3, 
-        opcoes: null
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'todos'
       },
-
-      // SEÇÃO: Cultura e ambiente
       {
         texto_pergunta: "O ambiente de trabalho promovia segurança psicológica para você ser quem é?",
         categoria: "Cultura e ambiente",
         tipo_resposta: 3,
-        opcoes: null
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'todos'
       },
       {
         texto_pergunta: "Você sentia que os valores da empresa eram praticados no dia a dia ou apenas escritos?",
         categoria: "Cultura e ambiente",
-        tipo_resposta: 1, // Texto Longo
-        opcoes: null
+        tipo_resposta: 1, 
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'todos'
       },
-
-      // SEÇÃO: Liderança e gestão (Avaliação do Chefe Imediato)
       {
         texto_pergunta: "Seu líder direto fornecia feedbacks construtivos que ajudavam no seu desenvolvimento?",
         categoria: "Liderança e gestão",
         tipo_resposta: 3,
-        opcoes: null
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'todos'
       },
-      {
-        texto_pergunta: "Como você avalia a competência técnica e humana do seu gestor direto?",
-        categoria: "Liderança e gestão",
-        tipo_resposta: 3,
-        opcoes: null
-      },
-
-      // SEÇÃO: Estrutura e Benefícios
       {
         texto_pergunta: "O pacote de remuneração e benefícios estava alinhado com suas responsabilidades?",
-        categoria: "Estrutura, incentivos e oportunidades",
+        categoria: "Estrutura e Benefícios",
         tipo_resposta: 3,
-        opcoes: null
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'todos'
       },
 
       // ==============================================================================
       // 🟡 CONDICIONAL: TIPO DE SAÍDA
       // ==============================================================================
 
-      // SEÇÃO: Saída Voluntária (Pediu demissão) -> Foco: O que perdemos?
+      // --- VOLUNTÁRIA ---
       {
         texto_pergunta: "Qual foi o fator determinante (o 'gatilho') para você aceitar outra proposta ou sair?",
-        categoria: "Saída: Voluntária",
-        tipo_resposta: 2, // Seletor
-        opcoes: JSON.stringify(["Salário/Benefícios maiores", "Melhor oportunidade de carreira", "Insatisfação com Liderança", "Cultura/Ambiente tóxico", "Falta de Flexibilidade", "Mudança de Carreira", "Outros"])
+        categoria: "Motivos da Saída",
+        tipo_resposta: 2, 
+        opcoes: JSON.stringify(["Salário/Benefícios maiores", "Melhor oportunidade de carreira", "Insatisfação com Liderança", "Cultura/Ambiente tóxico", "Falta de Flexibilidade", "Mudança de Carreira", "Outros"]),
+        condicao_saida: 'voluntaria', // <--- SÓ APARECE SE FOR VOLUNTÁRIA
+        condicao_cargo: 'todos'
       },
       {
         texto_pergunta: "O que a empresa poderia ter feito diferente nos últimos 6 meses para que você ficasse?",
-        categoria: "Saída: Voluntária",
-        tipo_resposta: 1, // Texto Longo (Crucial para retenção)
-        opcoes: null
-      },
-      {
-        texto_pergunta: "Você chegou a conversar sobre sua insatisfação antes de decidir sair?",
-        categoria: "Saída: Voluntária",
-        tipo_resposta: 2,
-        opcoes: JSON.stringify(["Sim, com meu líder", "Sim, com o RH", "Sim, com colegas", "Não, não me senti confortável"])
+        categoria: "Motivos da Saída",
+        tipo_resposta: 1, 
+        opcoes: null,
+        condicao_saida: 'voluntaria',
+        condicao_cargo: 'todos'
       },
 
-      // SEÇÃO: Saída Involuntária (Foi demitido) -> Foco: Justiça e Processo
+      // --- INVOLUNTÁRIA ---
       {
         texto_pergunta: "O processo de desligamento foi conduzido de forma respeitosa e clara?",
-        categoria: "Saída: Involuntária",
+        categoria: "Processo de Desligamento",
         tipo_resposta: 3,
-        opcoes: null
+        opcoes: null,
+        condicao_saida: 'involuntaria', // <--- SÓ APARECE SE FOR INVOLUNTÁRIA (DEMISSÃO)
+        condicao_cargo: 'todos'
       },
       {
-        texto_pergunta: "Você já havia recebido feedbacks anteriores indicando que seu desempenho ou comportamento não estavam adequados?",
-        categoria: "Saída: Involuntária",
+        texto_pergunta: "Você já havia recebido feedbacks anteriores indicando que seu desempenho não estava adequado?",
+        categoria: "Processo de Desligamento",
         tipo_resposta: 2,
-        opcoes: JSON.stringify(["Sim, estava ciente e tivemos planos de ação", "Sim, mas foram superficiais", "Não, foi uma surpresa total"])
-      },
-      {
-        texto_pergunta: "Como você avalia o suporte da empresa neste momento de transição?",
-        categoria: "Saída: Involuntária",
-        tipo_resposta: 1,
-        opcoes: null
+        opcoes: JSON.stringify(["Sim, estava ciente e tivemos planos de ação", "Sim, mas foram superficiais", "Não, foi uma surpresa total"]),
+        condicao_saida: 'involuntaria',
+        condicao_cargo: 'todos'
       },
 
       // ==============================================================================
-      // 🔵 CONDICIONAL: LIDERANÇA (Apenas para quem era Líder)
+      // 🔵 CONDICIONAL: LIDERANÇA
       // ==============================================================================
       
-      // SEÇÃO: Público Liderança
       {
         texto_pergunta: "Você sentiu que tinha autonomia suficiente para montar e gerir seu time?",
-        categoria: "Público: Liderança",
+        categoria: "Gestão e Estratégia",
         tipo_resposta: 3,
-        opcoes: null
-      },
-      {
-        texto_pergunta: "Como você avalia o suporte da Diretoria/C-Level para resolver os problemas da sua área?",
-        categoria: "Público: Liderança",
-        tipo_resposta: 3,
-        opcoes: null
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'lider' // <--- SÓ APARECE SE FOR LÍDER
       },
       {
         texto_pergunta: "As decisões estratégicas da empresa eram claras e permitiam que você desdobrasse metas para seu time?",
-        categoria: "Público: Liderança",
+        categoria: "Gestão e Estratégia",
         tipo_resposta: 2,
-        opcoes: JSON.stringify(["Sim, sempre claras", "Parcialmente claras", "Confusas/Mudavam sempre", "Nunca tive visibilidade"])
+        opcoes: JSON.stringify(["Sim, sempre claras", "Parcialmente claras", "Confusas/Mudavam sempre", "Nunca tive visibilidade"]),
+        condicao_saida: 'todos',
+        condicao_cargo: 'lider'
       },
+      
+      // FINALIZAÇÃO (Todos)
       {
-        texto_pergunta: "Qual o maior desafio de gestão que você enfrentou e que a empresa não ajudou a resolver?",
-        categoria: "Público: Liderança",
+        texto_pergunta: "Se pudesse dar um conselho direto ao CEO e à alta liderança, qual seria?",
+        categoria: "Considerações Finais",
         tipo_resposta: 1,
-        opcoes: null
+        opcoes: null,
+        condicao_saida: 'todos',
+        condicao_cargo: 'todos'
       }
     ];
 
-    // UPSERT (Atualiza ou Cria)
+    // UPSERT Inteligente
     for (const p of perguntasEstrategicas) {
+        // Tenta encontrar pelo texto da pergunta
         const perguntaExistente = await Pergunta.findOne({ 
             where: { texto_pergunta: p.texto_pergunta } 
         });
 
         if (perguntaExistente) {
+            // Se já existe, atualiza as condições (caso tenhamos mudado a lógica)
             await perguntaExistente.update(p);
         } else {
+            // Se não, cria
             await Pergunta.create(p);
         }
     }
 
-    console.log('✅ Matriz de Perguntas de RH Sincronizada!');
+    console.log('✅ Matriz de Perguntas de RH Sincronizada com Condicionais!');
 
   } catch (error) {
     console.error('❌ Erro ao rodar seed de perguntas:', error);

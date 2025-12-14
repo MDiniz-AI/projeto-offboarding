@@ -1,82 +1,90 @@
-// src/services/analise_sentimento/googleClient.js
-
 import dotenv from 'dotenv';
-dotenv.config();
-
 import { GoogleGenAI } from '@google/genai';
 
+dotenv.config();
+
 const useMock = String(process.env.USE_MOCK || 'true').toLowerCase() === 'true';
-
-// Inicializa o cliente Gemini
 const ai = useMock ? null : new GoogleGenAI(process.env.GEMINI_API_KEY);
-const model = "gemini-2.5-flash"; // Modelo rápido para análise
+const model = "gemini-2.0-flash-001";
 
-// Define a estrutura JSON para extração de TUDO (incluindo array allThemes)
 const outputSchema = {
     type: "object",
     properties: {
-        score: { type: "number", description: "O score de sentimento entre -1.0 (muito negativo) e 1.0 (muito positivo)." },
-        magnitude: { type: "number", description: "A força total da emoção na resposta, de 0.0 a 2.0." },
-        label: { type: "string", description: "Classificação final: 'positive', 'negative' ou 'neutral'." },
-        
-        allThemes: { 
-            type: "array",
-            items: { type: "string" },
-            description: "Lista de TODOS os temas citados no texto, usando estritamente a lista de temas pré-definida do RH. Não classifique o tema principal, apenas liste todos os que aparecem."
-        },
-        riskLevel: {
-            type: "string",
-            description: "Nível de risco para o RH/Pessoas: 'High', 'Medium', ou 'Low'."
-        }
+        score: { type: "number" },
+        magnitude: { type: "number" },
+        label: { type: "string", enum: ["positive", "neutral", "negative"] },
+        allThemes: { type: "array", items: { type: "string" } },
+        riskLevel: { type: "string", enum: ["High", "Medium", "Low"] },
+        riskDetails: { type: "string" },
+        summary: { type: "string" }
     },
-    required: ["score", "magnitude", "label", "allThemes", "riskLevel"] 
+    required: ["score", "magnitude", "label", "allThemes", "riskLevel", "riskDetails", "summary"] 
 };
 
+// --- EXPORTAÇÃO 1: ANÁLISE ---
+export const analyzeWithGoogle = async (answerText, questionText) => {
+    const safeAnswer = answerText || "";
+    const safeQuestion = questionText || "Contexto geral";
 
-export async function analyzeWithGoogle(text, language) {
-    if (useMock) {
-        // ===== MOCK SIMPLES DE FALLBACK (Para testes off-line) =====
-        if (text && text.includes('excelente')) {
-             return { score: 0.8, magnitude: 0.9, label: 'positive', allThemes: ['Reconhecimento'], riskLevel: 'Low', source: 'mock' };
-        } else if (text && text.includes('tóxico') || text.includes('desrespeitad')) {
-             return { score: -0.9, magnitude: 1.8, label: 'negative', allThemes: ['Liderança', 'Cultura e Ambiente'], riskLevel: 'High', source: 'mock' };
-        }
-        return { score: 0, magnitude: 0, label: 'neutral', allThemes: ['Geral'], riskLevel: 'Low', source: 'mock' };
-    }
+    if (useMock) return mockResponse(safeAnswer);
 
-    // ===== INTEGRAÇÃO GEMINI LLM (Caminho Ideal) =====
     try {
-        const fullPrompt = `Você é um analista de People Analytics especializado em offboarding. Use estritamente as categorias de temas e risco fornecidas no esquema JSON. 
-        Analise a seguinte resposta de feedback: "${text}". 
-        Regras:
-        1. O campo 'allThemes' deve ser um array listando TODOS os temas citados.
-        2. Não defina o tema principal.
-        Responda estritamente no formato JSON definido.`; 
+        const fullPrompt = `
+        Você é um especialista em People Analytics.
+        PERGUNTA: "${safeQuestion}"
+        RESPOSTA: "${safeAnswer}"
+        Analise o sentimento, extraia temas e detecte riscos. Responda em JSON.
+        `; 
         
         const response = await ai.models.generateContent({
             model: model,
-            contents: fullPrompt,
+            contents: { role: "user", parts: [{ text: fullPrompt }] },
             config: {
                 responseMimeType: "application/json",
                 responseSchema: outputSchema,
+                temperature: 0.2,
             }
         });
 
-        // CORREÇÃO ESSENCIAL: Verifica se a resposta contém texto antes de processar
-        if (!response || !response.text || response.text.length < 5) {
-            throw new Error("Gemini retornou uma resposta vazia ou incompleta.");
-        }
+        let jsonText = typeof response.text === 'function' ? response.text() : response.text;
+        jsonText = jsonText.replace(/```json|```/g, '').trim();
 
-        const jsonText = response.text.trim();
         const analysis = JSON.parse(jsonText);
-
-        return { ...analysis, source: 'gemini' };
-
+        return { ...analysis, source: 'gemini_context_aware' };
     } catch (e) {
-        // Imprime o erro detalhado da API para diagnóstico
-        console.error('Gemini API ERROR:', e.message, e.response?.text); 
-        
-        // Retorno de fallback seguro
-        return { score: 0.0, magnitude: 0.0, label: 'neutral', allThemes: ['API_FAIL'], riskLevel: 'High', source: 'gemini_fail' };
+        console.error('Gemini API ERROR:', e.message); 
+        return { score: 0.0, magnitude: 0.0, label: 'neutral', allThemes: ['Erro'], riskLevel: 'Low', riskDetails: 'Erro API', summary: 'Falha.', source: 'gemini_fail' };
     }
+};
+
+// --- EXPORTAÇÃO 2: RESUMO (A QUE ESTAVA DANDO ERRO) ---
+export const gerarResumoExecutivo = async (listaRespostas, departamento = "Geral") => {
+    if (useMock) {
+        return `[MOCK] Resumo Executivo para ${departamento}: Colaboradores apontam problemas de comunicação.`;
+    }
+
+    try {
+        const textos = listaRespostas.filter(t => t && t.length > 5).slice(0, 50).map(t => `- "${t}"`).join("\n");
+        if (!textos) return "Dados insuficientes.";
+
+        const prompt = `Atue como RH. Resuma estas saídas de ${departamento}:\n${textos}\n\nEscreva 3 parágrafos sobre causas e ações.`;
+
+        const response = await ai.models.generateContent({
+            model: model,
+            contents: { role: "user", parts: [{ text: prompt }] },
+            config: { responseMimeType: "text/plain", temperature: 0.4 }
+        });
+        return typeof response.text === 'function' ? response.text() : response.text;
+    } catch (e) {
+        console.error('Erro resumo:', e.message);
+        return "Erro ao gerar resumo.";
+    }
+};
+
+function mockResponse(text) {
+    const lower = text.toLowerCase();
+    if (lower.includes('assédio') || lower.includes('processo')) {
+        return { score: -0.9, magnitude: 1.8, label: 'negative', allThemes: ['Risco'], riskLevel: 'High', riskDetails: 'Risco Legal', summary: 'Grave.', source: 'mock' };
+    }
+    return { score: 0, magnitude: 0, label: 'neutral', allThemes: ['Geral'], riskLevel: 'Low', riskDetails: '', summary: 'Neutro.', source: 'mock' };
 }

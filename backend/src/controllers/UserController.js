@@ -7,16 +7,16 @@ const saltRounds = 10;
 
 // POST /usuarios (CRIAR)
 export const criarUsuario = async (req, res) => {
-    // Adicionei 'admin' na desestruturação
     const { nome_completo, email, departamento, cargo, data_entrada, data_saida, motivo_saida, password, role, admin } = req.body;
 
     try {
+        // Se não vier senha, gera uma aleatória (para colaboradores que só vão responder form)
         const senhaParaSalvar = password || Math.random().toString(36).slice(-8) + "Blip!";
         const hashedPassword = await bcrypt.hash(senhaParaSalvar, saltRounds);
 
         const motivoFinal = motivo_saida || "N/A - Aguardando Entrevista";
         
-        // Lógica de Conversão: Se 'admin' for true OU 'role' for 'admin', salva como 'admin'
+        // Define se é admin ou colaborador
         let roleFinal = 'colaborador';
         if (admin === true || role === 'admin') {
             roleFinal = 'admin';
@@ -31,12 +31,12 @@ export const criarUsuario = async (req, res) => {
             motivo_saida: motivoFinal,
             data_saida: data_saida || null,
             password: hashedPassword,
-            role: roleFinal // Salva no formato que o banco espera
+            role: roleFinal 
         });
 
         const usuarioFormatado = novoUsuario.toJSON();
         delete usuarioFormatado.password;
-        // Devolve o campo admin para o frontend já atualizar a lista corretamente
+        // Retorna flag 'admin' para facilitar no frontend
         usuarioFormatado.admin = usuarioFormatado.role === 'admin';
         
         return res.status(201).json(usuarioFormatado);
@@ -50,27 +50,49 @@ export const criarUsuario = async (req, res) => {
     }
 };
 
-// GET /users
+// GET /usuarios (LISTAR COM STATUS)
 export const listarUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll({
-            attributes: { exclude: ['password'] } 
+            attributes: { exclude: ['password'] },
+            // Faz JOIN com Entrevistas
+            include: [{
+                model: Entrevista,
+                as: 'entrevistas', // <--- CORREÇÃO: Adicione esta linha!
+                attributes: ['id_entrevista', 'data_entrevista', 'status_entrevista'],
+                required: false // LEFT JOIN
+            }]
         });
 
-        // Mapeia para incluir o campo 'admin' (booleano) que o Frontend espera
         const usuariosFormatados = usuarios.map(usuario => {
             const u = usuario.toJSON();
             u.admin = u.role === 'admin';
+            
+            // Agora garantimos que 'entrevistas' existe
+            const temEntrevista = u.entrevistas && u.entrevistas.length > 0;
+            
+            u.status_offboarding = temEntrevista ? 'Concluído' : 'Pendente';
+            u.total_entrevistas = temEntrevista ? u.entrevistas.length : 0;
+            
+            if (temEntrevista) {
+                // Ordena para pegar a mais recente
+                const ultima = u.entrevistas.sort((a, b) => new Date(b.data_entrevista) - new Date(a.data_entrevista))[0];
+                u.data_ultima_entrevista = ultima.data_entrevista;
+            } else {
+                u.data_ultima_entrevista = null;
+            }
+
             return u;
         });
 
         return res.status(200).json(usuariosFormatados);
     } catch (error) {
+        console.error("Erro no listarUsuarios:", error);
         return res.status(500).json({ error: 'Erro ao listar usuários.', details: error.message });
     }
 };
 
-// GET /users/:id
+// GET /usuarios/:id (BUSCAR UM)
 export const buscarUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findByPk(req.params.id, {
@@ -81,7 +103,6 @@ export const buscarUsuario = async (req, res) => {
             return res.status(404).json({ error: 'Usuário não encontrado.' });
         }
 
-        // Formata para incluir admin
         const usuarioFormatado = usuario.toJSON();
         usuarioFormatado.admin = usuarioFormatado.role === 'admin';
 
@@ -91,6 +112,7 @@ export const buscarUsuario = async (req, res) => {
     }
 };
 
+// GET /usuarios/email/:email (BUSCA POR EMAIL)
 export const buscarUsuarioPorEmail = async (req, res) => {
   try {
     const { email } = req.params;
@@ -108,7 +130,6 @@ export const buscarUsuarioPorEmail = async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    // Formata para incluir admin
     const usuarioFormatado = usuario.toJSON();
     usuarioFormatado.admin = usuarioFormatado.role === 'admin';
 
@@ -122,7 +143,7 @@ export const buscarUsuarioPorEmail = async (req, res) => {
   }
 };
 
-// GET /users/:id/entrevistas
+// GET /usuarios/:id/entrevistas (BUSCAR ENTREVISTAS DE UM USUÁRIO)
 export const buscarEntrevistasDoUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findByPk(req.params.id, {
@@ -149,16 +170,15 @@ export const atualizarUsuario = async (req, res) => {
     let dados = req.body;
     
     try {
-        // Se a senha foi enviada, criptografa antes de salvar
+        // Se enviou senha nova, criptografa
         if (dados.password) {
             dados.password = await bcrypt.hash(dados.password, saltRounds);
         }
 
-        // Lógica de Conversão na Edição: admin (bool) -> role (string)
+        // Ajusta role/admin
         if (dados.admin !== undefined) {
             dados.role = dados.admin ? 'admin' : 'colaborador';
         } else if (dados.role) {
-            // Mantém suporte caso envie 'role' direto
             dados.role = dados.role === 'admin' ? 'admin' : 'colaborador';
         }
 
@@ -174,7 +194,6 @@ export const atualizarUsuario = async (req, res) => {
             attributes: { exclude: ['password'] }
         });
         
-        // Retorna com o campo admin formatado
         const usuarioFormatado = usuarioAtualizado.toJSON();
         usuarioFormatado.admin = usuarioFormatado.role === 'admin';
 
@@ -184,7 +203,7 @@ export const atualizarUsuario = async (req, res) => {
     }
 };
 
-// DELETE /users/:id
+// DELETE /usuarios/:id (REMOVER)
 export const deletarUsuario = async (req, res) => {
     try {
         const deletedRows = await Usuario.destroy({
@@ -204,7 +223,7 @@ export const deletarUsuario = async (req, res) => {
     }
 };
 
-// GET /users/:id/gerar-link
+// GET /usuarios/:id/gerar-link (GERAR TOKEN DE ACESSO AO FORM)
 export const gerarLinkPorId = async (req, res) => {
     try {
         const { id } = req.params;
@@ -216,6 +235,7 @@ export const gerarLinkPorId = async (req, res) => {
             return res.status(404).json({ error: "Usuário não encontrado." });
         }
 
+        // Gera token válido por 48h
         const token = jwt.sign(
             { 
                 email: usuario.email, 

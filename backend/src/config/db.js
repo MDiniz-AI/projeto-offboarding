@@ -14,19 +14,17 @@ const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
 
 const connectDB = async () => {
   try {
-    
     await sequelize.authenticate();
-    
     console.log('MySQL Conectado com Sucesso!');
-   // await sequelize.sync({ alter: true }); // sincroniza com meu db mas tem que tirar quando for pra prod
+    
+    // --- CORREÇÃO AQUI ---
+    // Descomente esta linha para o Sequelize criar as novas colunas (condicao_saida, condicao_cargo)
+    await sequelize.sync
+    console.log('📦 Base de dados sincronizada (Schema atualizado)!');
 
-  } catch (err){
-   
-    /*catch (error) {
-   
+  } catch (error) {
     console.error('❌ Erro ao conectar no MySQL :', error.message);
     process.exit(1); 
- }*/
   }
 };
 

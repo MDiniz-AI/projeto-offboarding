@@ -25,6 +25,17 @@ const Pergunta = sequelize.define(
     opcoes: {
       type: DataTypes.JSON, 
       allowNull: true,      
+    },
+    // --- NOVOS CAMPOS PARA LÓGICA CONDICIONAL ---
+    condicao_saida: {
+      type: DataTypes.STRING(20), // 'todos', 'voluntaria', 'involuntaria'
+      allowNull: false,
+      defaultValue: 'todos'
+    },
+    condicao_cargo: {
+      type: DataTypes.STRING(20), // 'todos', 'lider'
+      allowNull: false,
+      defaultValue: 'todos'
     }
   },
   {
