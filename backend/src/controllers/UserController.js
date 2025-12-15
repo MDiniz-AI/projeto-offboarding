@@ -7,16 +7,34 @@ const saltRounds = 10;
 
 // POST /usuarios (CRIAR)
 export const criarUsuario = async (req, res) => {
-    const { nome_completo, email, departamento, cargo, data_entrada, data_saida, motivo_saida, password, role, admin } = req.body;
+    // Extrai dados do corpo
+    let { 
+        nome_completo, email, departamento, cargo, 
+        data_entrada, data_saida, motivo_saida, 
+        password, role, admin 
+    } = req.body;
 
     try {
-        // Se não vier senha, gera uma aleatória (para colaboradores que só vão responder form)
+        // --- 1. TRATAMENTO DE DATAS (BLINDAGEM) ---
+        // Se data_entrada vier vazia, nula ou undefined, assume AGORA.
+        // Isso evita o erro 'Invalid date' no SQL.
+        if (!data_entrada || data_entrada === "") {
+            data_entrada = new Date();
+        }
+
+        // Se data_saida vier vazia, força NULL
+        if (!data_saida || data_saida === "") {
+            data_saida = null;
+        }
+
+        // --- 2. LOGICA DE SENHA ---
+        // Se não vier senha, gera uma aleatória
         const senhaParaSalvar = password || Math.random().toString(36).slice(-8) + "Blip!";
         const hashedPassword = await bcrypt.hash(senhaParaSalvar, saltRounds);
 
         const motivoFinal = motivo_saida || "N/A - Aguardando Entrevista";
         
-        // Define se é admin ou colaborador
+        // --- 3. LOGICA DE ROLE/ADMIN ---
         let roleFinal = 'colaborador';
         if (admin === true || role === 'admin') {
             roleFinal = 'admin';
@@ -27,16 +45,15 @@ export const criarUsuario = async (req, res) => {
             email,
             departamento,
             cargo,
-            data_entrada,
+            data_entrada, // Agora garantido que é uma data válida
             motivo_saida: motivoFinal,
-            data_saida: data_saida || null,
+            data_saida,   // Agora garantido que é Data ou Null
             password: hashedPassword,
             role: roleFinal 
         });
 
         const usuarioFormatado = novoUsuario.toJSON();
         delete usuarioFormatado.password;
-        // Retorna flag 'admin' para facilitar no frontend
         usuarioFormatado.admin = usuarioFormatado.role === 'admin';
         
         return res.status(201).json(usuarioFormatado);
@@ -58,7 +75,7 @@ export const listarUsuarios = async (req, res) => {
             // Faz JOIN com Entrevistas
             include: [{
                 model: Entrevista,
-                as: 'entrevistas', // <--- CORREÇÃO: Adicione esta linha!
+                as: 'entrevistas', 
                 attributes: ['id_entrevista', 'data_entrevista', 'status_entrevista'],
                 required: false // LEFT JOIN
             }]
@@ -68,7 +85,6 @@ export const listarUsuarios = async (req, res) => {
             const u = usuario.toJSON();
             u.admin = u.role === 'admin';
             
-            // Agora garantimos que 'entrevistas' existe
             const temEntrevista = u.entrevistas && u.entrevistas.length > 0;
             
             u.status_offboarding = temEntrevista ? 'Concluído' : 'Pendente';
@@ -170,6 +186,19 @@ export const atualizarUsuario = async (req, res) => {
     let dados = req.body;
     
     try {
+        // --- BLINDAGEM DE DATAS NA ATUALIZAÇÃO ---
+        // Se vier data_entrada como string vazia, remove do objeto para não apagar o que tem no banco
+        // OU força uma data válida.
+        if (dados.data_entrada === "") {
+             // Opção A: delete dados.data_entrada; (Mantém a data antiga)
+             // Opção B: Define hoje (Melhor para garantir consistência)
+             dados.data_entrada = new Date();
+        }
+
+        if (dados.data_saida === "") {
+            dados.data_saida = null;
+        }
+
         // Se enviou senha nova, criptografa
         if (dados.password) {
             dados.password = await bcrypt.hash(dados.password, saltRounds);
@@ -199,6 +228,7 @@ export const atualizarUsuario = async (req, res) => {
 
         return res.status(200).json(usuarioFormatado);
     } catch (error) {
+        console.error("Erro no update:", error);
         return res.status(500).json({ error: 'Erro ao atualizar usuário.', details: error.message });
     }
 };

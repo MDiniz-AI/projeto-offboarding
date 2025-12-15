@@ -1,7 +1,7 @@
 // src/services/analise_sentimento/analyze.js
 
 import { tryShortAnswer } from './shortLexicon.js';
-import { analyzeWithGoogle } from './googleClient.js';
+import { analyzeWithGroq } from './googleClient.js';
 import { Pergunta } from '../../models/Relations.js';
 
 // ⚠️ IMPORTANTE: mock DESATIVADO por padrão
@@ -47,7 +47,7 @@ async function analyzeBatch(items, { language } = {}) {
     }
 
     // 🤖 IA (Gemini)
-    const analysis = await analyzeWithGoogle(answerText, questionText);
+    const analysis = await analyzeWithGroq(answerText, questionText);
 
     out.push({
       questionId,

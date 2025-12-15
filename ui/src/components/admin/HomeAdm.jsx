@@ -12,11 +12,8 @@ import api from "../../lib/api";
 
 export default function HomeAdm() {
   const [loading, setLoading] = useState(true);
-
-  // NOVO ESTADO: Armazenar o resumo de texto da IA
   const [aiSummary, setAiSummary] = useState("Carregando resumo da análise...");
 
-  // KPIs
   const [kpis, setKpis] = useState({
     totalEntrevistas: 0,
     scoreGeral: 0,
@@ -24,25 +21,33 @@ export default function HomeAdm() {
     highRiskTotal: 0,
   });
 
+  // --- CONFIGURAÇÕES DE CORES PARA MODO ESCURO ---
+  const DARK_THEME_TEXT = "#9CA3AF"; // Cinza claro para textos de gráficos
+  const DARK_GRID_COLOR = "#374151"; // Cinza escuro para linhas de grade
+
   // Gráfico 1: Volume por Tema (Rosca)
   const [donutState, setDonutState] = useState({
     series: [],
     options: {
-      chart: { type: "donut" },
+      chart: { type: "donut", background: "transparent", foreColor: DARK_THEME_TEXT },
       labels: [],
       colors: [
-        "#1968F0",
-        "#8EA7D3",
-        "#FFB547",
-        "#FF6B6B",
-        "#4ECDC4",
-        "#A068F0",
-        "#F068A0",
+        "#3B82F6", // Azul mais vibrante para dark mode
+        "#60A5FA",
+        "#FBBF24",
+        "#F87171",
+        "#2DD4BF",
+        "#A78BFA",
+        "#F472B6",
       ],
-      legend: { position: "bottom" },
+      legend: {
+        position: "bottom",
+        labels: { colors: DARK_THEME_TEXT },
+      },
       dataLabels: { enabled: false },
       plotOptions: { pie: { donut: { size: "65%" } } },
-      tooltip: { y: { formatter: (val) => `${val} menções` } },
+      stroke: { show: true, colors: ["#1F2937"], width: 2 }, // Borda do gráfico na cor do card (bg-gray-800)
+      tooltip: { theme: "dark" },
     },
   });
 
@@ -50,7 +55,12 @@ export default function HomeAdm() {
   const [barState, setBarState] = useState({
     series: [{ name: "Score Médio", data: [] }],
     options: {
-      chart: { type: "bar", toolbar: { show: true } },
+      chart: { 
+        type: "bar", 
+        toolbar: { show: true }, 
+        background: "transparent",
+        foreColor: DARK_THEME_TEXT 
+      },
       plotOptions: {
         bar: {
           borderRadius: 4,
@@ -58,8 +68,8 @@ export default function HomeAdm() {
           dataLabels: { position: "top" },
           colors: {
             ranges: [
-              { from: -1, to: 0, color: "#FF6B6B" },
-              { from: 0, to: 1, color: "#4ECDC4" },
+              { from: -1, to: 0, color: "#EF4444" }, // Vermelho mais visível
+              { from: 0, to: 1, color: "#34D399" },  // Verde menta mais visível
             ],
           },
         },
@@ -67,25 +77,38 @@ export default function HomeAdm() {
       dataLabels: {
         enabled: true,
         formatter: (val) => val.toFixed(2),
-        style: { colors: ["#000"] },
+        style: { colors: ["#FFFFFF"] }, // Texto dentro da barra branco
       },
       xaxis: {
         categories: [],
         min: -1,
         max: 1,
-        title: { text: "Sentimento (Score)" },
+        title: {
+          text: "Sentimento (Score)",
+          style: { color: DARK_THEME_TEXT },
+        },
+        labels: { style: { colors: DARK_THEME_TEXT } },
       },
-      yaxis: { title: { text: "Tema" } },
-      grid: { borderColor: "#f1f1f1" },
-      colors: ["#4ECDC4", "#FF6B6B"],
-      tooltip: { shared: true, intersect: false },
+      yaxis: {
+        title: { text: "Tema", style: { color: DARK_THEME_TEXT } },
+        labels: { style: { colors: DARK_THEME_TEXT } },
+      },
+      grid: { borderColor: DARK_GRID_COLOR },
+      colors: ["#34D399", "#EF4444"],
+      tooltip: { shared: true, intersect: false, theme: "dark" },
     },
   });
 
+  // Gráfico 3: Departamentos
   const [deptState, setDeptState] = useState({
     series: [{ name: "Entrevistas", data: [] }],
     options: {
-      chart: { type: "bar", toolbar: { show: false } },
+      chart: { 
+        type: "bar", 
+        toolbar: { show: false }, 
+        background: "transparent",
+        foreColor: DARK_THEME_TEXT 
+      },
       plotOptions: {
         bar: {
           borderRadius: 4,
@@ -93,20 +116,27 @@ export default function HomeAdm() {
           distributed: true,
         },
       },
-      colors: ["#1968F0", "#2E93fA", "#66DA26", "#546E7A", "#E91E63"],
+      colors: ["#3B82F6", "#60A5FA", "#4ADE80", "#94A3B8", "#F472B6"],
       dataLabels: {
         enabled: true,
-        style: { colors: ["#000"] },
+        style: { colors: ["#FFFFFF"] },
       },
       xaxis: {
         categories: [],
-        labels: { style: { fontSize: "12px" } },
+        labels: {
+          style: { fontSize: "12px", colors: DARK_THEME_TEXT },
+        },
       },
+      yaxis: {
+        labels: { style: { colors: DARK_THEME_TEXT } },
+      },
+      grid: { borderColor: DARK_GRID_COLOR },
       legend: { show: false },
+      tooltip: { theme: "dark" },
     },
   });
 
-  // BUSCA DADOS - VERSÃO COM CONVERSÃO DE DADOS MAIS SEGURA
+  // BUSCA DADOS
   useEffect(() => {
     async function fetchData() {
       try {
@@ -120,17 +150,9 @@ export default function HomeAdm() {
           highRiskCountTotal,
         } = response.data;
 
-        // GARANTIA: Se o Backend falhou parcialmente, usamos arrays vazios.
         const dataInsights = insights || [];
         const dataDept = departamentos || [];
 
-        // 1. KPIs
-        // Os KPIs de topo (scoreGeral e highRiskCountTotal) já deveriam vir calculados e formatados do backend.
-        // Usamos parseFloat para garantir que sejam números.
-        const totalVol = dataInsights.reduce(
-          (acc, item) => acc + Number(item.responseCount),
-          0
-        );
         const totalNeg = dataInsights.reduce(
           (acc, item) => acc + Number(item.negativeCount),
           0
@@ -140,17 +162,15 @@ export default function HomeAdm() {
           0
         );
 
-        // Se o scoreGeral não vier, calculamos no frontend, mas ele DEVE vir do backend agora
         const mediaGeral = parseFloat(scoreGeral) || 0;
 
         setKpis({
           totalEntrevistas: totalEntrevistas || 0,
-          scoreGeral: mediaGeral.toFixed(2), // Garante formato XX.XX
+          scoreGeral: mediaGeral.toFixed(2),
           negativeCountTotal: totalNeg,
-          highRiskTotal: totalHighRisk, // Deve ser 1 ou 0 no seu caso (Daniel reportou assédio)
+          highRiskTotal: totalHighRisk,
         });
 
-        // ATUALIZADO: Salva o Resumo da IA
         if (fetchedSummary) {
           setAiSummary(fetchedSummary);
         } else {
@@ -159,7 +179,6 @@ export default function HomeAdm() {
           );
         }
 
-        // 2. Gráfico de Rosca (Volume)
         setDonutState((prev) => ({
           ...prev,
           series: dataInsights.map((item) => Number(item.responseCount)),
@@ -169,8 +188,6 @@ export default function HomeAdm() {
           },
         }));
 
-        // 3. Gráfico de Barras (Score)
-        // Usamos map(Number) para garantir que o ApexCharts receba números
         const sortedInsights = [...dataInsights].sort(
           (a, b) => Number(a.averageScore) - Number(b.averageScore)
         );
@@ -194,7 +211,6 @@ export default function HomeAdm() {
           },
         }));
 
-        // 4. Gráfico de Departamentos
         setDeptState((prev) => ({
           ...prev,
           series: [
@@ -216,10 +232,9 @@ export default function HomeAdm() {
       } catch (error) {
         console.error("Erro ao carregar Dashboard:", error);
         setLoading(false);
-        // Exibir a mensagem de erro do servidor no resumo.
         const errorMessage =
           error.response?.data?.msg ||
-          "Erro interno do servidor (Status 500). Verifique o console do backend.";
+          "Erro interno do servidor.";
         setAiSummary(errorMessage);
       }
     }
@@ -228,46 +243,48 @@ export default function HomeAdm() {
 
   if (loading)
     return (
-      <div className="flex h-full items-center justify-center">
-        <span className="loading loading-spinner text-primary"></span>
+      <div className="flex h-full items-center justify-center bg-gray-900">
+        <span className="loading loading-spinner text-white"></span>
       </div>
     );
 
   return (
-    <div className="flex flex-col gap-[2vh] md:pr-0 pr-[4vw] pb-10">
-      <h1 className="text-primary font-title text-4xl text-center md:text-left my-[2vh]">
+    // Adicionei bg-gray-900 aqui caso queira preencher a tela toda
+    <div className="flex flex-col gap-[2vh] md:pr-0 pr-[4vw] pb-10 min-h-screen bg-gray-900">
+      <h1 className="text-white font-title text-4xl text-center md:text-left my-[2vh] pl-1">
         Visão Geral
       </h1>
 
       {/* KPI CARDS */}
       <div className="flex gap-[1vw] mr-[1vw] md:flex-nowrap flex-wrap">
-        {/* ... (KPIs existentes) ... */}
         <Squircle
           cornerRadius={20}
           cornerSmoothing={1}
-          className="w-full bg-secondary/12 flex px-[1vw] py-[3vh] gap-[1vw] items-center"
+          // DARK MODE: BG CINZA ESCURO (800) + BORDA SUTIL (700)
+          className="w-full bg-gray-800 border border-gray-700 shadow-lg flex px-[1vw] py-[3vh] gap-[1vw] items-center"
         >
-          <UsersIcon size={42} weight="thin" className="text-primary" />
+          <UsersIcon size={42} weight="thin" className="text-blue-400" />
           <div>
-            <p className="text-primary/75 font-corpo text-sm">
+            <p className="text-gray-400 font-corpo text-sm">
               Entrevistas Realizadas
             </p>
-            <h1 className="text-2xl font-corpo font-bold text-primary">
+            <h1 className="text-2xl font-corpo font-bold text-white">
               {kpis.totalEntrevistas}
             </h1>
           </div>
         </Squircle>
+
         <Squircle
           cornerRadius={20}
           cornerSmoothing={1}
-          className="w-full bg-secondary/12 px-[1vw] py-[3vh] flex gap-[1vw] items-center"
+          className="w-full bg-gray-800 border border-gray-700 shadow-lg px-[1vw] py-[3vh] flex gap-[1vw] items-center"
         >
-          <ChartBarIcon size={42} weight="thin" className="text-primary" />
+          <ChartBarIcon size={42} weight="thin" className="text-blue-400" />
           <div>
-            <p className="text-primary/75 font-corpo text-sm">Score Geral</p>
+            <p className="text-gray-400 font-corpo text-sm">Score Geral</p>
             <h1
               className={`text-2xl font-corpo font-bold ${
-                Number(kpis.scoreGeral) >= 0 ? "text-green-600" : "text-red-500"
+                Number(kpis.scoreGeral) >= 0 ? "text-emerald-400" : "text-red-400"
               }`}
             >
               {kpis.scoreGeral > 0 ? "+" : ""}
@@ -275,42 +292,41 @@ export default function HomeAdm() {
             </h1>
           </div>
         </Squircle>
+
         <Squircle
           cornerRadius={20}
           cornerSmoothing={1}
-          className={`w-full bg-secondary/12 px-[1vw] py-[3vh] flex gap-[1vw] items-center ${
+          className={`w-full bg-gray-800 border shadow-lg px-[1vw] py-[3vh] flex gap-[1vw] items-center ${
             kpis.highRiskTotal > 0
-              ? "border border-error/50 shadow-md shadow-error/30"
-              : ""
+              ? "border-red-900/50 shadow-red-900/20"
+              : "border-gray-700"
           }`}
         >
-          <WarningCircleIcon size={42} weight="fill" className="text-error" />
+          <WarningCircleIcon size={42} weight="fill" className="text-red-400" />
           <div>
-            <p className="text-primary/75 font-corpo text-sm">Risco Crítico</p>
-            <h1 className="text-2xl font-corpo font-bold text-error">
+            <p className="text-gray-400 font-corpo text-sm">Risco Crítico</p>
+            <h1 className="text-2xl font-corpo font-bold text-red-400">
               {kpis.highRiskTotal}
             </h1>
           </div>
         </Squircle>
-        {/* Fim dos KPIs existentes */}
       </div>
 
-      {/* NOVA SEÇÃO: RESUMO EXECUTIVO DA IA */}
+      {/* RESUMO EXECUTIVO DA IA */}
       <Squircle
         cornerRadius={20}
         cornerSmoothing={1}
-        className="w-full mr-[1vw] px-[2vw] py-[3vh] bg-secondary/12 flex flex-col gap-[2vh]"
+        className="w-full mr-[1vw] px-[2vw] py-[3vh] bg-gray-800 border border-gray-700 shadow-lg flex flex-col gap-[2vh]"
       >
         <div className="flex items-center gap-3">
-          <ChatTextIcon size={32} weight="fill" className="text-accent" />
-          <h2 className="font-corpo font-bold text-xl text-primary">
+          <ChatTextIcon size={32} weight="fill" className="text-purple-400" />
+          <h2 className="font-corpo font-bold text-xl text-white">
             Resumo Executivo da Análise
           </h2>
         </div>
-        <div className="divider my-0"></div>
-        {/* O resumo é renderizado aqui. Usamos `white-space: pre-wrap` para respeitar quebras de linha/formatação. */}
+        <div className="divider my-0 bg-gray-700 h-px"></div>
         <p
-          className="text-primary font-corpo text-base"
+          className="text-gray-300 font-corpo text-base leading-relaxed"
           style={{ whiteSpace: "pre-wrap" }}
         >
           {aiSummary}
@@ -323,15 +339,15 @@ export default function HomeAdm() {
         <Squircle
           cornerRadius={20}
           cornerSmoothing={1}
-          className="w-full md:w-2/3 px-[1vw] py-[3vh] bg-secondary/12"
+          className="w-full md:w-2/3 px-[1vw] py-[3vh] bg-gray-800 border border-gray-700 shadow-lg"
         >
-          <h2 className="text-left font-corpo font-bold text-lg text-primary ml-4">
+          <h2 className="text-left font-corpo font-bold text-lg text-white ml-4">
             Satisfação por Tema
           </h2>
-          <p className="text-xs text-primary/60 ml-4 mb-4">
+          <p className="text-xs text-gray-400 ml-4 mb-4">
             Score Médio Sentimental (-1 a +1)
           </p>
-          <div className="divider mt-0 mb-0"></div>
+          <div className="divider mt-0 mb-0 bg-gray-700 h-px"></div>
           <ReactApexChart
             options={barState.options}
             series={barState.series}
@@ -344,15 +360,15 @@ export default function HomeAdm() {
         <Squircle
           cornerRadius={20}
           cornerSmoothing={1}
-          className="w-full md:w-1/3 px-[1vw] py-[3vh] bg-secondary/12"
+          className="w-full md:w-1/3 px-[1vw] py-[3vh] bg-gray-800 border border-gray-700 shadow-lg"
         >
-          <h2 className="text-left font-corpo font-bold text-lg text-primary ml-4">
+          <h2 className="text-left font-corpo font-bold text-lg text-white ml-4">
             Principais Tópicos
           </h2>
-          <p className="text-xs text-primary/60 ml-4 mb-4">
+          <p className="text-xs text-gray-400 ml-4 mb-4">
             Volume de menções categorizadas
           </p>
-          <div className="divider mt-0 mb-0"></div>
+          <div className="divider mt-0 mb-0 bg-gray-700 h-px"></div>
           <div className="flex justify-center items-center h-[280px]">
             <ReactApexChart
               options={donutState.options}
@@ -369,18 +385,18 @@ export default function HomeAdm() {
         <Squircle
           cornerRadius={20}
           cornerSmoothing={1}
-          className="w-full px-[1vw] py-[3vh] bg-secondary/12"
+          className="w-full px-[1vw] py-[3vh] bg-gray-800 border border-gray-700 shadow-lg"
         >
           <div className="flex items-center gap-2 ml-4">
-            <BuildingsIcon size={24} className="text-primary" />
-            <h2 className="text-left font-corpo font-bold text-lg text-primary">
+            <BuildingsIcon size={24} className="text-blue-400" />
+            <h2 className="text-left font-corpo font-bold text-lg text-white">
               Respostas por Departamento
             </h2>
           </div>
-          <p className="text-xs text-primary/60 ml-12 mb-4">
+          <p className="text-xs text-gray-400 ml-12 mb-4">
             Volume total de entrevistas por área
           </p>
-          <div className="divider mt-0 mb-0"></div>
+          <div className="divider mt-0 mb-0 bg-gray-700 h-px"></div>
           <ReactApexChart
             options={deptState.options}
             series={deptState.series}

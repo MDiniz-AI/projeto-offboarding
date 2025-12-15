@@ -9,24 +9,43 @@ import Usuario from './User.js';
 // Definição das Relações do Sistema
 
 // 1. Entrevista <-> Resposta
-// Uma entrevista tem várias respostas.
-Entrevista.hasMany(Resposta, { foreignKey: 'id_entrevista'});
-Resposta.belongsTo(Entrevista, { foreignKey: 'id_entrevista'});
+Entrevista.hasMany(Resposta, { 
+    foreignKey: 'id_entrevista', 
+    as: 'respostas' // Permite: Entrevista.findOne({ include: 'respostas' })
+});
+Resposta.belongsTo(Entrevista, { 
+    foreignKey: 'id_entrevista', 
+    as: 'entrevista' // <--- CORREÇÃO PRINCIPAL: Resolve o erro do "Entrevistum"
+});
 
 // 2. Pergunta <-> Resposta
-// Uma pergunta pode ter várias respostas (de diferentes entrevistas).
-Pergunta.hasMany(Resposta, { foreignKey: 'id_pergunta'});
-Resposta.belongsTo(Pergunta, { foreignKey: 'id_pergunta' });
+Pergunta.hasMany(Resposta, { 
+    foreignKey: 'id_pergunta', 
+    as: 'respostas' 
+});
+Resposta.belongsTo(Pergunta, { 
+    foreignKey: 'id_pergunta', 
+    as: 'pergunta' 
+});
 
 // 3. Resposta <-> Análise de Sentimento
-// Cada resposta tem uma análise associada (relação 1:1).
-Resposta.hasOne(AnaliseSentimento, { foreignKey: 'id_resposta' }); 
-AnaliseSentimento.belongsTo(Resposta, { foreignKey: 'id_resposta' }); 
+Resposta.hasOne(AnaliseSentimento, { 
+    foreignKey: 'id_resposta', 
+    as: 'analise' 
+});
+AnaliseSentimento.belongsTo(Resposta, { 
+    foreignKey: 'id_resposta', 
+    as: 'resposta' 
+});
 
-// 4. Usuário <-> Entrevista (CORREÇÃO APLICADA AQUI)
-// Um usuário pode ter várias entrevistas (ex: readmissão).
-// O 'as: entrevistas' é CRUCIAL para o 'include' funcionar corretamente no UserController.
-Usuario.hasMany(Entrevista, { foreignKey: 'id_usuario', as: 'entrevistas' }); 
-Entrevista.belongsTo(Usuario, { foreignKey: 'id_usuario', as: 'usuario' });
+// 4. Usuário <-> Entrevista
+Usuario.hasMany(Entrevista, { 
+    foreignKey: 'id_usuario', // Certifique-se que no banco é 'id_usuario' (se for 'usuario_id', troque aqui)
+    as: 'entrevistas' 
+});
+Entrevista.belongsTo(Usuario, { 
+    foreignKey: 'id_usuario', 
+    as: 'usuario' // <--- CRUCIAL para o Controller de Resumo funcionar
+});
 
 export { sequelize, Entrevista, Pergunta, Resposta, AnaliseSentimento, Usuario };

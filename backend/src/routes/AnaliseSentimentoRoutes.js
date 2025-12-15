@@ -4,7 +4,9 @@ import {
   listarAnalises,
   buscarAnalise,
   deletarAnalise,
-  getDashboardInsights
+  getDashboardInsights,
+  getResumoDepartamento,
+  getColaboradoresDepartamento
 } from "../controllers/AnaliseSentimentoController.js";
 
 const router = express.Router();
@@ -14,6 +16,10 @@ router.post("/", realizarAnalise);
 
 // 2. GET /api/analise/insights
 router.get("/insights", getDashboardInsights);
+
+router.get("/resumo-executivo/:departamento", getResumoDepartamento);
+
+router.get("/colaboradores/:departamento", getColaboradoresDepartamento);
 
 // 3. GET /api/analise
 router.get("/", listarAnalises); // GET /api/analise -> Lista todas

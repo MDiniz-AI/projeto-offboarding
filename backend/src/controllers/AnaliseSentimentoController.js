@@ -5,10 +5,15 @@ import {
   Usuario,
 } from "../models/Relations.js";
 import analyzeBatch from "../services/analise_sentimento/analyze.js";
-import { gerarResumoExecutivo } from "../services/analise_sentimento/googleClient.js";
+
+// IMPORTANTE: Apontando para o serviço da Groq (aiService.js)
+import {
+  gerarResumoExecutivoGeral,
+  gerarResumoExecutivoDepartamento,
+} from "../services/analise_sentimento/googleClient.js";
+
 import { sequelize } from "../config/db.js";
 import { Op } from "sequelize";
-import ResumoDepartamento from "../models/ResumoDepartamento.js";
 
 /* =========================
    NORMALIZAÇÃO DE TEMAS
@@ -198,15 +203,24 @@ export const getDashboardInsights = async (req, res) => {
       if (r.risk_level === "High") themesMap[theme].highRiskCount += 1;
     });
 
-    const insights = Object.values(themesMap).map((t) => ({
-      theme: t.theme,
-      averageScore: Number((t.scoreSum / t.responseCount).toFixed(2)),
-      responseCount: t.responseCount,
-      negativeCount: t.negativeCount,
-      highRiskCount: t.highRiskCount,
-    }));
+    // --- FILTRO DE APRESENTAÇÃO (HARDCODED) ---
+    // Removemos temas gerais dos cards para focar nos insights específicos
+    const insights = Object.values(themesMap)
+      .filter((t) => {
+        const temaLower = t.theme.toLowerCase();
+        const ignorados = ["geral", "perguntas gerais", "enps", "satisfação geral", "considerações finais"];
+        return !ignorados.includes(temaLower);
+      })
+      .map((t) => ({
+        theme: t.theme,
+        averageScore: Number((t.scoreSum / t.responseCount).toFixed(2)),
+        responseCount: t.responseCount,
+        negativeCount: t.negativeCount,
+        highRiskCount: t.highRiskCount,
+      }));
 
     /* ---- SCORE GERAL ---- */
+    // Mantém TODAS as respostas (inclusive gerais) para a nota da empresa
     const scoreGeral =
       resultados.reduce((sum, r) => sum + (r.score || 0), 0) /
       resultados.length;
@@ -218,10 +232,10 @@ export const getDashboardInsights = async (req, res) => {
       const textos = resultados
         .map((r) => r.resposta_texto)
         .filter((t) => t && t.length > 20)
-        .slice(0, 20);
+        .slice(0, 50);
 
       if (textos.length) {
-        aiSummary = await gerarResumoExecutivo(
+        aiSummary = await gerarResumoExecutivoGeral(
           textos,
           "Clima organizacional e desligamentos"
         );
@@ -231,7 +245,7 @@ export const getDashboardInsights = async (req, res) => {
       aiSummary = "Não foi possível gerar o resumo executivo no momento.";
     }
 
-    /* ---- ENTREVISTAS POR DEPARTAMENTO ---- */
+    /* ---- ENTREVISTAS POR DEPARTAMENTO (MÉTRICAS) ---- */
     const departamentos = await Usuario.findAll({
       attributes: [
         "departamento",
@@ -243,7 +257,8 @@ export const getDashboardInsights = async (req, res) => {
           "totalEntrevistas",
         ],
         [
-          sequelize.fn("AVG", sequelize.col("entrevistas.resposta.score")),
+          // Alias correto: entrevistas -> respostas
+          sequelize.fn("AVG", sequelize.col("entrevistas.respostas.score")),
           "averageScore",
         ],
       ],
@@ -255,6 +270,7 @@ export const getDashboardInsights = async (req, res) => {
           include: [
             {
               model: Resposta,
+              as: "respostas", // Alias correto (Plural)
               attributes: [],
             },
           ],
@@ -264,6 +280,7 @@ export const getDashboardInsights = async (req, res) => {
       raw: true,
     });
 
+    // RETORNA OS DADOS DO DASHBOARD
     return res.json({
       totalEntrevistas: entrevistasUnicas.size,
       scoreGeral: Number(scoreGeral.toFixed(2)),
@@ -273,8 +290,128 @@ export const getDashboardInsights = async (req, res) => {
       departamentos,
       aiSummary,
     });
+
   } catch (error) {
     console.error("ERRO INSIGHTS:", error);
     return res.status(500).json({ msg: "Erro ao gerar insights." });
+  }
+};
+
+/* ========================================================
+   GET /api/analise/resumo-executivo/:departamento
+======================================================== */
+export const getResumoDepartamento = async (req, res) => {
+  try {
+    const { departamento } = req.params;
+
+    // 1. Busca no Banco de Dados
+    const respostas = await Resposta.findAll({
+      include: [
+        {
+          model: Entrevista,
+          as: 'entrevista', // Alias correto
+          required: true, 
+          include: [
+            {
+              model: Usuario,
+              as: 'usuario', // Alias correto
+              required: true, 
+              where: { departamento },
+            },
+          ],
+        },
+      ],
+      attributes: ["resposta_texto"],
+      raw: true, 
+      nest: true,
+    });
+
+    // 2. Processamento e Limpeza dos Textos
+    const textos = respostas
+      .map((r) => r.resposta_texto)
+      .filter((t) => t && t.trim().length > 10) 
+      .slice(0, 50); 
+
+    // 3. Blindagem
+    if (textos.length === 0) {
+      return res.json({
+        departamento,
+        resumo:
+          "Não há dados suficientes neste departamento para gerar uma análise qualitativa no momento.",
+      });
+    }
+
+    console.log(
+      `Gerando resumo Groq para ${departamento} com ${textos.length} respostas...`
+    );
+
+    // 4. Chamada à Inteligência Artificial (Groq)
+    const resumo = await gerarResumoExecutivoDepartamento(
+      textos,
+      departamento
+    );
+
+    return res.json({ departamento, resumo });
+  } catch (err) {
+    console.error("Erro no Controller de Resumo:", err);
+    return res
+      .status(500)
+      .json({
+        msg: "Não foi possível gerar o resumo inteligente no momento.",
+        error: err.message,
+      });
+  }
+};
+
+/* ========================================================
+   GET /api/analise/colaboradores/:departamento
+======================================================== */
+export const getColaboradoresDepartamento = async (req, res) => {
+  try {
+    const { departamento } = req.params;
+
+    // Busca usuários do departamento com suas respostas
+    const usuarios = await Usuario.findAll({
+      where: { departamento },
+      attributes: ['usuario_id', 'nome_completo', 'cargo'],
+      include: [
+        {
+          model: Entrevista,
+          as: 'entrevistas', // Alias correto (Plural)
+          required: true,
+          include: [
+            {
+              model: Resposta,
+              as: 'respostas', // Alias correto (Plural)
+              attributes: ['score'],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Formata os dados para o Frontend
+    const listaFormatada = usuarios.map(u => {
+      const todasRespostas = u.entrevistas.flatMap(e => e.respostas || []);
+      
+      let mediaScore = 0;
+      if (todasRespostas.length > 0) {
+        const soma = todasRespostas.reduce((acc, r) => acc + (r.score || 0), 0);
+        mediaScore = soma / todasRespostas.length;
+      }
+
+      return {
+        id: u.usuario_id,
+        nome: u.nome_completo,
+        cargo: u.cargo || "Não informado",
+        score: mediaScore
+      };
+    });
+
+    return res.json(listaFormatada);
+
+  } catch (error) {
+    console.error("Erro ao buscar colaboradores do departamento:", error);
+    return res.status(500).json({ msg: "Erro ao listar colaboradores." });
   }
 };
